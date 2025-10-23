@@ -43,6 +43,18 @@ export const API_ENDPOINTS = {
   META_ADS_ACCOUNTS: '/meta-ads/accounts',
   META_ADS_CAMPAIGNS: '/meta-ads/campaigns',
   META_ADS_INSIGHTS: '/meta-ads/insights',
+
+  // Campaign Actions
+  META_ADS_CAMPAIGN_PAUSE: '/meta-ads/campaigns/:campaignId/pause',
+  META_ADS_CAMPAIGN_ACTIVATE: '/meta-ads/campaigns/:campaignId/activate',
+  META_ADS_CAMPAIGN_ROLLBACK: '/meta-ads/campaigns/:campaignId/rollback',
+  META_ADS_CAMPAIGN_HISTORY: '/meta-ads/campaigns/:campaignId/history',
+
+  // Guardrails
+  GUARDRAILS: '/guardrails',
+  GUARDRAIL_BY_ID: '/guardrails/:id',
+  GUARDRAIL_CHECK: '/guardrails/:id/check',
+  GUARDRAIL_TOGGLE: '/guardrails/:id/toggle',
 };
 
 export const SUGGESTED_QUESTIONS = {

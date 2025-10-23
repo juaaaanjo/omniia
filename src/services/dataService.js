@@ -491,6 +491,147 @@ class DataService {
       throw error;
     }
   }
+
+  /**
+   * Pause a campaign
+   */
+  async pauseCampaign(campaignId, reason = null) {
+    try {
+      const endpoint = API_ENDPOINTS.META_ADS_CAMPAIGN_PAUSE.replace(':campaignId', campaignId);
+      const response = await api.post(endpoint, { reason });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Activate a campaign
+   */
+  async activateCampaign(campaignId, reason = null) {
+    try {
+      const endpoint = API_ENDPOINTS.META_ADS_CAMPAIGN_ACTIVATE.replace(':campaignId', campaignId);
+      const response = await api.post(endpoint, { reason });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Rollback campaign to previous state
+   */
+  async rollbackCampaign(campaignId, historyId = null) {
+    try {
+      const endpoint = API_ENDPOINTS.META_ADS_CAMPAIGN_ROLLBACK.replace(':campaignId', campaignId);
+      const response = await api.post(endpoint, { historyId });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get campaign history
+   */
+  async getCampaignHistory(campaignId, params = {}) {
+    try {
+      const endpoint = API_ENDPOINTS.META_ADS_CAMPAIGN_HISTORY.replace(':campaignId', campaignId);
+      const response = await api.get(endpoint, { params });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get all guardrails
+   */
+  async getGuardrails(params = {}) {
+    try {
+      const response = await api.get(API_ENDPOINTS.GUARDRAILS, { params });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get specific guardrail
+   */
+  async getGuardrail(id) {
+    try {
+      const endpoint = API_ENDPOINTS.GUARDRAIL_BY_ID.replace(':id', id);
+      const response = await api.get(endpoint);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Create guardrail
+   */
+  async createGuardrail(data) {
+    try {
+      const response = await api.post(API_ENDPOINTS.GUARDRAILS, data);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Update guardrail
+   */
+  async updateGuardrail(id, data) {
+    try {
+      const endpoint = API_ENDPOINTS.GUARDRAIL_BY_ID.replace(':id', id);
+      const response = await api.put(endpoint, data);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Delete guardrail
+   */
+  async deleteGuardrail(id) {
+    try {
+      const endpoint = API_ENDPOINTS.GUARDRAIL_BY_ID.replace(':id', id);
+      const response = await api.delete(endpoint);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Manually trigger guardrail check
+   */
+  async checkGuardrail(id) {
+    try {
+      const endpoint = API_ENDPOINTS.GUARDRAIL_CHECK.replace(':id', id);
+      const response = await api.post(endpoint);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Toggle guardrail enabled/disabled
+   */
+  async toggleGuardrail(id) {
+    try {
+      const endpoint = API_ENDPOINTS.GUARDRAIL_TOGGLE.replace(':id', id);
+      const response = await api.patch(endpoint);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new DataService();
