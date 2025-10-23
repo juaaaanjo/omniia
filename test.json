@@ -1,0 +1,257 @@
+Required Frontend Changes
+
+  1. Update Field Names (Breaking Changes)
+
+  // ❌ OLD - Will break
+  const { totalCharges, totalFees } = kpis.payments;
+
+  // ✅ NEW - Required changes
+  const { totalTransactions, source } = kpis.payments;
+
+  // Calculate fees if you need them
+  const fees = kpis.payments.totalRevenue - kpis.payments.netRevenue;
+
+  2. Update Payment Metrics Display
+
+  3. Handle Currency Display
+
+  Since transactions are in COP (Colombian Pesos), you'll want to format
+  correctly:
+
+  // Add currency formatting helper
+  function formatCurrency(amount, currency = 'COP') {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: currency
+    }).format(amount);
+  }
+
+  // Example usage
+  formatCurrency(619.00, 'COP') // → "$619,00"
+
+  API Response Changes Summary
+
+  /api/dashboard/kpis
+
+  Before:
+  {
+    "kpis": {
+      "payments": {
+        "totalRevenue": 150000,
+        "totalFees": 4500,       // ❌ REMOVED
+        "netRevenue": 145500,
+        "totalCharges": 1250     // ❌ RENAMED
+      }
+    }
+  }
+
+  After:
+  {
+    "kpis": {
+      "payments": {
+        "totalRevenue": 92938.00,
+        "netRevenue": 92362.00,
+        "totalTransactions": 3,     // ✅ NEW (was totalCharges)
+        "source": "transactions"    // ✅ NEW
+      }
+    }
+  }
+
+  /api/dashboard/finance
+
+  Added field:
+  {
+    "data": {
+      "paymentData": { ... },
+      "paymentDataSource": "transactions"  // ✅ NEW
+    }
+  }
+
+  TypeScript Types (if using TypeScript)
+
+  // Update your types
+  interface PaymentMetrics {
+    totalRevenue: number;
+    netRevenue: number;
+    totalTransactions: number;  // Changed from totalCharges
+    source: 'stripe' | 'transactions';  // New field
+  }
+
+  interface KPIDashboard {
+    kpis: {
+      revenue: RevenueMetrics;
+      marketing: MarketingMetrics;
+      payments: PaymentMetrics;
+      finance: FinanceMetrics;
+    };
+    dateRange: DateRange;
+  }
+
+  Quick Migration Checklist
+
+  - Find & Replace: totalCharges → totalTransactions
+  - Remove: Any direct usage of totalFees field
+  - Add: Calculate fees as totalRevenue - netRevenue
+  - Optional: Add currency formatting for COP
+  - Optional: Add data source badge display
+  - Test: Verify all payment displays render correctly
+
+  Example Code Changes
+
+  Vue.js
+
+  <template>
+    <div class="metrics-grid">
+      <!-- OLD -->
+      <!-- <MetricCard :value="payments.totalCharges" /> -->
+
+      <!-- NEW -->
+      <MetricCard
+        label="Transactions"
+        :value="payments.totalTransactions"
+      />
+
+      <!-- Calculate fees instead of using totalFees -->
+      <MetricCard
+        label="Processing Fees"
+        :value="payments.totalRevenue - payments.netRevenue"
+      />
+
+      <Badge v-if="payments.source">
+        {{ payments.source === 'transactions' ? 'Ommeo' : 'Stripe' }}
+      </Badge>
+    </div>
+  </template>
+
+  <script>
+  export default {
+    computed: {
+      payments() {
+        return this.$store.state.dashboard.kpis.payments;
+      },
+      processingFees() {
+        return this.payments.totalRevenue - this.payments.netRevenue;
+      }
+    }
+  }
+  </script>
+
+  React
+
+  function PaymentDashboard() {
+    const { data } = useDashboard();
+    const { payments } = data.kpis;
+
+    // Calculate fees
+    const processingFees = payments.totalRevenue - payments.netRevenue;
+
+    return (
+      <div className="payment-metrics">
+        <Metric 
+          label="Total Revenue" 
+          value={payments.totalRevenue}
+          currency="COP"
+        />
+
+        <Metric 
+          label="Net Revenue" 
+          value={payments.netRevenue}
+          currency="COP"
+        />
+
+        <Metric 
+          label="Processing Fees" 
+          value={processingFees}
+          currency="COP"
+        />
+
+        <Metric 
+          label="Transactions" 
+          value={payments.totalTransactions}  // Updated field name
+        />
+
+        {payments.source && (
+          <SourceBadge source={payments.source} />
+        )}
+      </div>
+    );
+  }
+
+  Angular
+
+  // Component
+  export class PaymentDashboardComponent {
+    @Input() payments: PaymentMetrics;
+
+    get processingFees(): number {
+      return this.payments.totalRevenue - this.payments.netRevenue;
+    }
+
+    get sourceLabel(): string {
+      return this.payments.source === 'transactions'
+        ? 'Ommeo Transactions'
+        : 'Stripe';
+    }
+  }
+
+  <!-- Template -->
+  <div class="payment-metrics">
+    <app-metric 
+      label="Total Revenue" 
+      [value]="payments.totalRevenue"
+      currency="COP">
+    </app-metric>
+
+    <app-metric 
+      label="Net Revenue" 
+      [value]="payments.netRevenue"
+      currency="COP">
+    </app-metric>
+
+    <app-metric 
+      label="Processing Fees" 
+      [value]="processingFees"
+      currency="COP">
+    </app-metric>
+
+    <app-metric 
+      label="Transactions" 
+      [value]="payments.totalTransactions">
+    </app-metric>
+
+    <span class="badge">{{ sourceLabel }}</span>
+  </div>
+
+  Testing Your Changes
+
+  // 1. Fetch KPI data
+  const response = await
+  fetch('/api/dashboard/kpis?startDate=2025-08-01&endDate=2025-10-31');
+  const data = await response.json();
+
+  // 2. Verify new structure
+  console.log(data.kpis.payments);
+  // Should output:
+  // {
+  //   totalRevenue: 92938,
+  //   netRevenue: 92362,
+  //   totalTransactions: 3,  ✅
+  //   source: "transactions"  ✅
+  // }
+
+  // 3. Verify old fields are gone
+  console.assert(data.kpis.payments.totalCharges === undefined,
+  'totalCharges removed');
+  console.assert(data.kpis.payments.totalFees === undefined, 'totalFees 
+  removed');
+
+  That's It!
+
+  The changes are minimal:
+  1. Rename one field: totalCharges → totalTransactions
+  2. Remove one field: totalFees (calculate instead)
+  3. Optional: Use new source field for UI indicators
+
+  Everything else continues to work as before! The backend fixes ensure the
+  data is correctly transformed from your endpoint, but the frontend API
+  contract remains stable.
