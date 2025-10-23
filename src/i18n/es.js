@@ -63,6 +63,7 @@ export const es = {
   // Dashboard
   dashboard: {
     title: 'Panel de Control',
+    subtitle: 'Resumen del desempeño de tu negocio en todas las áreas',
     overview: 'Resumen General',
     kpis: 'Indicadores Clave',
     recentActivity: 'Actividad Reciente',
@@ -72,6 +73,37 @@ export const es = {
     syncNow: 'Sincronizar ahora',
     lastSync: 'Última sincronización',
     dataSources: 'Fuentes de datos',
+    loading: 'Cargando panel...',
+    reportingPeriod: 'Período de reporte: {start} - {end}',
+    summaryCards: {
+      financeRevenue: 'Ingresos financieros',
+      financeProfit: 'Ganancia financiera',
+      totalTransactions: 'Transacciones totales',
+      profitMargin: 'Margen de ganancia',
+    },
+    sections: {
+      revenue: {
+        title: 'KPIs de ingresos',
+        totalRevenue: 'Ingresos totales',
+        orders: 'Pedidos',
+        avgOrderValue: 'Valor promedio de pedido',
+      },
+      marketing: {
+        title: 'KPIs de marketing',
+        totalSpend: 'Gasto total',
+        impressions: 'Impresiones',
+        clicks: 'Clics',
+        roas: 'ROAS',
+        cpc: 'CPC',
+      },
+      finance: {
+        title: 'KPIs financieros',
+        revenue: 'Ingresos',
+        expenses: 'Gastos',
+        profit: 'Ganancia',
+        margin: 'Margen',
+      },
+    },
   },
 
   // KPIs
@@ -400,6 +432,30 @@ export const es = {
     // Descriptions
     ommeoTransactionsDesc: 'Sincroniza y analiza tus datos de transacciones de todos los proveedores de pago',
     metaAdsDesc: 'Conecta datos publicitarios de Meta (Facebook/Instagram)',
+    metaAdsModal: {
+      title: 'Conectar Meta Ads manualmente',
+      showInstructions: 'Mostrar instrucciones',
+      hideInstructions: 'Ocultar instrucciones',
+      instructionsTitle: 'Cómo obtener tus credenciales:',
+      steps: {
+        step1: 'Ir a Meta Graph API Explorer (developers.facebook.com/tools/explorer)',
+        step2: 'Selecciona tu aplicación de Meta en el menú desplegable',
+        step3: 'Haz clic en “Generate Access Token”',
+        step4: 'Selecciona los permisos: ads_read, ads_management, business_management',
+        step5: 'Convierte el token a uno de larga duración (60 días)',
+        step6: 'Obtén tu ID de cuenta publicitaria con /me/adaccounts',
+      },
+      accessTokenLabel: 'Token de acceso de Meta',
+      accessTokenHelp: 'Tu token de acceso de Meta de larga duración (empieza con EAAB...)',
+      accountIdLabel: 'ID de cuenta publicitaria',
+      accountIdHelp: 'Tu ID de cuenta publicitaria de Meta (formato: act_XXXXXXXXX)',
+      accountNameLabel: 'Nombre de la cuenta',
+      accountNameHelp: 'Opcional: Un nombre descriptivo para esta cuenta',
+      expirationDateLabel: 'Fecha de expiración del token',
+      expirationDateHelp: 'Se establece automáticamente en 59 días desde hoy (los tokens de larga duración de Meta expiran en 60 días). Puedes ajustar si es necesario.',
+      connecting: 'Conectando...',
+      connect: 'Conectar',
+    },
   },
 
   // Validation

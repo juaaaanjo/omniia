@@ -7,11 +7,18 @@ class ChatService {
    */
   async sendMessage(message, context = {}) {
     try {
-      const response = await api.post(API_ENDPOINTS.CHAT_ASK, {
-        question: message,  // API expects 'question' field
-        context,
-        timestamp: new Date().toISOString(),
-      });
+      // AI processing can take longer, so use extended timeout (2 minutes)
+      const response = await api.post(
+        API_ENDPOINTS.CHAT_ASK,
+        {
+          question: message,  // API expects 'question' field
+          context,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          timeout: 120000, // 2 minutes timeout for AI responses
+        }
+      );
 
       return response;
     } catch (error) {

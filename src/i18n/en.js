@@ -63,6 +63,7 @@ export const en = {
   // Dashboard
   dashboard: {
     title: 'Dashboard',
+    subtitle: 'Overview of your business performance across all areas',
     overview: 'Overview',
     kpis: 'Key Performance Indicators',
     recentActivity: 'Recent Activity',
@@ -72,6 +73,37 @@ export const en = {
     syncNow: 'Sync now',
     lastSync: 'Last sync',
     dataSources: 'Data sources',
+    loading: 'Loading dashboard...',
+    reportingPeriod: 'Reporting period: {start} - {end}',
+    summaryCards: {
+      financeRevenue: 'Finance Revenue',
+      financeProfit: 'Finance Profit',
+      totalTransactions: 'Total Transactions',
+      profitMargin: 'Profit Margin',
+    },
+    sections: {
+      revenue: {
+        title: 'Revenue KPIs',
+        totalRevenue: 'Total Revenue',
+        orders: 'Orders',
+        avgOrderValue: 'Average Order Value',
+      },
+      marketing: {
+        title: 'Marketing KPIs',
+        totalSpend: 'Total Spend',
+        impressions: 'Impressions',
+        clicks: 'Clicks',
+        roas: 'ROAS',
+        cpc: 'CPC',
+      },
+      finance: {
+        title: 'Finance KPIs',
+        revenue: 'Revenue',
+        expenses: 'Expenses',
+        profit: 'Profit',
+        margin: 'Margin',
+      },
+    },
   },
 
   // KPIs
@@ -400,6 +432,30 @@ export const en = {
     // Descriptions
     ommeoTransactionsDesc: 'Sync and analyze your transaction data across all payment providers',
     metaAdsDesc: 'Connect Meta (Facebook/Instagram) advertising data',
+    metaAdsModal: {
+      title: 'Connect Meta Ads Manually',
+      showInstructions: 'Show instructions',
+      hideInstructions: 'Hide instructions',
+      instructionsTitle: 'How to get your credentials:',
+      steps: {
+        step1: 'Go to Meta Graph API Explorer (developers.facebook.com/tools/explorer)',
+        step2: 'Select your Meta App from the dropdown',
+        step3: 'Click “Generate Access Token”',
+        step4: 'Select permissions: ads_read, ads_management, business_management',
+        step5: 'Convert the token to a long-lived token (60 days)',
+        step6: 'Get your Ad Account ID with /me/adaccounts',
+      },
+      accessTokenLabel: 'Meta Access Token',
+      accessTokenHelp: 'Your long-lived Meta access token (starts with EAAB...)',
+      accountIdLabel: 'Ad Account ID',
+      accountIdHelp: 'Your Meta Ad Account ID (format: act_XXXXXXXXX)',
+      accountNameLabel: 'Account Name',
+      accountNameHelp: 'Optional: A friendly name for this account',
+      expirationDateLabel: 'Token Expiration Date',
+      expirationDateHelp: 'Automatically set to 59 days from today (Meta long-lived tokens expire in 60 days). You can adjust if needed.',
+      connecting: 'Connecting...',
+      connect: 'Connect',
+    },
   },
 
   // Validation

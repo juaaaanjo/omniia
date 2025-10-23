@@ -5,9 +5,11 @@ import MetricCard from '../components/charts/MetricCard';
 import PaymentMetrics from '../components/dashboard/PaymentMetrics';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
+import { useLanguage } from '../hooks/useLanguage';
 
 const Dashboard = () => {
   const { kpis, fetchKPIs, isLoading, dateRange } = useData();
+  const { t, translate } = useLanguage();
 
   useEffect(() => {
     fetchKPIs();
@@ -21,35 +23,42 @@ const Dashboard = () => {
   const summaryCards = useMemo(
     () => [
       {
-        title: 'Finance Revenue',
+        title: translate('dashboard.summaryCards.financeRevenue'),
         value: finance.revenue ?? payments.totalRevenue ?? 0,
         change: null,
         type: 'currency',
         icon: FiDollarSign,
       },
       {
-        title: 'Finance Profit',
+        title: translate('dashboard.summaryCards.financeProfit'),
         value: finance.profit ?? 0,
         change: null,
         type: 'currency',
         icon: FiTrendingUp,
       },
       {
-        title: 'Total Transactions',
+        title: translate('dashboard.summaryCards.totalTransactions'),
         value: payments.totalTransactions ?? 0,
         change: null,
         type: 'number',
         icon: FiShoppingCart,
       },
       {
-        title: 'Profit Margin',
+        title: translate('dashboard.summaryCards.profitMargin'),
         value: marginValue ?? 0,
         change: null,
         type: 'percentage',
         icon: FiPercent,
       },
     ],
-    [finance.profit, finance.revenue, marginValue, payments.totalRevenue, payments.totalTransactions]
+    [
+      finance.profit,
+      finance.revenue,
+      marginValue,
+      payments.totalRevenue,
+      payments.totalTransactions,
+      translate,
+    ]
   );
 
   const marginDisplay =
@@ -57,40 +66,93 @@ const Dashboard = () => {
       ? formatPercentage(finance.margin / 100)
       : formatPercentage(0);
 
-  const detailSections = [
-    {
-      title: 'Revenue KPIs',
-      items: [
-        { label: 'Total Revenue', value: formatCurrency(revenue.total ?? 0) },
-        { label: 'Orders', value: (revenue.orders ?? 0).toLocaleString() },
-        { label: 'Average Order Value', value: formatCurrency(revenue.avgOrderValue ?? 0) },
-      ],
-    },
-    {
-      title: 'Marketing KPIs',
-      items: [
-        { label: 'Total Spend', value: formatCurrency(marketing.totalSpend ?? 0) },
-        { label: 'Impressions', value: (marketing.impressions ?? 0).toLocaleString() },
-        { label: 'Clicks', value: (marketing.clicks ?? 0).toLocaleString() },
-        { label: 'ROAS', value: (marketing.roas ?? 0).toFixed(2) },
-        { label: 'CPC', value: formatCurrency(marketing.cpc ?? 0) },
-      ],
-    },
-    {
-      title: 'Finance KPIs',
-      items: [
-        { label: 'Revenue', value: formatCurrency(finance.revenue ?? 0) },
-        { label: 'Expenses', value: formatCurrency(finance.expenses ?? 0) },
-        { label: 'Profit', value: formatCurrency(finance.profit ?? 0) },
-        { label: 'Margin', value: marginDisplay },
-      ],
-    },
-  ];
+  const detailSections = useMemo(
+    () => [
+      {
+        title: translate('dashboard.sections.revenue.title'),
+        items: [
+          {
+            label: translate('dashboard.sections.revenue.totalRevenue'),
+            value: formatCurrency(revenue.total ?? 0),
+          },
+          {
+            label: translate('dashboard.sections.revenue.orders'),
+            value: (revenue.orders ?? 0).toLocaleString(),
+          },
+          {
+            label: translate('dashboard.sections.revenue.avgOrderValue'),
+            value: formatCurrency(revenue.avgOrderValue ?? 0),
+          },
+        ],
+      },
+      {
+        title: translate('dashboard.sections.marketing.title'),
+        items: [
+          {
+            label: translate('dashboard.sections.marketing.totalSpend'),
+            value: formatCurrency(marketing.totalSpend ?? 0),
+          },
+          {
+            label: translate('dashboard.sections.marketing.impressions'),
+            value: (marketing.impressions ?? 0).toLocaleString(),
+          },
+          {
+            label: translate('dashboard.sections.marketing.clicks'),
+            value: (marketing.clicks ?? 0).toLocaleString(),
+          },
+          {
+            label: translate('dashboard.sections.marketing.roas'),
+            value: (marketing.roas ?? 0).toFixed(2),
+          },
+          {
+            label: translate('dashboard.sections.marketing.cpc'),
+            value: formatCurrency(marketing.cpc ?? 0),
+          },
+        ],
+      },
+      {
+        title: translate('dashboard.sections.finance.title'),
+        items: [
+          {
+            label: translate('dashboard.sections.finance.revenue'),
+            value: formatCurrency(finance.revenue ?? 0),
+          },
+          {
+            label: translate('dashboard.sections.finance.expenses'),
+            value: formatCurrency(finance.expenses ?? 0),
+          },
+          {
+            label: translate('dashboard.sections.finance.profit'),
+            value: formatCurrency(finance.profit ?? 0),
+          },
+          {
+            label: translate('dashboard.sections.finance.margin'),
+            value: marginDisplay,
+          },
+        ],
+      },
+    ],
+    [
+      finance.expenses,
+      finance.profit,
+      finance.revenue,
+      marginDisplay,
+      marketing.clicks,
+      marketing.cpc,
+      marketing.impressions,
+      marketing.roas,
+      marketing.totalSpend,
+      revenue.avgOrderValue,
+      revenue.orders,
+      revenue.total,
+      translate,
+    ]
+  );
 
   if (isLoading && !kpis) {
     return (
       <div className="flex items-center justify-center h-96">
-        <LoadingSpinner size="lg" message="Loading dashboard..." />
+        <LoadingSpinner size="lg" message={translate('dashboard.loading')} />
       </div>
     );
   }
@@ -98,13 +160,14 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-gray-600">Overview of your business performance across all areas</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t.dashboard.title}</h1>
+        <p className="mt-2 text-gray-600">{t.dashboard.subtitle}</p>
         {kpiDateRange && (
           <p className="mt-1 text-sm text-gray-500">
-            Reporting period:{' '}
-            {new Date(kpiDateRange.startDate).toLocaleDateString()} -{' '}
-            {new Date(kpiDateRange.endDate).toLocaleDateString()}
+            {translate('dashboard.reportingPeriod', {
+              start: new Date(kpiDateRange.startDate).toLocaleDateString(),
+              end: new Date(kpiDateRange.endDate).toLocaleDateString(),
+            })}
           </p>
         )}
       </div>

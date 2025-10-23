@@ -83,6 +83,10 @@ const Integrations = () => {
     } catch (err) {
       console.error('Sync failed:', err);
       setActionError(err.message || 'Failed to sync integration. Please try again.');
+      if (integrationType === 'metaAds') {
+        setMetaAdsModalError(err.message || null);
+        setShowMetaAdsModal(true);
+      }
       throw err;
     }
   }, [getTransactionsSyncRange, getMetaAdsSyncRange, loadSyncStatus]);
@@ -113,12 +117,12 @@ const Integrations = () => {
     }
   }, [getTransactionsSyncRange, loadSyncStatus, setIntegrationLoading]);
 
-  const handleMetaAdsManualConnect = useCallback(async (accessToken, accountId) => {
+  const handleMetaAdsManualConnect = useCallback(async (accessToken, accountId, accountName, accessTokenExpiresAt) => {
     try {
       setMetaAdsModalError(null);
       setIntegrationLoading('metaAds', true);
 
-      await dataService.connectMetaAdsManual(accessToken, accountId);
+      await dataService.connectMetaAdsManual(accessToken, accountId, accountName, accessTokenExpiresAt);
       await loadSyncStatus();
 
       setShowMetaAdsModal(false);

@@ -110,9 +110,20 @@ class DataService {
    */
   async getCrossAnalysisData(dateRange = 'last_30_days', filters = {}) {
     try {
-      const { startDate, endDate } = getDateRangeParams(dateRange);
+      const now = new Date();
+      now.setHours(23, 59, 59, 999);
+      const adjustedEndDate = now;
+
+      const adjustedStartDate = new Date(now);
+      adjustedStartDate.setFullYear(adjustedStartDate.getFullYear() - 2);
+      adjustedStartDate.setHours(0, 0, 0, 0);
+
       const response = await api.get(API_ENDPOINTS.CROSS_ANALYSIS, {
-        params: { startDate, endDate, ...filters },
+        params: {
+          startDate: adjustedStartDate.toISOString(),
+          endDate: adjustedEndDate.toISOString(),
+          ...filters,
+        },
       });
 
       return response.data;
@@ -288,12 +299,22 @@ class DataService {
   /**
    * Connect Meta Ads with manual token
    */
-  async connectMetaAdsManual(accessToken, accountId) {
+  async connectMetaAdsManual(accessToken, accountId, accountName = null, accessTokenExpiresAt = null) {
     try {
-      const response = await api.put(API_ENDPOINTS.META_ADS_CONNECT_MANUAL, {
+      const payload = {
         accessToken,
         accountId,
-      });
+      };
+
+      // Add optional fields if provided
+      if (accountName) {
+        payload.accountName = accountName;
+      }
+
+      // Always include accessTokenExpiresAt (can be null)
+      payload.accessTokenExpiresAt = accessTokenExpiresAt;
+
+      const response = await api.put(API_ENDPOINTS.META_ADS_CONNECT_MANUAL, payload);
       return response;
     } catch (error) {
       throw error;
@@ -408,6 +429,14 @@ class DataService {
         startDate: adjustedStartDate.toISOString(),
         endDate: adjustedEndDate.toISOString(),
       });
+
+      if (response && response.success === false) {
+        const combinedMessage = [response.message, response.error].filter(Boolean).join(' ').trim();
+        const error = new Error(combinedMessage || 'Failed to sync Meta Ads data');
+        error.details = response;
+        throw error;
+      }
+
       return response;
     } catch (error) {
       throw error;

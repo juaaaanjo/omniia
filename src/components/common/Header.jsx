@@ -35,7 +35,7 @@ const Header = () => {
         {/* Logo */}
         <div className="flex items-center space-x-4">
           <h1 className="text-2xl font-bold text-primary-600">
-            Business Analytics
+      Omniia
           </h1>
         </div>
 

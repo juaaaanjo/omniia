@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useData } from '../../hooks/useData';
-import LineChart from '../charts/LineChart';
 import BarChart from '../charts/BarChart';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { CHART_COLORS } from '../../utils/constants';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 const CrossAnalysisDashboard = () => {
   const { crossAnalysisData, fetchCrossAnalysisData, isLoading, dateRange } = useData();
@@ -28,208 +28,255 @@ const CrossAnalysisDashboard = () => {
     );
   }
 
+  const { revenueVsSpend, campaignPerformance, customerLifetimeValue } = crossAnalysisData;
+
+  // Prepare chart data for top campaigns
+  const topCampaignsData = campaignPerformance?.campaigns?.slice(0, 10).map(campaign => ({
+    name: campaign.campaignName?.substring(0, 30) + (campaign.campaignName?.length > 30 ? '...' : ''),
+    spend: campaign.totalSpend || 0,
+    revenue: campaign.totalRevenue || 0,
+    clicks: campaign.totalClicks || 0,
+  })) || [];
+
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Total Spend */}
+        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Spend</p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">
+                {formatCurrency(revenueVsSpend?.totalSpend || 0)}
+              </p>
+            </div>
+            <div className="p-3 bg-red-100 rounded-lg">
+              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <p className="mt-2 text-sm text-gray-500">
+            {formatNumber(revenueVsSpend?.impressions || 0)} impressions
+          </p>
+        </div>
+
+        {/* Total Revenue */}
+        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">
+                {formatCurrency(revenueVsSpend?.totalRevenue || 0)}
+              </p>
+            </div>
+            <div className="p-3 bg-green-100 rounded-lg">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <p className="mt-2 text-sm text-gray-500">
+            {formatNumber(revenueVsSpend?.orderCount || 0)} orders
+          </p>
+        </div>
+
+        {/* ROAS */}
+        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">ROAS</p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">
+                {(revenueVsSpend?.roas || 0).toFixed(2)}x
+              </p>
+            </div>
+            <div className="p-3 bg-blue-100 rounded-lg">
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+          </div>
+          <p className="mt-2 text-sm text-gray-500">
+            Avg CPC: {formatCurrency((revenueVsSpend?.totalSpend || 0) / (revenueVsSpend?.clicks || 1))}
+          </p>
+        </div>
+
+        {/* Net Profit */}
+        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Net Profit</p>
+              <p className={`mt-2 text-3xl font-bold ${(revenueVsSpend?.netProfit || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {formatCurrency(revenueVsSpend?.netProfit || 0)}
+              </p>
+            </div>
+            <div className={`p-3 rounded-lg ${(revenueVsSpend?.netProfit || 0) >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
+              <svg className={`w-6 h-6 ${(revenueVsSpend?.netProfit || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <p className="mt-2 text-sm text-gray-500">
+            {formatNumber(revenueVsSpend?.clicks || 0)} clicks
+          </p>
+        </div>
+      </div>
+
+      {/* Best Performing Campaign */}
+      {campaignPerformance?.bestPerformer && (
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow p-6 border border-blue-200">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Top Performing Campaign
+              </h3>
+              <p className="text-2xl font-bold text-blue-600 mb-4">
+                {campaignPerformance.bestPerformer.campaignName}
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <p className="text-sm text-gray-600">Total Spend</p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {formatCurrency(campaignPerformance.bestPerformer.totalSpend || 0)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Impressions</p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {formatNumber(campaignPerformance.bestPerformer.totalImpressions || 0)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Clicks</p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {formatNumber(campaignPerformance.bestPerformer.totalClicks || 0)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Avg CPC</p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {formatCurrency(campaignPerformance.bestPerformer.avgCPC || 0)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Campaign Performance Chart */}
       <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Cross-Channel Analysis</h2>
-        <p className="text-gray-600">
-          Comprehensive view of performance across marketing, sales, and finance
-        </p>
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">Top 10 Campaigns by Spend</h3>
+          <p className="text-sm text-gray-600 mt-1">
+            Total campaigns: {campaignPerformance?.totalCampaigns || 0}
+          </p>
+        </div>
+        {topCampaignsData.length > 0 ? (
+          <BarChart
+            data={topCampaignsData}
+            bars={[
+              { dataKey: 'spend', fill: CHART_COLORS.primary, name: 'Spend' },
+              { dataKey: 'revenue', fill: CHART_COLORS.success, name: 'Revenue' },
+            ]}
+            xAxisKey="name"
+            height={400}
+          />
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No campaign data available</p>
+          </div>
+        )}
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* ROI by Channel */}
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            ROI by Channel
-          </h3>
-          <BarChart
-            data={crossAnalysisData.roiByChannel || []}
-            bars={[
-              { dataKey: 'roi', fill: CHART_COLORS.primary, name: 'ROI' },
-            ]}
-            xAxisKey="channel"
-            height={300}
-          />
-        </div>
-
-        {/* Customer Acquisition Cost */}
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Customer Acquisition Cost (CAC)
-          </h3>
-          <LineChart
-            data={crossAnalysisData.cacTrend || []}
-            lines={[
-              { dataKey: 'cac', stroke: CHART_COLORS.warning, name: 'CAC' },
-              { dataKey: 'target', stroke: CHART_COLORS.info, name: 'Target' },
-            ]}
-            xAxisKey="date"
-            height={300}
-          />
-        </div>
-      </div>
-
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Customer Lifetime Value */}
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Customer Lifetime Value (LTV)
-          </h3>
-          <BarChart
-            data={crossAnalysisData.ltvBySegment || []}
-            bars={[
-              { dataKey: 'ltv', fill: CHART_COLORS.success, name: 'LTV' },
-            ]}
-            xAxisKey="segment"
-            height={300}
-          />
-        </div>
-
-        {/* LTV:CAC Ratio */}
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            LTV:CAC Ratio by Channel
-          </h3>
-          <BarChart
-            data={crossAnalysisData.ltvCacRatio || []}
-            bars={[
-              { dataKey: 'ratio', fill: CHART_COLORS.secondary, name: 'LTV:CAC Ratio' },
-            ]}
-            xAxisKey="channel"
-            height={300}
-          />
+      {/* Customer Lifetime Value */}
+      <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-6">
+          Customer Lifetime Value Analysis
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="text-center p-6 bg-gray-50 rounded-lg">
+            <p className="text-sm text-gray-600 mb-2">Total Customers</p>
+            <p className="text-3xl font-bold text-gray-900">
+              {formatNumber(customerLifetimeValue?.totalCustomers || 0)}
+            </p>
+          </div>
+          <div className="text-center p-6 bg-gray-50 rounded-lg">
+            <p className="text-sm text-gray-600 mb-2">Avg Lifetime Value</p>
+            <p className="text-3xl font-bold text-gray-900">
+              {formatCurrency(customerLifetimeValue?.avgLifetimeValue || 0)}
+            </p>
+          </div>
+          <div className="text-center p-6 bg-gray-50 rounded-lg">
+            <p className="text-sm text-gray-600 mb-2">Avg Transaction Count</p>
+            <p className="text-3xl font-bold text-gray-900">
+              {(customerLifetimeValue?.avgTransactionCount || 0).toFixed(1)}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Attribution table */}
+      {/* All Campaigns Table */}
       <div className="bg-white rounded-lg shadow border border-gray-200">
         <div className="p-6 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">
-            Multi-Touch Attribution Analysis
+            All Campaigns Performance
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Channel
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Campaign
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Spend
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Revenue
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Orders
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Impressions
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  CAC
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Clicks
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  ROI
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Avg CPC
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   ROAS
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {crossAnalysisData.attribution?.map((row, idx) => (
-                <tr key={idx} className="hover:bg-gray-50">
+              {campaignPerformance?.campaigns?.map((campaign, idx) => (
+                <tr key={campaign._id || idx} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    {campaign.campaignName}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {formatCurrency(campaign.totalSpend || 0)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {formatCurrency(campaign.totalRevenue || 0)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {formatNumber(campaign.totalImpressions || 0)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {formatNumber(campaign.totalClicks || 0)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {formatCurrency(campaign.avgCPC || 0)}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="text-sm font-medium text-gray-900">
-                        {row.channel}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${row.spend.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${row.revenue.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {row.orders.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${row.cac.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`text-sm font-medium ${
-                        row.roi > 0 ? 'text-green-600' : 'text-red-600'
-                      }`}
-                    >
-                      {row.roi.toFixed(2)}%
+                    <span className={`text-sm font-medium ${(campaign.roas || 0) > 1 ? 'text-green-600' : 'text-red-600'}`}>
+                      {(campaign.roas || 0).toFixed(2)}x
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {row.roas.toFixed(2)}x
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Cohort Analysis */}
-      <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Cohort Retention Analysis
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="px-4 py-2 text-left font-medium text-gray-700">
-                  Cohort
-                </th>
-                <th className="px-4 py-2 text-center font-medium text-gray-700">
-                  Month 0
-                </th>
-                <th className="px-4 py-2 text-center font-medium text-gray-700">
-                  Month 1
-                </th>
-                <th className="px-4 py-2 text-center font-medium text-gray-700">
-                  Month 2
-                </th>
-                <th className="px-4 py-2 text-center font-medium text-gray-700">
-                  Month 3
-                </th>
-                <th className="px-4 py-2 text-center font-medium text-gray-700">
-                  Month 4
-                </th>
-                <th className="px-4 py-2 text-center font-medium text-gray-700">
-                  Month 5
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {crossAnalysisData.cohortAnalysis?.map((cohort, idx) => (
-                <tr key={idx} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-2 font-medium text-gray-900">
-                    {cohort.cohort}
-                  </td>
-                  {cohort.retention.map((rate, i) => (
-                    <td
-                      key={i}
-                      className="px-4 py-2 text-center"
-                      style={{
-                        backgroundColor: `rgba(59, 130, 246, ${rate / 100})`,
-                        color: rate > 50 ? 'white' : 'inherit',
-                      }}
-                    >
-                      {rate}%
-                    </td>
-                  ))}
                 </tr>
               ))}
             </tbody>

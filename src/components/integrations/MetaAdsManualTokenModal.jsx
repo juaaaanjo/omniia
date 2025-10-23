@@ -1,16 +1,33 @@
 import { useState } from 'react';
 import { FiX, FiAlertCircle } from 'react-icons/fi';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { useLanguage } from '../../hooks/useLanguage';
 
 const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) => {
+  const { t, translate } = useLanguage();
   const [accessToken, setAccessToken] = useState('');
   const [accountId, setAccountId] = useState('');
+  const [accountName, setAccountName] = useState('');
   const [showHelp, setShowHelp] = useState(false);
+
+  // Calculate default expiration date (59 days from now)
+  const getDefaultExpirationDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 59);
+    return date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+  };
+
+  const [expirationDate, setExpirationDate] = useState(getDefaultExpirationDate());
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (accessToken && accountId) {
-      await onSubmit(accessToken, accountId);
+      // If expirationDate is provided, convert to ISO string with time, otherwise null
+      const accessTokenExpiresAt = expirationDate
+        ? new Date(expirationDate + 'T00:00:00.000Z').toISOString()
+        : null;
+
+      await onSubmit(accessToken, accountId, accountName, accessTokenExpiresAt);
     }
   };
 
@@ -30,7 +47,7 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">
-              Connect Meta Ads Manually
+              {t.integrations.metaAdsModal.title}
             </h3>
             <button
               onClick={onClose}
@@ -56,36 +73,25 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
                 onClick={() => setShowHelp(!showHelp)}
                 className="text-sm text-blue-600 hover:text-blue-700 underline"
               >
-                {showHelp ? 'Hide' : 'Show'} instructions
+                {showHelp
+                  ? t.integrations.metaAdsModal.hideInstructions
+                  : t.integrations.metaAdsModal.showInstructions}
               </button>
             </div>
 
             {/* Instructions */}
             {showHelp && (
               <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm">
-                <h4 className="font-semibold text-blue-900 mb-2">How to get your credentials:</h4>
+                <h4 className="font-semibold text-blue-900 mb-2">
+                  {t.integrations.metaAdsModal.instructionsTitle}
+                </h4>
                 <ol className="list-decimal list-inside space-y-2 text-blue-800">
-                  <li>
-                    Go to{' '}
-                    <a
-                      href="https://developers.facebook.com/tools/explorer/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline"
-                    >
-                      Meta Graph API Explorer
-                    </a>
-                  </li>
-                  <li>Select your Meta App from the dropdown</li>
-                  <li>Click "Generate Access Token"</li>
-                  <li>Select permissions: ads_read, ads_management, business_management</li>
-                  <li>Copy the token and convert it to a long-lived token (60 days)</li>
-                  <li>
-                    Get your Ad Account ID by calling:{' '}
-                    <code className="bg-blue-100 px-1 py-0.5 rounded text-xs">
-                      /me/adaccounts
-                    </code>
-                  </li>
+                  <li>{t.integrations.metaAdsModal.steps.step1}</li>
+                  <li>{t.integrations.metaAdsModal.steps.step2}</li>
+                  <li>{t.integrations.metaAdsModal.steps.step3}</li>
+                  <li>{t.integrations.metaAdsModal.steps.step4}</li>
+                  <li>{t.integrations.metaAdsModal.steps.step5}</li>
+                  <li>{t.integrations.metaAdsModal.steps.step6}</li>
                 </ol>
               </div>
             )}
@@ -96,7 +102,8 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
                 htmlFor="accessToken"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Meta Access Token <span className="text-red-500">*</span>
+                {t.integrations.metaAdsModal.accessTokenLabel}{' '}
+                <span className="text-red-500">*</span>
               </label>
               <textarea
                 id="accessToken"
@@ -109,17 +116,18 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
                 disabled={loading}
               />
               <p className="mt-1 text-xs text-gray-500">
-                Your long-lived Meta access token (starts with EAAB...)
+                {t.integrations.metaAdsModal.accessTokenHelp}
               </p>
             </div>
 
             {/* Account ID Input */}
-            <div className="mb-6">
+            <div className="mb-4">
               <label
                 htmlFor="accountId"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Ad Account ID <span className="text-red-500">*</span>
+                {t.integrations.metaAdsModal.accountIdLabel}{' '}
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -132,7 +140,29 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
                 disabled={loading}
               />
               <p className="mt-1 text-xs text-gray-500">
-                Your Meta Ad Account ID (format: act_XXXXXXXXX)
+                {t.integrations.metaAdsModal.accountIdHelp}
+              </p>
+            </div>
+
+            {/* Account Name Input */}
+            <div className="mb-6">
+              <label
+                htmlFor="accountName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t.integrations.metaAdsModal.accountNameLabel}
+              </label>
+              <input
+                type="text"
+                id="accountName"
+                value={accountName}
+                onChange={(e) => setAccountName(e.target.value)}
+                placeholder="Your Account Name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={loading}
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                {t.integrations.metaAdsModal.accountNameHelp}
               </p>
             </div>
 
@@ -144,7 +174,7 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 disabled={loading}
               >
-                Cancel
+                {t.common.cancel}
               </button>
               <button
                 type="submit"
@@ -154,10 +184,10 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
                 {loading ? (
                   <>
                     <LoadingSpinner size="sm" />
-                    Connecting...
+                    {t.integrations.metaAdsModal.connecting}
                   </>
                 ) : (
-                  'Connect'
+                  t.integrations.metaAdsModal.connect
                 )}
               </button>
             </div>

@@ -72,7 +72,7 @@ const LoginForm = () => {
         {/* Header */}
         <div className="text-center">
           <h1 className="text-4xl font-bold text-primary-600 mb-2">
-            Business Analytics
+          Omniia
           </h1>
           <h2 className="text-2xl font-semibold text-gray-900">
             {t.auth.welcomeBack}
