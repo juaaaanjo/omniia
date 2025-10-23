@@ -15,7 +15,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Marketing from './pages/Marketing';
-import Sales from './pages/Sales';
 import Finance from './pages/Finance';
 import Analytics from './pages/Analytics';
 import Integrations from './pages/Integrations';
@@ -84,16 +83,6 @@ function App() {
                       <ProtectedRoute>
                         <Layout>
                           <Marketing />
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path={ROUTES.SALES}
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Sales />
                         </Layout>
                       </ProtectedRoute>
                     }

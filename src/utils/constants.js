@@ -6,7 +6,6 @@ export const ROUTES = {
   REGISTER: '/register',
   DASHBOARD: '/',
   MARKETING: '/marketing',
-  SALES: '/sales',
   FINANCE: '/finance',
   ANALYTICS: '/analytics',
   INTEGRATIONS: '/integrations',
@@ -23,7 +22,6 @@ export const API_ENDPOINTS = {
   // Dashboard
   KPIS: '/dashboard/kpis',
   MARKETING: '/dashboard/marketing',
-  SALES: '/dashboard/sales',
   FINANCE: '/dashboard/finance',
   CROSS_ANALYSIS: '/dashboard/cross-analysis',
 
@@ -63,12 +61,6 @@ export const SUGGESTED_QUESTIONS = {
     "Why did costs increase this month?",
     "Compare Facebook vs Google Ads ROI",
     "What's our Customer Acquisition Cost?",
-  ],
-  sales: [
-    "Which products have the best margin per $1 in ads?",
-    "What's the conversion rate by channel?",
-    "Show me sales trends for the last 30 days",
-    "What's the average order value by product category?",
   ],
   finance: [
     "What's our current profit margin?",

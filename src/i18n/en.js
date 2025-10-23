@@ -52,7 +52,6 @@ export const en = {
   nav: {
     dashboard: 'Dashboard',
     marketing: 'Marketing',
-    sales: 'Sales',
     finance: 'Finance',
     analytics: 'Analytics',
     settings: 'Settings',
@@ -288,31 +287,6 @@ export const en = {
     },
   },
 
-  // Sales
-  sales: {
-    title: 'Sales',
-    orders: 'Orders',
-    products: 'Products',
-    customers: 'Customers',
-    trends: 'Trends',
-    topProducts: 'Top Products',
-    recentOrders: 'Recent Orders',
-    orderNumber: 'Order Number',
-    orderDate: 'Order Date',
-    orderTotal: 'Order Total',
-    orderStatus: 'Order Status',
-    customer: 'Customer',
-    product: 'Product',
-    quantity: 'Quantity',
-    price: 'Price',
-    total: 'Total',
-    pending: 'Pending',
-    processing: 'Processing',
-    shipped: 'Shipped',
-    delivered: 'Delivered',
-    cancelled: 'Cancelled',
-  },
-
   // Finance
   finance: {
     title: 'Finance',
@@ -400,12 +374,6 @@ export const en = {
         'Why did costs increase this month?',
         'Compare Facebook vs Google Ads ROI',
         "What's our Customer Acquisition Cost?",
-      ],
-      sales: [
-        'Which products have the best margin per $1 in ads?',
-        "What's the conversion rate by channel?",
-        'Show me sales trends for the last 30 days',
-        "What's the average order value by product category?",
       ],
       finance: [
         "What's our current profit margin?",

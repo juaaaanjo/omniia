@@ -7,7 +7,6 @@ export const DataContext = createContext(null);
 export const DataProvider = ({ children }) => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [marketingData, setMarketingData] = useState(null);
-  const [salesData, setSalesData] = useState(null);
   const [financeData, setFinanceData] = useState(null);
   const [crossAnalysisData, setCrossAnalysisData] = useState(null);
   const [kpis, setKpis] = useState(null);
@@ -32,23 +31,6 @@ export const DataProvider = ({ children }) => {
       return data;
     } catch (error) {
       setError(error.message || 'Failed to fetch marketing data');
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dateRange]);
-
-  // Fetch sales data
-  const fetchSalesData = useCallback(async (range = dateRange, filters = {}) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await dataService.getSalesData(range, filters);
-      setSalesData(data);
-      setLastUpdated(new Date());
-      return data;
-    } catch (error) {
-      setError(error.message || 'Failed to fetch sales data');
       throw error;
     } finally {
       setIsLoading(false);
@@ -158,7 +140,6 @@ export const DataProvider = ({ children }) => {
       setIsLoading(true);
       await Promise.all([
         fetchMarketingData(),
-        fetchSalesData(),
         fetchFinanceData(),
         fetchCrossAnalysisData(),
         fetchKPIs(),
@@ -169,7 +150,7 @@ export const DataProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [fetchMarketingData, fetchSalesData, fetchFinanceData, fetchCrossAnalysisData, fetchKPIs, fetchSyncStatus]);
+  }, [fetchMarketingData, fetchFinanceData, fetchCrossAnalysisData, fetchKPIs, fetchSyncStatus]);
 
   // Export data
   const exportData = useCallback(async (type, format = 'csv') => {
@@ -217,7 +198,6 @@ export const DataProvider = ({ children }) => {
 
   const value = {
     marketingData,
-    salesData,
     financeData,
     crossAnalysisData,
     kpis,
@@ -227,7 +207,6 @@ export const DataProvider = ({ children }) => {
     error,
     dateRange,
     fetchMarketingData,
-    fetchSalesData,
     fetchFinanceData,
     fetchCrossAnalysisData,
     fetchKPIs,

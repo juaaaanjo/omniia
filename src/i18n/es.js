@@ -52,7 +52,6 @@ export const es = {
   nav: {
     dashboard: 'Panel',
     marketing: 'Marketing',
-    sales: 'Ventas',
     finance: 'Finanzas',
     analytics: 'Análisis',
     settings: 'Configuración',
@@ -287,32 +286,6 @@ export const es = {
       minDataPoints: 'Datos mínimos',
     },
   },
-
-  // Sales
-  sales: {
-    title: 'Ventas',
-    orders: 'Pedidos',
-    products: 'Productos',
-    customers: 'Clientes',
-    trends: 'Tendencias',
-    topProducts: 'Productos Principales',
-    recentOrders: 'Pedidos Recientes',
-    orderNumber: 'Número de Pedido',
-    orderDate: 'Fecha de Pedido',
-    orderTotal: 'Total del Pedido',
-    orderStatus: 'Estado del Pedido',
-    customer: 'Cliente',
-    product: 'Producto',
-    quantity: 'Cantidad',
-    price: 'Precio',
-    total: 'Total',
-    pending: 'Pendiente',
-    processing: 'Procesando',
-    shipped: 'Enviado',
-    delivered: 'Entregado',
-    cancelled: 'Cancelado',
-  },
-
   // Finance
   finance: {
     title: 'Finanzas',
@@ -400,12 +373,6 @@ export const es = {
         '¿Por qué aumentaron los costos este mes?',
         'Compara el ROI de Facebook vs Google Ads',
         '¿Cuál es nuestro Costo de Adquisición de Cliente?',
-      ],
-      sales: [
-        '¿Qué productos tienen el mejor margen por $1 en anuncios?',
-        '¿Cuál es la tasa de conversión por canal?',
-        'Muéstrame las tendencias de ventas de los últimos 30 días',
-        '¿Cuál es el valor promedio de pedido por categoría de producto?',
       ],
       finance: [
         '¿Cuál es nuestro margen de ganancia actual?',

@@ -65,22 +65,6 @@ class DataService {
   }
 
   /**
-   * Get sales data
-   */
-  async getSalesData(dateRange = 'last_30_days', filters = {}) {
-    try {
-      const { startDate, endDate } = getDateRangeParams(dateRange);
-      const response = await api.get(API_ENDPOINTS.SALES, {
-        params: { startDate, endDate, ...filters },
-      });
-
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
    * Get finance data
    */
   async getFinanceData(dateRange = 'last_30_days', filters = {}) {

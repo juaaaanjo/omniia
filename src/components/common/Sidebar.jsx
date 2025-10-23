@@ -1,12 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import {
-  FiHome,
-  FiTrendingUp,
-  FiShoppingCart,
-  FiDollarSign,
-  FiBarChart2,
-  FiSettings,
-} from 'react-icons/fi';
+import { FiHome, FiTrendingUp, FiDollarSign, FiBarChart2, FiSettings } from 'react-icons/fi';
 import { ROUTES } from '../../utils/constants';
 import { useLanguage } from '../../hooks/useLanguage';
 import clsx from 'clsx';
@@ -24,11 +17,6 @@ const Sidebar = () => {
       to: ROUTES.MARKETING,
       icon: FiTrendingUp,
       label: t.nav.marketing,
-    },
-    {
-      to: ROUTES.SALES,
-      icon: FiShoppingCart,
-      label: t.nav.sales,
     },
     {
       to: ROUTES.FINANCE,
@@ -89,11 +77,13 @@ const Sidebar = () => {
         </h3>
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">{t.marketing.campaigns} {t.marketing.active}</span>
+            <span className="text-sm text-gray-600">
+              {t.marketing.campaigns} {t.marketing.active}
+            </span>
             <span className="text-sm font-semibold text-gray-900">12</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">{t.sales.total}</span>
+            <span className="text-sm text-gray-600">{t.kpi.revenue}</span>
             <span className="text-sm font-semibold text-gray-900">$45.2K</span>
           </div>
           <div className="flex justify-between items-center">
