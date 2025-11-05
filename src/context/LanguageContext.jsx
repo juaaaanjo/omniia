@@ -1,16 +1,32 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { translations, defaultLanguage } from '../i18n';
+import { AuthContext } from './AuthContext';
 
 export const LanguageContext = createContext(null);
 
 export const LanguageProvider = ({ children }) => {
+  const auth = useContext(AuthContext);
+
   const [currentLanguage, setCurrentLanguage] = useState(() => {
-    // Get language from localStorage or use default
+    // Priority: user.language > localStorage > default
+    const userLanguage = auth?.user?.language;
+    if (userLanguage && translations[userLanguage]) {
+      return userLanguage;
+    }
     const saved = localStorage.getItem('language');
     return saved || defaultLanguage;
   });
 
   const [t, setT] = useState(translations[currentLanguage]);
+
+  // Sync language when user logs in
+  useEffect(() => {
+    if (auth?.user?.language && translations[auth.user.language]) {
+      if (currentLanguage !== auth.user.language) {
+        setCurrentLanguage(auth.user.language);
+      }
+    }
+  }, [auth?.user?.language, currentLanguage]);
 
   // Update translations when language changes
   useEffect(() => {
@@ -22,14 +38,23 @@ export const LanguageProvider = ({ children }) => {
   }, [currentLanguage]);
 
   // Change language
-  const changeLanguage = useCallback((langCode) => {
+  const changeLanguage = useCallback(async (langCode) => {
     if (translations[langCode]) {
       setCurrentLanguage(langCode);
+
+      // Update backend if user is authenticated
+      if (auth?.user && auth?.updateProfile) {
+        try {
+          await auth.updateProfile({ language: langCode });
+        } catch (error) {
+          console.error('Failed to update language preference:', error);
+        }
+      }
     } else {
       console.warn(`Language '${langCode}' not found, using default`);
       setCurrentLanguage(defaultLanguage);
     }
-  }, []);
+  }, [auth]);
 
   // Get nested translation with dot notation (e.g., 'auth.login')
   const translate = useCallback((key, replacements = {}) => {

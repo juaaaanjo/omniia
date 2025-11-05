@@ -241,10 +241,16 @@ class DataService {
    */
   async updateIntegrationConnection(integrationType, connected) {
     try {
-      const response = await api.put(`/auth/integrations/${integrationType}`, {
-        connected,
-      });
-      return response;
+      // Use DELETE to disconnect, PUT to connect
+      if (connected) {
+        const response = await api.put(`/auth/integrations/${integrationType}`, {
+          connected,
+        });
+        return response;
+      } else {
+        const response = await api.delete(`/auth/integrations/${integrationType}`);
+        return response;
+      }
     } catch (error) {
       throw error;
     }
@@ -612,6 +618,63 @@ class DataService {
       const endpoint = API_ENDPOINTS.GUARDRAIL_TOGGLE.replace(':id', id);
       const response = await api.patch(endpoint);
       return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get forecasting options
+   */
+  async getForecastingOptions() {
+    try {
+      const response = await api.get(API_ENDPOINTS.FORECASTING_OPTIONS);
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get quick revenue forecast for next month
+   */
+  async getQuickForecast() {
+    try {
+      const response = await api.get(API_ENDPOINTS.FORECASTING_QUICK);
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Generate custom forecast
+   * @param {Object} options - Forecast configuration
+   * @param {string} options.forecastType - Type of forecast (revenue, ad_spend, customer_growth, roas, comprehensive)
+   * @param {string} options.forecastPeriod - Period (next_week, next_month, next_quarter, custom)
+   * @param {number} options.customDays - Custom period in days (optional)
+   * @param {boolean} options.includeSeasonality - Include seasonality analysis
+   * @param {number} options.confidenceLevel - Confidence level (0.2 to 0.95)
+   */
+  async generateForecast(options) {
+    try {
+      const response = await api.post(API_ENDPOINTS.FORECASTING_GENERATE, options);
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Generate scenario analysis
+   * @param {Object} options - Scenario configuration
+   * @param {string} options.forecastType - Type of forecast
+   * @param {string} options.forecastPeriod - Forecast period
+   */
+  async generateScenarios(options) {
+    try {
+      const response = await api.post(API_ENDPOINTS.FORECASTING_SCENARIOS, options);
+      return response.data || response;
     } catch (error) {
       throw error;
     }

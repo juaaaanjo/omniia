@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { FiMail, FiLock, FiAlertCircle, FiUser, FiBriefcase } from 'react-icons/fi';
+import { FiMail, FiLock, FiAlertCircle, FiUser, FiBriefcase, FiGlobe } from 'react-icons/fi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { validateForm } from '../../utils/validators';
 
@@ -15,6 +15,7 @@ const RegisterForm = () => {
     confirmPassword: '',
     name: '',
     company: '',
+    language: 'es',
   });
 
   const [errors, setErrors] = useState({});
@@ -54,7 +55,7 @@ const RegisterForm = () => {
     }
 
     try {
-      await register(formData.email, formData.password, formData.name, formData.company);
+      await register(formData.email, formData.password, formData.name, formData.company, formData.language);
       navigate('/');
     } catch (error) {
       setRegisterError(error.message || 'Registration failed. Please try again.');
@@ -67,7 +68,7 @@ const RegisterForm = () => {
         {/* Header */}
         <div className="text-center">
           <h1 className="text-4xl font-bold text-primary-600 mb-2">
-          Omniia
+          Nerdee
           </h1>
           <h2 className="text-2xl font-semibold text-gray-900">
             Create your account
@@ -233,6 +234,31 @@ const RegisterForm = () => {
               {errors.confirmPassword && (
                 <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
               )}
+            </div>
+
+            {/* Language field */}
+            <div>
+              <label
+                htmlFor="language"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Preferred Language
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiGlobe className="h-5 w-5 text-gray-400" />
+                </div>
+                <select
+                  id="language"
+                  name="language"
+                  value={formData.language}
+                  onChange={handleChange}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white"
+                >
+                  <option value="es">Español</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
             </div>
 
             {/* Submit button */}

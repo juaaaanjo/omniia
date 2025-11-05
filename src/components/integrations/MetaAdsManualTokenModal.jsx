@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiX, FiAlertCircle } from 'react-icons/fi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -18,6 +18,17 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
   };
 
   const [expirationDate, setExpirationDate] = useState(getDefaultExpirationDate());
+
+  // Reset form fields when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setAccessToken('');
+      setAccountId('');
+      setAccountName('');
+      setExpirationDate(getDefaultExpirationDate());
+      setShowHelp(false);
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -5,13 +5,14 @@ class AuthService {
   /**
    * Register new user
    */
-  async register(email, password, name, company) {
+  async register(email, password, name, company, language = 'es') {
     try {
       const response = await api.post(API_ENDPOINTS.REGISTER, {
         email,
         password,
         name,
         company,
+        language,
       });
 
       // Extract token and user from response.data
@@ -82,6 +83,25 @@ class AuthService {
   async getCurrentUser() {
     try {
       const response = await api.get(API_ENDPOINTS.ME);
+
+      // Extract user from response.data or response
+      const user = response.data?.user || response.user;
+
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Update user profile
+   */
+  async updateProfile(data) {
+    try {
+      const response = await api.put(API_ENDPOINTS.PROFILE, data);
 
       // Extract user from response.data or response
       const user = response.data?.user || response.user;

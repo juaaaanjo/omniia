@@ -72,7 +72,7 @@ const Integrations = () => {
         const syncStart = startDate || defaultRange.startDate;
         const syncEnd = endDate || defaultRange.endDate;
         await dataService.syncTransactions(syncStart, syncEnd);
-      } else if (integrationType === 'metaAds') {
+      } else if (integrationType === 'meta-ads') {
         const defaultRange = getMetaAdsSyncRange();
         const syncStart = startDate || defaultRange.startDate;
         const syncEnd = endDate || defaultRange.endDate;
@@ -83,7 +83,7 @@ const Integrations = () => {
     } catch (err) {
       console.error('Sync failed:', err);
       setActionError(err.message || 'Failed to sync integration. Please try again.');
-      if (integrationType === 'metaAds') {
+      if (integrationType === 'meta-ads') {
         setMetaAdsModalError(err.message || null);
         setShowMetaAdsModal(true);
       }
@@ -96,7 +96,7 @@ const Integrations = () => {
       setActionError(null);
       setIntegrationLoading(integrationType, true);
 
-      if (integrationType === 'metaAds') {
+      if (integrationType === 'meta-ads') {
         // Show manual token modal instead of OAuth
         setShowMetaAdsModal(true);
         setMetaAdsModalError(null);
@@ -140,10 +140,6 @@ const Integrations = () => {
       setActionError(null);
       setIntegrationLoading(integrationType, true);
       await dataService.updateIntegrationConnection(integrationType, false);
-
-      if (integrationType === 'metaAds') {
-        await dataService.disconnectMetaAds();
-      }
       await loadSyncStatus();
     } catch (err) {
       console.error('Disconnect failed:', err);
@@ -175,9 +171,9 @@ const Integrations = () => {
       connected: syncStatus?.metaAds?.connected || false,
       lastSync: syncStatus?.metaAds?.lastSync,
       status: syncStatus?.metaAds?.status || 'disconnected',
-      onSync: () => handleSync('metaAds'),
-      onConnect: () => handleConnect('metaAds'),
-      onDisconnect: () => handleDisconnect('metaAds'),
+      onSync: () => handleSync('meta-ads'),
+      onConnect: () => handleConnect('meta-ads'),
+      onDisconnect: () => handleDisconnect('meta-ads'),
       loading: !!actionLoading.metaAds,
     },
   ];

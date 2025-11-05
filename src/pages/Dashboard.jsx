@@ -3,6 +3,7 @@ import { FiTrendingUp, FiDollarSign, FiShoppingCart, FiPercent } from 'react-ico
 import { useData } from '../hooks/useData';
 import MetricCard from '../components/charts/MetricCard';
 import PaymentMetrics from '../components/dashboard/PaymentMetrics';
+import EioOverviewCard from '../components/eio/EioOverviewCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
 import { useLanguage } from '../hooks/useLanguage';
@@ -177,6 +178,8 @@ const Dashboard = () => {
           <MetricCard key={card.title} {...card} loading={isLoading} />
         ))}
       </div>
+
+      <EioOverviewCard />
 
       {payments && Object.keys(payments).length > 0 && (
         <PaymentMetrics

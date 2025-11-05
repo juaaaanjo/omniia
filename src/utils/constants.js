@@ -9,6 +9,9 @@ export const ROUTES = {
   FINANCE: '/finance',
   ANALYTICS: '/analytics',
   INTEGRATIONS: '/integrations',
+  FORECASTING: '/forecasting',
+  PLANNING: '/planning',
+  PLAN_DETAIL: '/planning/:planId',
   OAUTH_CALLBACK: '/oauth/callback',
 };
 
@@ -18,6 +21,7 @@ export const API_ENDPOINTS = {
   REGISTER: '/auth/register',
   LOGOUT: '/auth/logout',
   ME: '/auth/me',
+  PROFILE: '/auth/profile',
 
   // Dashboard
   KPIS: '/dashboard/kpis',
@@ -53,6 +57,38 @@ export const API_ENDPOINTS = {
   GUARDRAIL_BY_ID: '/guardrails/:id',
   GUARDRAIL_CHECK: '/guardrails/:id/check',
   GUARDRAIL_TOGGLE: '/guardrails/:id/toggle',
+
+  // Forecasting
+  FORECASTING_OPTIONS: '/forecasting/options',
+  FORECASTING_QUICK: '/forecasting/quick',
+  FORECASTING_GENERATE: '/forecasting/generate',
+  FORECASTING_SCENARIOS: '/forecasting/scenarios',
+
+  // Planning (Auto-Generated)
+  PLANNING: '/planning',
+  PLANNING_ACTIVE: '/planning/active',
+  PLANNING_BY_ID: '/planning/:planId',
+  PLANNING_INSIGHTS: '/planning/:planId/insights',
+  PLANNING_ANALYZE: '/planning/analyze',
+  PLANNING_STATUS: '/planning/:planId/status',
+  PLANNING_ACTION_ITEM: '/planning/:planId/actions/:actionId',
+  PLANNING_MILESTONE: '/planning/:planId/milestones/:milestoneId',
+  PLANNING_STATS: '/planning/stats',
+
+  // EIO (Operational Intelligence)
+  EIO_ALERTS: '/eio/alerts',
+  EIO_ALERTS_PENDING: '/eio/alerts/pending',
+  EIO_ALERTS_SUMMARY: '/eio/alerts/summary',
+  EIO_ALERTS_BY_CATEGORY: '/eio/alerts/by-category',
+  EIO_ALERT_BY_ID: '/eio/alerts/:id',
+  EIO_ALERT_APPLY: '/eio/alerts/:id/apply',
+  EIO_ALERT_IGNORE: '/eio/alerts/:id/ignore',
+  EIO_ALERT_REVIEW: '/eio/alerts/:id/review',
+  EIO_ALERT_RESOLVE: '/eio/alerts/:id/resolve',
+  EIO_ALERT_BULK_APPLY: '/eio/alerts/bulk-apply',
+  EIO_ALERT_REPORT: '/eio/alerts/report',
+  EIO_INSIGHTS_DAILY: '/eio/insights/daily',
+  EIO_CHECK: '/eio/check',
 };
 
 export const SUGGESTED_QUESTIONS = {

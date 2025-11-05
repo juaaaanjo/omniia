@@ -64,11 +64,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Register
-  const register = useCallback(async (email, password, name, company) => {
+  const register = useCallback(async (email, password, name, company, language = 'es') => {
     try {
       setError(null);
       setIsLoading(true);
-      const response = await authService.register(email, password, name, company);
+      const response = await authService.register(email, password, name, company, language);
       // Extract user from response.data or response
       const user = response.data?.user || response.user;
       setUser(user);
@@ -125,6 +125,18 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // Update user profile
+  const updateProfile = useCallback(async (data) => {
+    try {
+      const updatedUser = await authService.updateProfile(data);
+      setUser(updatedUser);
+      return updatedUser;
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      throw error;
+    }
+  }, []);
+
   const value = {
     user,
     isAuthenticated,
@@ -134,6 +146,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     refreshUser,
+    updateProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

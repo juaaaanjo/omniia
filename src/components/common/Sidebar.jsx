@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiTrendingUp, FiDollarSign, FiBarChart2, FiSettings } from 'react-icons/fi';
+import { FiHome, FiTrendingUp, FiDollarSign, FiBarChart2, FiSettings, FiZap, FiTarget } from 'react-icons/fi';
 import { ROUTES } from '../../utils/constants';
 import { useLanguage } from '../../hooks/useLanguage';
 import clsx from 'clsx';
@@ -27,6 +27,16 @@ const Sidebar = () => {
       to: ROUTES.ANALYTICS,
       icon: FiBarChart2,
       label: t.nav.analytics,
+    },
+    {
+      to: ROUTES.FORECASTING,
+      icon: FiZap,
+      label: t.nav.forecasting || 'Forecasting',
+    },
+    {
+      to: ROUTES.PLANNING,
+      icon: FiTarget,
+      label: t.planning?.title || 'AI Recommendations',
     },
     {
       to: ROUTES.INTEGRATIONS,
