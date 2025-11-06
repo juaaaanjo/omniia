@@ -55,6 +55,9 @@ export const es = {
     finance: 'Finanzas',
     analytics: 'Análisis',
     forecasting: 'Pronósticos',
+    planning: 'Planificación',
+    reports: 'Reportes',
+    integrations: 'Integraciones',
     settings: 'Configuración',
     profile: 'Perfil',
     help: 'Ayuda',
@@ -1039,6 +1042,15 @@ export const es = {
     maxLength: 'Debe tener como máximo {max} caracteres',
     passwordMatch: 'Las contraseñas no coinciden',
     invalidFormat: 'Formato inválido',
+  },
+
+  // Not Found (404)
+  notFound: {
+    title: 'Página No Encontrada',
+    message: 'Lo sentimos, no pudimos encontrar la página que buscas. La página puede haber sido movida o eliminada.',
+    goHome: 'Ir al Panel',
+    goBack: 'Volver',
+    helpfulLinks: 'O prueba una de estas páginas:',
   },
 };
 

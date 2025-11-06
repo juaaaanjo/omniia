@@ -55,6 +55,9 @@ export const en = {
     finance: 'Finance',
     analytics: 'Analytics',
     forecasting: 'Forecasting',
+    planning: 'Planning',
+    reports: 'Reports',
+    integrations: 'Integrations',
     settings: 'Settings',
     profile: 'Profile',
     help: 'Help',
@@ -1040,6 +1043,15 @@ export const en = {
     maxLength: 'Must be at most {max} characters',
     passwordMatch: 'Passwords do not match',
     invalidFormat: 'Invalid format',
+  },
+
+  // Not Found (404)
+  notFound: {
+    title: 'Page Not Found',
+    message: "Sorry, we couldn't find the page you're looking for. The page may have been moved or deleted.",
+    goHome: 'Go to Dashboard',
+    goBack: 'Go Back',
+    helpfulLinks: 'Or try one of these pages:',
   },
 };
 
