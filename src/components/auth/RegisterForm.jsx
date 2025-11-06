@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../hooks/useLanguage';
 import { FiMail, FiLock, FiAlertCircle, FiUser, FiBriefcase, FiGlobe } from 'react-icons/fi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { validateForm } from '../../utils/validators';
@@ -8,6 +9,7 @@ import { validateForm } from '../../utils/validators';
 const RegisterForm = () => {
   const navigate = useNavigate();
   const { register, isLoading } = useAuth();
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -50,7 +52,7 @@ const RegisterForm = () => {
 
     // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
-      setErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match' }));
+      setErrors(prev => ({ ...prev, confirmPassword: t.validation.passwordMatch }));
       return;
     }
 
@@ -58,7 +60,7 @@ const RegisterForm = () => {
       await register(formData.email, formData.password, formData.name, formData.company, formData.language);
       navigate('/');
     } catch (error) {
-      setRegisterError(error.message || 'Registration failed. Please try again.');
+      setRegisterError(error.message || t.errors.generic);
     }
   };
 
@@ -71,10 +73,10 @@ const RegisterForm = () => {
           Nerdee
           </h1>
           <h2 className="text-2xl font-semibold text-gray-900">
-            Create your account
+            {t.auth.createAccount}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Start analyzing your business data today
+            {t.auth.signInToDashboard}
           </p>
         </div>
 
@@ -97,7 +99,7 @@ const RegisterForm = () => {
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Full Name
+                {t.auth.name}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -126,7 +128,7 @@ const RegisterForm = () => {
                 htmlFor="company"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Company
+                {t.auth.company}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -155,7 +157,7 @@ const RegisterForm = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Email address
+                {t.auth.email}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -170,7 +172,7 @@ const RegisterForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="you@example.com"
+                  placeholder={t.auth.emailPlaceholder}
                 />
               </div>
               {errors.email && (
@@ -184,7 +186,7 @@ const RegisterForm = () => {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Password
+                {t.auth.password}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -199,7 +201,7 @@ const RegisterForm = () => {
                   value={formData.password}
                   onChange={handleChange}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="At least 6 characters"
+                  placeholder={t.auth.passwordPlaceholder}
                 />
               </div>
               {errors.password && (
@@ -213,7 +215,7 @@ const RegisterForm = () => {
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Confirm Password
+                {t.auth.confirmPassword}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -228,7 +230,7 @@ const RegisterForm = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Confirm your password"
+                  placeholder={t.auth.confirmPassword}
                 />
               </div>
               {errors.confirmPassword && (
@@ -242,7 +244,7 @@ const RegisterForm = () => {
                 htmlFor="language"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Preferred Language
+                {t.settings.language}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -270,7 +272,7 @@ const RegisterForm = () => {
               {isLoading ? (
                 <LoadingSpinner size="sm" />
               ) : (
-                'Create account'
+                t.auth.createAccount
               )}
             </button>
           </form>
@@ -278,9 +280,9 @@ const RegisterForm = () => {
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-500">
-          Already have an account?{' '}
+          {t.auth.alreadyHaveAccount}{' '}
           <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
-            Sign in
+            {t.auth.signIn}
           </Link>
         </p>
       </div>

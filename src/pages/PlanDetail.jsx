@@ -1,0 +1,586 @@
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  FiArrowLeft,
+  FiCheck,
+  FiX,
+  FiEdit,
+  FiTrash2,
+  FiClock,
+  FiTarget,
+  FiTrendingUp,
+  FiDollarSign,
+  FiCalendar,
+  FiAlertCircle
+} from 'react-icons/fi';
+import { useLanguage } from '../hooks/useLanguage';
+import { ROUTES } from '../utils/constants';
+import planningService from '../services/planningService';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import { formatCurrency } from '../utils/formatters';
+
+const PlanDetail = () => {
+  const { planId } = useParams();
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  const [plan, setPlan] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    fetchPlanDetail();
+  }, [planId]);
+
+  const fetchPlanDetail = async () => {
+    try {
+      setLoading(true);
+      const response = await planningService.getPlanById(planId);
+      setPlan(response);
+    } catch (error) {
+      console.error('Error fetching plan details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAcceptPlan = async () => {
+    try {
+      await planningService.acceptPlan(planId);
+      await fetchPlanDetail();
+    } catch (error) {
+      console.error('Error accepting plan:', error);
+    }
+  };
+
+  const handleRejectPlan = async () => {
+    try {
+      await planningService.rejectPlan(planId);
+      navigate(ROUTES.PLANNING);
+    } catch (error) {
+      console.error('Error rejecting plan:', error);
+    }
+  };
+
+  const handleUpdateActionItem = async (actionId, updates) => {
+    try {
+      await planningService.updateActionItem(planId, actionId, updates);
+      await fetchPlanDetail();
+    } catch (error) {
+      console.error('Error updating action item:', error);
+    }
+  };
+
+  const handleUpdateMilestone = async (milestoneId, updates) => {
+    try {
+      await planningService.updateMilestone(planId, milestoneId, updates);
+      await fetchPlanDetail();
+    } catch (error) {
+      console.error('Error updating milestone:', error);
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const badges = {
+      draft: 'bg-gray-100 text-gray-700',
+      active: 'bg-blue-100 text-blue-700',
+      completed: 'bg-green-100 text-green-700',
+      cancelled: 'bg-red-100 text-red-700',
+      archived: 'bg-gray-100 text-gray-500',
+    };
+    return badges[status] || badges.draft;
+  };
+
+  const getTypeBadge = (planType) => {
+    const badges = {
+      revenue_growth: 'bg-green-100 text-green-700',
+      marketing_budget: 'bg-blue-100 text-blue-700',
+      customer_acquisition: 'bg-purple-100 text-purple-700',
+      roas_optimization: 'bg-yellow-100 text-yellow-700',
+      comprehensive: 'bg-indigo-100 text-indigo-700',
+    };
+    return badges[planType] || badges.comprehensive;
+  };
+
+  const getPriorityBadge = (priority) => {
+    const badges = {
+      high: 'bg-red-100 text-red-700',
+      medium: 'bg-yellow-100 text-yellow-700',
+      low: 'bg-green-100 text-green-700',
+    };
+    return badges[priority] || badges.medium;
+  };
+
+  const getActionStatusBadge = (status) => {
+    const badges = {
+      pending: 'bg-gray-100 text-gray-700',
+      in_progress: 'bg-blue-100 text-blue-700',
+      completed: 'bg-green-100 text-green-700',
+      cancelled: 'bg-red-100 text-red-700',
+    };
+    return badges[status] || badges.pending;
+  };
+
+  const getMilestoneStatusBadge = (status) => {
+    const badges = {
+      pending: 'bg-gray-100 text-gray-700',
+      on_track: 'bg-blue-100 text-blue-700',
+      at_risk: 'bg-yellow-100 text-yellow-700',
+      achieved: 'bg-green-100 text-green-700',
+      missed: 'bg-red-100 text-red-700',
+    };
+    return badges[status] || badges.pending;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <LoadingSpinner size="lg" message={t.planning.messages.loading} />
+      </div>
+    );
+  }
+
+  if (!plan) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Plan not found</h2>
+        <button
+          onClick={() => navigate(ROUTES.PLANNING)}
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+        >
+          {t.planning.detail.overview}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div className="flex items-start gap-4">
+          <button
+            onClick={() => navigate(ROUTES.PLANNING)}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors mt-1"
+          >
+            <FiArrowLeft className="w-5 h-5" />
+          </button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{plan.planName}</h1>
+            <p className="text-gray-600 mb-3">{plan.description}</p>
+            <div className="flex flex-wrap gap-2">
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getTypeBadge(plan.planType)}`}>
+                {t.planning.planTypes[plan.planType] || plan.planType}
+              </span>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(plan.status)}`}>
+                {t.planning.status[plan.status] || plan.status}
+              </span>
+              <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium flex items-center gap-1">
+                <FiCalendar className="w-4 h-4" />
+                {new Date(plan.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          {plan.status === 'draft' && (
+            <>
+              <button
+                onClick={handleAcceptPlan}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <FiCheck className="w-4 h-4" />
+                {t.planning.acceptPlan}
+              </button>
+              <button
+                onClick={handleRejectPlan}
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                <FiX className="w-4 h-4" />
+                {t.planning.rejectPlan}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      {plan.status === 'active' && plan.progress && (
+        <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-lg font-semibold text-gray-900">{t.planning.detail.progress}</span>
+            <span className="text-2xl font-bold text-primary-600">{plan.progress.overall}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-4">
+            <div
+              className="bg-primary-600 h-4 rounded-full transition-all duration-300"
+              style={{ width: `${plan.progress.overall}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Tabs */}
+      <div className="bg-white rounded-lg shadow border border-gray-200">
+        <div className="border-b border-gray-200">
+          <nav className="flex -mb-px">
+            {[
+              { id: 'overview', label: t.planning.detail.overview, icon: FiTarget },
+              { id: 'strategy', label: t.planning.detail.strategy, icon: FiTrendingUp },
+              { id: 'budget', label: t.planning.detail.budget, icon: FiDollarSign },
+              { id: 'actions', label: t.planning.detail.actions, icon: FiCheck },
+              { id: 'milestones', label: t.planning.detail.milestones, icon: FiClock },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-primary-600 text-primary-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="p-6">
+          {/* Overview Tab */}
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              {/* Goals */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.form.primaryGoal}</h3>
+                {plan.goals?.primary && (
+                  <div className="bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg p-6 border border-primary-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">{plan.goals.primary.metric}</p>
+                        <p className="text-3xl font-bold text-gray-900">
+                          {formatCurrency(plan.goals.primary.target)} {plan.goals.primary.unit}
+                        </p>
+                        {plan.goals.primary.description && (
+                          <p className="text-sm text-gray-600 mt-2">{plan.goals.primary.description}</p>
+                        )}
+                      </div>
+                      <FiTarget className="w-12 h-12 text-primary-600" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Secondary Goals */}
+              {plan.goals?.secondary && plan.goals.secondary.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.form.secondaryGoals}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {plan.goals.secondary.map((goal, index) => (
+                      <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <p className="text-sm text-gray-600 mb-1">{goal.metric}</p>
+                        <p className="text-xl font-semibold text-gray-900">
+                          {formatCurrency(goal.target)} {goal.unit}
+                        </p>
+                        {goal.description && (
+                          <p className="text-sm text-gray-600 mt-2">{goal.description}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Timeline */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.detail.duration}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <p className="text-sm text-gray-600 mb-1">{t.planning.detail.startDate}</p>
+                    <p className="text-lg font-semibold text-gray-900">
+                      {plan.startDate ? new Date(plan.startDate).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <p className="text-sm text-gray-600 mb-1">{t.planning.detail.endDate}</p>
+                    <p className="text-lg font-semibold text-gray-900">
+                      {plan.endDate ? new Date(plan.endDate).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <p className="text-sm text-gray-600 mb-1">{t.planning.form.planPeriod}</p>
+                    <p className="text-lg font-semibold text-gray-900">
+                      {t.planning.periods[plan.planPeriod] || plan.planPeriod}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* KPIs */}
+              {plan.kpis && plan.kpis.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.kpis.title}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {plan.kpis.map((kpi, index) => (
+                      <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-gray-900">{kpi.name}</h4>
+                          <span className="text-sm text-gray-500">
+                            {t.planning.kpis[kpi.trackingFrequency] || kpi.trackingFrequency}
+                          </span>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">{t.planning.kpis.target}:</span>
+                            <span className="font-medium text-gray-900">{formatCurrency(kpi.target)}</span>
+                          </div>
+                          {kpi.current !== undefined && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">{t.planning.kpis.current}:</span>
+                              <span className="font-medium text-gray-900">{formatCurrency(kpi.current)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Strategy Tab */}
+          {activeTab === 'strategy' && (
+            <div className="space-y-6">
+              {plan.strategy?.summary && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.summary}</h3>
+                  <p className="text-gray-700 whitespace-pre-wrap">{plan.strategy.summary}</p>
+                </div>
+              )}
+
+              {plan.strategy?.analysis && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.analysis}</h3>
+                  <p className="text-gray-700 whitespace-pre-wrap">{plan.strategy.analysis}</p>
+                </div>
+              )}
+
+              {plan.strategy?.keyInsights && plan.strategy.keyInsights.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.keyInsights}</h3>
+                  <ul className="space-y-2">
+                    {plan.strategy.keyInsights.map((insight, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <FiCheck className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">{insight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {plan.strategy?.risks && plan.strategy.risks.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.risks}</h3>
+                  <ul className="space-y-2">
+                    {plan.strategy.risks.map((risk, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <FiAlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">{risk}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {plan.strategy?.opportunities && plan.strategy.opportunities.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.opportunities}</h3>
+                  <ul className="space-y-2">
+                    {plan.strategy.opportunities.map((opportunity, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <FiTrendingUp className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">{opportunity}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {plan.reasoning && (
+                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">{t.planning.whyThisPlan}</h3>
+                  <p className="text-blue-800 whitespace-pre-wrap">{plan.reasoning}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Budget Tab */}
+          {activeTab === 'budget' && (
+            <div className="space-y-6">
+              {plan.budget?.total && (
+                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
+                  <p className="text-sm text-gray-600 mb-1">{t.planning.detail.totalBudget}</p>
+                  <p className="text-4xl font-bold text-gray-900">{formatCurrency(plan.budget.total)}</p>
+                </div>
+              )}
+
+              {plan.budget?.allocation && plan.budget.allocation.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.budget.allocation}</h3>
+                  <div className="space-y-4">
+                    {plan.budget.allocation.map((item, index) => (
+                      <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-gray-900">{item.channel}</h4>
+                          <div className="text-right">
+                            <p className="text-lg font-bold text-gray-900">{formatCurrency(item.amount)}</p>
+                            <p className="text-sm text-gray-500">{item.percentage}%</p>
+                          </div>
+                        </div>
+                        {item.expectedReturn && (
+                          <div className="text-sm text-gray-600 mb-2">
+                            {t.planning.budget.expectedReturn}: {formatCurrency(item.expectedReturn)}
+                          </div>
+                        )}
+                        {item.rationale && (
+                          <p className="text-sm text-gray-600">{item.rationale}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Actions Tab */}
+          {activeTab === 'actions' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">{t.planning.actions.title}</h3>
+              </div>
+
+              {plan.actionItems && plan.actionItems.length > 0 ? (
+                <div className="space-y-4">
+                  {plan.actionItems.map((action) => (
+                    <div key={action._id} className="bg-white rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="font-semibold text-gray-900">{action.title}</h4>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityBadge(action.priority)}`}>
+                              {t.planning.priority[action.priority] || action.priority}
+                            </span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getActionStatusBadge(action.status)}`}>
+                              {t.planning.actions[action.status] || action.status}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-2">{action.description}</p>
+                          {action.deadline && (
+                            <p className="text-sm text-gray-500 flex items-center gap-1">
+                              <FiCalendar className="w-4 h-4" />
+                              {new Date(action.deadline).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          {action.status !== 'completed' && action.status !== 'cancelled' && (
+                            <>
+                              {action.status === 'pending' && (
+                                <button
+                                  onClick={() => handleUpdateActionItem(action._id, { status: 'in_progress' })}
+                                  className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                                >
+                                  {t.planning.actions.markInProgress}
+                                </button>
+                              )}
+                              {action.status === 'in_progress' && (
+                                <button
+                                  onClick={() => handleUpdateActionItem(action._id, { status: 'completed' })}
+                                  className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                                >
+                                  {t.planning.actions.markComplete}
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  No action items available
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Milestones Tab */}
+          {activeTab === 'milestones' && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.milestones.title}</h3>
+
+              {plan.milestones && plan.milestones.length > 0 ? (
+                <div className="space-y-4">
+                  {plan.milestones.map((milestone) => (
+                    <div key={milestone._id} className="bg-white rounded-lg p-4 border border-gray-200">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="font-semibold text-gray-900">{milestone.name}</h4>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getMilestoneStatusBadge(milestone.status)}`}>
+                              {t.planning.milestones[milestone.status] || milestone.status}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <p className="text-gray-600">{t.planning.milestones.targetDate}:</p>
+                              <p className="font-medium text-gray-900">
+                                {new Date(milestone.targetDate).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-gray-600">{t.planning.milestones.metric}:</p>
+                              <p className="font-medium text-gray-900">{milestone.metric}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-600">{t.planning.milestones.targetValue}:</p>
+                              <p className="font-medium text-gray-900">{formatCurrency(milestone.targetValue)}</p>
+                            </div>
+                            {milestone.actualValue !== undefined && (
+                              <div>
+                                <p className="text-gray-600">{t.planning.milestones.actualValue}:</p>
+                                <p className="font-medium text-gray-900">{formatCurrency(milestone.actualValue)}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  No milestones available
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PlanDetail;

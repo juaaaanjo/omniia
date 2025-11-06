@@ -21,6 +21,8 @@ import Analytics from './pages/Analytics';
 import Integrations from './pages/Integrations';
 import Forecasting from './pages/Forecasting';
 import Planning from './pages/Planning';
+import PlanDetail from './pages/PlanDetail';
+import Reports from './pages/Reports';
 import OAuthCallback from './pages/OAuthCallback';
 
 import { ROUTES } from './utils/constants';
@@ -137,6 +139,26 @@ function App() {
                           <ProtectedRoute>
                             <Layout>
                               <Planning />
+                            </Layout>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path={ROUTES.PLAN_DETAIL}
+                        element={
+                          <ProtectedRoute>
+                            <Layout>
+                              <PlanDetail />
+                            </Layout>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path={ROUTES.REPORTS}
+                        element={
+                          <ProtectedRoute>
+                            <Layout>
+                              <Reports />
                             </Layout>
                           </ProtectedRoute>
                         }

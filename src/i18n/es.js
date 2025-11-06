@@ -568,7 +568,7 @@ export const es = {
 
   // Planning
   planning: {
-    title: 'Recomendaciones IA',
+    title: 'Planes Nerdee',
     subtitle: 'Planes estratégicos generados automáticamente según el desempeño de tu negocio',
     analyzeNow: 'Analizar Mi Negocio Ahora',
     analyzeNowSubtext: 'Fuerza al sistema a revisar tu desempeño y crear nuevos planes si es necesario',
@@ -751,7 +751,7 @@ export const es = {
     },
     // Messages
     messages: {
-      loading: 'Cargando recomendaciones IA...',
+      loading: 'Cargando planeacion...',
       loadError: 'Error al cargar planes',
       noPlans: '¡No hay planes activos aún!',
       noPlansCta: 'El sistema analiza tus datos diariamente y crea planes cuando es necesario. Haz clic en "Analizar Ahora" para forzar un análisis.',
@@ -954,6 +954,80 @@ export const es = {
       expirationDateHelp: 'Se establece automáticamente en 59 días desde hoy (los tokens de larga duración de Meta expiran en 60 días). Puedes ajustar si es necesario.',
       connecting: 'Conectando...',
       connect: 'Conectar',
+    },
+  },
+
+  // Reports
+  reports: {
+    title: 'Reportes por Correo',
+    subtitle: 'Envía reportes automáticos de pronósticos a tu equipo',
+    loading: 'Cargando configuración de reportes...',
+    // Email Status
+    emailConfigured: 'Servicio de Correo Listo',
+    emailNotConfigured: 'Correo No Configurado',
+    emailNotConfiguredDesc: 'El servicio de correo no está configurado. Por favor, configura las credenciales SMTP en tu archivo .env para habilitar los reportes por correo.',
+    dummyMode: 'Modo Simulación Activo',
+    dummyModeDesc: 'El servicio de correo está en modo simulación. Los correos se registrarán pero no se enviarán realmente.',
+    // Custom Report Form
+    customReport: {
+      title: 'Enviar Reporte Personalizado',
+      recipients: 'Destinatarios',
+      recipientsPlaceholder: 'correo1@empresa.com, correo2@empresa.com',
+      recipientsHint: 'Separa múltiples correos con comas',
+      startDate: 'Fecha de Inicio',
+      endDate: 'Fecha de Fin',
+      sections: 'Secciones del Reporte',
+      selectAll: 'Seleccionar Todas',
+      deselectAll: 'Deseleccionar Todas',
+      sectionsHint: 'Elige qué secciones incluir en el reporte',
+      send: 'Enviar Reporte',
+      sending: 'Enviando...',
+      preview: 'Vista Previa',
+      lastWeek: 'Últimos 7 Días',
+      lastMonth: 'Últimos 30 Días',
+    },
+    // Quick Actions
+    quickActions: {
+      title: 'Acciones Rápidas',
+      description: 'Estos reportes se enviarán a todos los usuarios administradores automáticamente',
+      sendWeekly: 'Enviar Reporte Semanal',
+      sendMonthly: 'Enviar Reporte Mensual',
+      sending: 'Enviando...',
+    },
+    // Test Email
+    testEmail: {
+      title: 'Probar Correo',
+      description: 'Envía un correo de prueba para verificar tu configuración',
+      send: 'Enviar Correo de Prueba',
+      sending: 'Enviando...',
+    },
+    // Status
+    status: {
+      title: 'Estado del Correo',
+      configured: 'Configurado',
+      dummyMode: 'Modo Simulación',
+      yes: 'Sí',
+      no: 'No',
+      refresh: 'Actualizar Estado',
+    },
+    // Messages
+    messages: {
+      sendSuccess: '¡Reporte enviado exitosamente!',
+      sendError: 'Error al enviar el reporte. Por favor, intenta de nuevo.',
+      weeklySuccess: '¡Reporte semanal enviado a todos los administradores!',
+      weeklyError: 'Error al enviar el reporte semanal.',
+      monthlySuccess: '¡Reporte mensual enviado a todos los administradores!',
+      monthlyError: 'Error al enviar el reporte mensual.',
+      testSuccess: '¡Correo de prueba enviado exitosamente! Revisa tu bandeja de entrada.',
+      testError: 'Error al enviar el correo de prueba.',
+      previewError: 'Error al abrir la vista previa.',
+    },
+    // Errors
+    errors: {
+      noRecipients: 'Por favor, ingresa al menos una dirección de correo electrónico',
+      invalidEmails: 'Direcciones de correo electrónico inválidas',
+      datesRequired: 'Las fechas de inicio y fin son requeridas',
+      noUserEmail: 'Correo de usuario no encontrado. Por favor, verifica la configuración de tu cuenta.',
     },
   },
 

@@ -958,6 +958,80 @@ export const en = {
     },
   },
 
+  // Reports
+  reports: {
+    title: 'Email Reports',
+    subtitle: 'Send automated forecast reports to your team',
+    loading: 'Loading reports configuration...',
+    // Email Status
+    emailConfigured: 'Email Service Ready',
+    emailNotConfigured: 'Email Not Configured',
+    emailNotConfiguredDesc: 'Email service is not configured. Please set up SMTP credentials in your .env file to enable email reports.',
+    dummyMode: 'Dummy Mode Active',
+    dummyModeDesc: 'Email service is running in dummy mode. Emails will be logged but not actually sent.',
+    // Custom Report Form
+    customReport: {
+      title: 'Send Custom Report',
+      recipients: 'Recipients',
+      recipientsPlaceholder: 'email1@company.com, email2@company.com',
+      recipientsHint: 'Separate multiple emails with commas',
+      startDate: 'Start Date',
+      endDate: 'End Date',
+      sections: 'Report Sections',
+      selectAll: 'Select All',
+      deselectAll: 'Deselect All',
+      sectionsHint: 'Choose which sections to include in the report',
+      send: 'Send Report',
+      sending: 'Sending...',
+      preview: 'Preview',
+      lastWeek: 'Last 7 Days',
+      lastMonth: 'Last 30 Days',
+    },
+    // Quick Actions
+    quickActions: {
+      title: 'Quick Actions',
+      description: 'These reports will be sent to all admin users automatically',
+      sendWeekly: 'Send Weekly Report',
+      sendMonthly: 'Send Monthly Report',
+      sending: 'Sending...',
+    },
+    // Test Email
+    testEmail: {
+      title: 'Test Email',
+      description: 'Send a test email to verify your configuration',
+      send: 'Send Test Email',
+      sending: 'Sending...',
+    },
+    // Status
+    status: {
+      title: 'Email Status',
+      configured: 'Configured',
+      dummyMode: 'Dummy Mode',
+      yes: 'Yes',
+      no: 'No',
+      refresh: 'Refresh Status',
+    },
+    // Messages
+    messages: {
+      sendSuccess: 'Report sent successfully!',
+      sendError: 'Failed to send report. Please try again.',
+      weeklySuccess: 'Weekly report sent to all admins!',
+      weeklyError: 'Failed to send weekly report.',
+      monthlySuccess: 'Monthly report sent to all admins!',
+      monthlyError: 'Failed to send monthly report.',
+      testSuccess: 'Test email sent successfully! Check your inbox.',
+      testError: 'Failed to send test email.',
+      previewError: 'Failed to open preview.',
+    },
+    // Errors
+    errors: {
+      noRecipients: 'Please enter at least one email address',
+      invalidEmails: 'Invalid email addresses',
+      datesRequired: 'Start and end dates are required',
+      noUserEmail: 'User email not found. Please check your account settings.',
+    },
+  },
+
   // Validation
   validation: {
     required: 'This field is required',

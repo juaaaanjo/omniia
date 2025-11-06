@@ -217,9 +217,7 @@ const EioOverviewCard = () => {
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex items-start gap-3">
-          <div className="text-3xl" role="img" aria-label="EIO">
-            🧠
-          </div>
+        
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
               {translate('dashboard.eio.title')}

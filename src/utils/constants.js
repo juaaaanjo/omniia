@@ -12,6 +12,7 @@ export const ROUTES = {
   FORECASTING: '/forecasting',
   PLANNING: '/planning',
   PLAN_DETAIL: '/planning/:planId',
+  REPORTS: '/reports',
   OAUTH_CALLBACK: '/oauth/callback',
 };
 
@@ -150,3 +151,19 @@ export const NOTIFICATION_TYPES = {
   WARNING: 'warning',
   INFO: 'info',
 };
+
+export const REPORT_SECTIONS = {
+  MARKETING: 'marketing',
+  FINANCE: 'finance',
+  CROSS_ANALYSIS: 'cross-analysis',
+  FORECASTING: 'forecasting',
+  PLANNING: 'planning',
+};
+
+export const REPORT_SECTION_OPTIONS = [
+  { value: 'marketing', label: 'Marketing', description: 'Meta Ads data' },
+  { value: 'finance', label: 'Finance', description: 'Transaction/revenue data' },
+  { value: 'cross-analysis', label: 'Cross Analysis', description: 'Attribution & profitability metrics' },
+  { value: 'forecasting', label: 'Forecasting', description: 'AI forecast metrics' },
+  { value: 'planning', label: 'Planning', description: 'Business plans data' },
+];
