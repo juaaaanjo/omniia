@@ -115,15 +115,9 @@ const Planning = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t.planning.title}</h1>
-          <p className="mt-2 text-gray-600">{t.planning.subtitle}</p>
-        </div>
-
-        {/* Analyze Now Button */}
+    <div className="space-y-section">
+      {/* Analyze Button */}
+      <div className="flex justify-end">
         <button
           onClick={handleAnalyzeNow}
           disabled={analyzing}
@@ -135,9 +129,9 @@ const Planning = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-4 bg-white p-4 rounded-lg shadow border border-gray-200">
+      <div className="flex gap-4 card p-4">
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             {t.planning.status.draft}
           </label>
           <select
@@ -154,7 +148,7 @@ const Planning = () => {
         </div>
 
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             {t.planning.table.type}
           </label>
           <select
@@ -174,10 +168,10 @@ const Planning = () => {
 
       {/* Plans List */}
       {plans.length === 0 ? (
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-12 text-center">
+        <div className="card p-12 text-center">
           <div className="max-w-md mx-auto">
             <FiZap className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
               {t.planning.messages.noPlans}
             </h3>
             <p className="text-gray-600 mb-6">
@@ -198,17 +192,17 @@ const Planning = () => {
           {plans.map((plan) => (
             <div
               key={plan._id}
-              className={`bg-white rounded-lg shadow border transition-all hover:shadow-md ${
-                isNewPlan(plan.createdAt) ? 'border-primary-500 ring-2 ring-primary-200' : 'border-gray-200'
+              className={`card transition-all hover:shadow-md ${
+                isNewPlan(plan.createdAt) ? 'border border-primary-500 ring-2 ring-primary-200' : ''
               }`}
             >
               <div className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-xl font-bold text-gray-900">{plan.planName}</h3>
+                      <h3 className="text-xl font-medium text-gray-900">{plan.planName}</h3>
                       {isNewPlan(plan.createdAt) && (
-                        <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">
                           NEW
                         </span>
                       )}
@@ -234,7 +228,7 @@ const Planning = () => {
                       <div className="mb-4">
                         <div className="flex items-center justify-between text-sm mb-1">
                           <span className="text-gray-600">{t.planning.detail.progress}</span>
-                          <span className="font-semibold text-gray-900">{plan.progress.overall}%</span>
+                          <span className="font-medium text-gray-900">{plan.progress.overall}%</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div
@@ -248,8 +242,8 @@ const Planning = () => {
                     {/* Goals Preview */}
                     {plan.goals?.primary && (
                       <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                        <p className="text-sm font-medium text-gray-700 mb-1">{t.planning.form.primaryGoal}</p>
-                        <p className="text-lg font-semibold text-gray-900">
+                        <p className="text-sm font-normal text-gray-700 mb-1">{t.planning.form.primaryGoal}</p>
+                        <p className="text-lg font-medium text-gray-900">
                           {plan.goals.primary.metric}: {formatCurrency(plan.goals.primary.target)} {plan.goals.primary.unit}
                         </p>
                       </div>

@@ -32,7 +32,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:prod",
+    "build:local": "vite build --mode localhost",
+    "build:prod": "vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint src --ext js,jsx"
   },

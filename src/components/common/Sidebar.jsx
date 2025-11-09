@@ -1,58 +1,64 @@
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiTrendingUp, FiDollarSign, FiBarChart2, FiSettings, FiZap, FiTarget, FiMail } from 'react-icons/fi';
+import { FiHome, FiTrendingUp, FiClock, FiMail, FiDollarSign, FiSettings, FiTarget } from 'react-icons/fi';
 import { ROUTES } from '../../utils/constants';
-import { useLanguage } from '../../hooks/useLanguage';
 import clsx from 'clsx';
 
-const Sidebar = () => {
-  const { t } = useLanguage();
+// Brain Icon Component
+const BrainIcon = ({ className }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 4.5a2.5 2.5 0 0 0-4.96-.46 2.5 2.5 0 0 0-1.98 3 2.5 2.5 0 0 0-1.32 4.24 3 3 0 0 0 .34 5.58 2.5 2.5 0 0 0 2.96 3.08A2.5 2.5 0 0 0 12 19.5a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 12 4.5" />
+    <path d="M12 5v14" />
+    <path d="M9.5 7.5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1z" />
+  </svg>
+);
 
+const Sidebar = () => {
   const navItems = [
     {
       to: ROUTES.DASHBOARD,
       icon: FiHome,
-      label: t.nav.dashboard,
     },
     {
       to: ROUTES.MARKETING,
       icon: FiTrendingUp,
-      label: t.nav.marketing,
-    },
-    {
-      to: ROUTES.FINANCE,
-      icon: FiDollarSign,
-      label: t.nav.finance,
-    },
-    {
-      to: ROUTES.ANALYTICS,
-      icon: FiBarChart2,
-      label: t.nav.analytics,
     },
     {
       to: ROUTES.FORECASTING,
-      icon: FiZap,
-      label: t.nav.forecasting || 'Forecasting',
-    },
-    {
-      to: ROUTES.PLANNING,
-      icon: FiTarget,
-      label: t.planning?.title || 'AI Recommendations',
+      icon: FiClock,
     },
     {
       to: ROUTES.REPORTS,
       icon: FiMail,
-      label: t.reports?.title || 'Email Reports',
+    },
+    {
+      to: ROUTES.FINANCE,
+      icon: FiDollarSign,
     },
     {
       to: ROUTES.INTEGRATIONS,
       icon: FiSettings,
-      label: t.settings.integrations,
+    },
+    {
+      to: ROUTES.ANALYTICS,
+      icon: BrainIcon,
+    },
+    {
+      to: ROUTES.PLANNING,
+      icon: FiTarget,
     },
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen sticky top-16 overflow-y-auto">
-      <nav className="p-4 space-y-2">
+    <aside className="fixed left-6 top-1/2 -translate-y-1/2 z-40">
+      <nav className="bg-white rounded-[32px] shadow-lg border border-gray-100 p-4 flex flex-col items-center gap-6">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -62,51 +68,25 @@ const Sidebar = () => {
               end={item.to === ROUTES.DASHBOARD}
               className={({ isActive }) =>
                 clsx(
-                  'flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors',
+                  'group relative flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-200',
                   isActive
-                    ? 'bg-primary-50 text-primary-600 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-indigo-100'
+                    : 'hover:bg-gray-100'
                 )
               }
             >
               {({ isActive }) => (
-                <>
-                  <Icon
-                    className={clsx(
-                      'w-5 h-5',
-                      isActive ? 'text-primary-600' : 'text-gray-500'
-                    )}
-                  />
-                  <span>{item.label}</span>
-                </>
+                <Icon
+                  className={clsx(
+                    'w-6 h-6 transition-colors',
+                    isActive ? 'text-indigo-600' : 'text-gray-500'
+                  )}
+                />
               )}
             </NavLink>
           );
         })}
       </nav>
-
-      {/* Quick stats */}
-      <div className="p-4 mt-6 border-t border-gray-200">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
-          {t.dashboard.quickStats}
-        </h3>
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">
-              {t.marketing.campaigns} {t.marketing.active}
-            </span>
-            <span className="text-sm font-semibold text-gray-900">12</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">{t.kpi.revenue}</span>
-            <span className="text-sm font-semibold text-gray-900">$45.2K</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">{t.kpi.roi}</span>
-            <span className="text-sm font-semibold text-green-600">+24.5%</span>
-          </div>
-        </div>
-      </div>
     </aside>
   );
 };

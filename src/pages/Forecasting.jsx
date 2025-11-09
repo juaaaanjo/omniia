@@ -6,7 +6,9 @@ import {
   FiTarget,
   FiZap,
   FiBarChart2,
-  FiAlertCircle
+  FiAlertCircle,
+  FiCheckCircle,
+  FiX
 } from 'react-icons/fi';
 import { useLanguage } from '../hooks/useLanguage';
 import dataService from '../services/dataService';
@@ -42,6 +44,16 @@ const Forecasting = () => {
     forecastType: 'revenue',
     forecastPeriod: 'next_month',
   });
+
+  // State for recording actuals
+  const [showActualModal, setShowActualModal] = useState(false);
+  const [selectedForecast, setSelectedForecast] = useState(null);
+  const [actualData, setActualData] = useState({
+    actualValue: '',
+    notes: '',
+  });
+  const [recordingActual, setRecordingActual] = useState(false);
+  const [recordSuccess, setRecordSuccess] = useState(false);
 
   // Forecast type options
   const forecastTypes = [
@@ -108,6 +120,59 @@ const Forecasting = () => {
     }
   };
 
+  const handleOpenActualModal = (forecast) => {
+    setSelectedForecast(forecast);
+    setActualData({ actualValue: '', notes: '' });
+    setRecordSuccess(false);
+    setShowActualModal(true);
+  };
+
+  const handleCloseActualModal = () => {
+    setShowActualModal(false);
+    setSelectedForecast(null);
+    setActualData({ actualValue: '', notes: '' });
+    setRecordSuccess(false);
+  };
+
+  const handleRecordActual = async (e) => {
+    e.preventDefault();
+    if (!selectedForecast || !selectedForecast.id) {
+      setError(t.forecasting.accuracy.errors.noForecastId);
+      return;
+    }
+
+    try {
+      setRecordingActual(true);
+      setError(null);
+
+      const actualValues = {
+        [selectedForecast.forecastType || 'revenue']: parseFloat(actualData.actualValue),
+      };
+
+      await dataService.recordForecastActual(
+        selectedForecast.id,
+        actualValues,
+        actualData.notes
+      );
+
+      setRecordSuccess(true);
+
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        handleCloseActualModal();
+        // Optionally reload forecasts to show updated accuracy
+        if (activeTab === 'quick') {
+          loadQuickForecast();
+        }
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to record actual:', err);
+      setError(err.message || t.forecasting.accuracy.errors.recordFailed);
+    } finally {
+      setRecordingActual(false);
+    }
+  };
+
   const renderQuickForecast = () => {
     if (loading && !quickForecast) {
       return (
@@ -133,16 +198,27 @@ const Forecasting = () => {
               <div className="text-4xl font-bold mb-2">
                 {formatCurrency(quickForecast.prediction.value || 0)}
               </div>
-              <div className="text-sm text-blue-100">
+              <div className="text-sm text-blue-100 mb-4">
                 {t.forecasting.results.confidence}: {((quickForecast.prediction.confidence || 0.8) * 100).toFixed(0)}%
               </div>
+
+              {/* Record Actual Button */}
+              {quickForecast.id && (
+                <button
+                  onClick={() => handleOpenActualModal(quickForecast)}
+                  className="mt-2 px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-white transition-colors flex items-center gap-2 text-sm font-medium"
+                >
+                  <FiCheckCircle className="w-4 h-4" />
+                  {t.forecasting.accuracy.recordActual}
+                </button>
+              )}
             </div>
           )}
         </div>
 
         {quickForecast.analysis && (
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.forecasting.results.analysis}</h3>
+          <div className="card p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">{t.forecasting.results.analysis}</h3>
             <div className="prose prose-sm max-w-none text-gray-700 markdown-content">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath]}
@@ -192,8 +268,8 @@ const Forecasting = () => {
         )}
 
         {quickForecast.insights && quickForecast.insights.length > 0 && (
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.forecasting.results.insights}</h3>
+          <div className="card p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">{t.forecasting.results.insights}</h3>
             <ul className="space-y-2">
               {quickForecast.insights.map((insight, index) => (
                 <li key={index} className="flex items-start gap-2">
@@ -211,13 +287,13 @@ const Forecasting = () => {
   const renderCustomForecast = () => {
     return (
       <div className="space-y-6">
-        <form onSubmit={handleGenerateCustomForecast} className="bg-white rounded-lg shadow border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">{t.forecasting.customForecast}</h2>
+        <form onSubmit={handleGenerateCustomForecast} className="card p-6">
+          <h2 className="text-base font-medium text-gray-900 mb-6">{t.forecasting.customForecast}</h2>
 
           <div className="space-y-4">
             {/* Forecast Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-normal text-gray-700 mb-2">
                 {t.forecasting.form.forecastType}
               </label>
               <select
@@ -235,7 +311,7 @@ const Forecasting = () => {
 
             {/* Forecast Period */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-normal text-gray-700 mb-2">
                 {t.forecasting.form.forecastPeriod}
               </label>
               <select
@@ -254,7 +330,7 @@ const Forecasting = () => {
             {/* Custom Days (only show if custom period selected) */}
             {formData.forecastPeriod === 'custom' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-normal text-gray-700 mb-2">
                   {t.forecasting.form.customDays}
                 </label>
                 <input
@@ -277,14 +353,14 @@ const Forecasting = () => {
                 onChange={(e) => setFormData({ ...formData, includeSeasonality: e.target.checked })}
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
-              <label htmlFor="includeSeasonality" className="text-sm font-medium text-gray-700">
+              <label htmlFor="includeSeasonality" className="text-sm font-normal text-gray-700">
                 {t.forecasting.form.includeSeasonality}
               </label>
             </div>
 
             {/* Confidence Level */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-normal text-gray-700 mb-2">
                 {t.forecasting.form.confidenceLevel}: {(formData.confidenceLevel * 100).toFixed(0)}%
               </label>
               <input
@@ -324,8 +400,8 @@ const Forecasting = () => {
 
         {customForecast && (
           <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.forecasting.results.prediction}</h3>
+            <div className="card p-6">
+              <h3 className="text-base font-medium text-gray-900 mb-4">{t.forecasting.results.prediction}</h3>
 
               {customForecast.prediction && (
                 <div className="mb-6 p-4 bg-blue-50 rounded-lg">
@@ -333,9 +409,20 @@ const Forecasting = () => {
                     {formatCurrency(customForecast.prediction.value || 0)}
                   </div>
                   {customForecast.prediction.range && (
-                    <div className="text-sm text-blue-700">
+                    <div className="text-sm text-blue-700 mb-3">
                       {t.forecasting.results.range}: {formatCurrency(customForecast.prediction.range.min || 0)} - {formatCurrency(customForecast.prediction.range.max || 0)}
                     </div>
+                  )}
+
+                  {/* Record Actual Button */}
+                  {customForecast.id && (
+                    <button
+                      onClick={() => handleOpenActualModal(customForecast)}
+                      className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors flex items-center gap-2 text-sm font-medium"
+                    >
+                      <FiCheckCircle className="w-4 h-4" />
+                      {t.forecasting.accuracy.recordActual}
+                    </button>
                   )}
                 </div>
               )}
@@ -390,8 +477,8 @@ const Forecasting = () => {
             </div>
 
             {customForecast.recommendations && customForecast.recommendations.length > 0 && (
-              <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.forecasting.results.recommendations}</h3>
+              <div className="card p-6">
+                <h3 className="text-base font-medium text-gray-900 mb-4">{t.forecasting.results.recommendations}</h3>
                 <ul className="space-y-3">
                   {customForecast.recommendations.map((rec, index) => (
                     <li key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
@@ -411,12 +498,12 @@ const Forecasting = () => {
   const renderScenarios = () => {
     return (
       <div className="space-y-6">
-        <form onSubmit={handleGenerateScenarios} className="bg-white rounded-lg shadow border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">{t.forecasting.scenarioAnalysis.title}</h2>
+        <form onSubmit={handleGenerateScenarios} className="card p-6">
+          <h2 className="text-base font-medium text-gray-900 mb-6">{t.forecasting.scenarioAnalysis.title}</h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-normal text-gray-700 mb-2">
                 {t.forecasting.form.forecastType}
               </label>
               <select
@@ -433,7 +520,7 @@ const Forecasting = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-normal text-gray-700 mb-2">
                 {t.forecasting.form.forecastPeriod}
               </label>
               <select
@@ -473,21 +560,21 @@ const Forecasting = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Best Case */}
             {scenarios.bestCase && (
-              <div className="bg-white rounded-lg shadow border border-green-200 p-6">
+              <div className="card p-6 border border-green-200">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2 bg-green-100 rounded-lg">
                     <FiTrendingUp className="w-6 h-6 text-green-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">{t.forecasting.scenarioAnalysis.bestCase}</h3>
+                  <h3 className="text-base font-medium text-gray-900">{t.forecasting.scenarioAnalysis.bestCase}</h3>
                 </div>
-                <div className="text-2xl font-bold text-green-600 mb-2">
+                <div className="text-2xl font-medium text-green-600 mb-2">
                   {formatCurrency(scenarios.bestCase.value || 0)}
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm font-normal text-gray-600 mb-4">
                   {scenarios.bestCase.description || t.forecasting.scenarioAnalysis.bestCase}
                 </p>
                 {scenarios.bestCase.probability && (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs font-normal text-gray-500">
                     {t.forecasting.scenarioAnalysis.probability}: {(scenarios.bestCase.probability * 100).toFixed(0)}%
                   </div>
                 )}
@@ -496,21 +583,21 @@ const Forecasting = () => {
 
             {/* Most Likely */}
             {scenarios.mostLikely && (
-              <div className="bg-white rounded-lg shadow border border-blue-200 p-6">
+              <div className="card p-6 border border-blue-200">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2 bg-blue-100 rounded-lg">
                     <FiBarChart2 className="w-6 h-6 text-blue-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">{t.forecasting.scenarioAnalysis.mostLikely}</h3>
+                  <h3 className="text-base font-medium text-gray-900">{t.forecasting.scenarioAnalysis.mostLikely}</h3>
                 </div>
-                <div className="text-2xl font-bold text-blue-600 mb-2">
+                <div className="text-2xl font-medium text-blue-600 mb-2">
                   {formatCurrency(scenarios.mostLikely.value || 0)}
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm font-normal text-gray-600 mb-4">
                   {scenarios.mostLikely.description || t.forecasting.scenarioAnalysis.mostLikely}
                 </p>
                 {scenarios.mostLikely.probability && (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs font-normal text-gray-500">
                     {t.forecasting.scenarioAnalysis.probability}: {(scenarios.mostLikely.probability * 100).toFixed(0)}%
                   </div>
                 )}
@@ -519,21 +606,21 @@ const Forecasting = () => {
 
             {/* Worst Case */}
             {scenarios.worstCase && (
-              <div className="bg-white rounded-lg shadow border border-red-200 p-6">
+              <div className="card p-6 border border-red-200">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2 bg-red-100 rounded-lg">
                     <FiAlertCircle className="w-6 h-6 text-red-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">{t.forecasting.scenarioAnalysis.worstCase}</h3>
+                  <h3 className="text-base font-medium text-gray-900">{t.forecasting.scenarioAnalysis.worstCase}</h3>
                 </div>
-                <div className="text-2xl font-bold text-red-600 mb-2">
+                <div className="text-2xl font-medium text-red-600 mb-2">
                   {formatCurrency(scenarios.worstCase.value || 0)}
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm font-normal text-gray-600 mb-4">
                   {scenarios.worstCase.description || t.forecasting.scenarioAnalysis.worstCase}
                 </p>
                 {scenarios.worstCase.probability && (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs font-normal text-gray-500">
                     {t.forecasting.scenarioAnalysis.probability}: {(scenarios.worstCase.probability * 100).toFixed(0)}%
                   </div>
                 )}
@@ -543,8 +630,8 @@ const Forecasting = () => {
         )}
 
         {scenarios && scenarios.analysis && (
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.forecasting.scenarioAnalysis.title}</h3>
+          <div className="card p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">{t.forecasting.scenarioAnalysis.title}</h3>
             <div className="prose prose-sm max-w-none text-gray-700 markdown-content">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath]}
@@ -597,14 +684,7 @@ const Forecasting = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">{t.forecasting.title}</h1>
-        <p className="mt-2 text-gray-600">
-          {t.forecasting.subtitle}
-        </p>
-      </div>
+    <div className="space-y-section">
 
       {/* Error Message */}
       {error && (
@@ -663,6 +743,120 @@ const Forecasting = () => {
         {activeTab === 'custom' && renderCustomForecast()}
         {activeTab === 'scenarios' && renderScenarios()}
       </div>
+
+      {/* Record Actual Modal */}
+      {showActualModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">
+                {t.forecasting.accuracy.recordActual}
+              </h3>
+              <button
+                onClick={handleCloseActualModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {recordSuccess ? (
+                <div className="text-center py-8">
+                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <FiCheckCircle className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                    {t.forecasting.accuracy.recordSuccess}
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    {t.forecasting.accuracy.aiWillLearn}
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleRecordActual} className="space-y-4">
+                  {/* Show predicted value */}
+                  {selectedForecast?.prediction?.value && (
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <p className="text-sm text-blue-700 mb-1">
+                        {t.forecasting.accuracy.predictedValue}:
+                      </p>
+                      <p className="text-lg font-semibold text-blue-900">
+                        {formatCurrency(selectedForecast.prediction.value)}
+                      </p>
+                      {selectedForecast.prediction.confidence && (
+                        <p className="text-xs text-blue-600 mt-1">
+                          {t.forecasting.results.confidence}: {(selectedForecast.prediction.confidence * 100).toFixed(0)}%
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Actual Value Input */}
+                  <div>
+                    <label className="block text-sm font-normal text-gray-700 mb-2">
+                      {t.forecasting.accuracy.actualValue} *
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={actualData.actualValue}
+                      onChange={(e) => setActualData({ ...actualData, actualValue: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder={t.forecasting.accuracy.enterActualValue}
+                      required
+                    />
+                  </div>
+
+                  {/* Notes Input */}
+                  <div>
+                    <label className="block text-sm font-normal text-gray-700 mb-2">
+                      {t.forecasting.accuracy.notes}
+                    </label>
+                    <textarea
+                      value={actualData.notes}
+                      onChange={(e) => setActualData({ ...actualData, notes: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder={t.forecasting.accuracy.notesPlaceholder}
+                      rows="3"
+                    />
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={handleCloseActualModal}
+                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+                    >
+                      {t.common.cancel}
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={recordingActual || !actualData.actualValue}
+                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                    >
+                      {recordingActual ? (
+                        <>
+                          <LoadingSpinner size="sm" />
+                          {t.common.saving}
+                        </>
+                      ) : (
+                        <>
+                          <FiCheckCircle className="w-4 h-4" />
+                          {t.forecasting.accuracy.submit}
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

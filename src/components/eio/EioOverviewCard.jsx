@@ -1,11 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FiRefreshCcw, FiMail, FiMessageCircle, FiArrowRight } from 'react-icons/fi';
+import { FiRefreshCcw, FiCheckCircle, FiX } from 'react-icons/fi';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useEio } from '../../hooks/useEio';
-import { useData } from '../../hooks/useData';
-import { useChat } from '../../hooks/useChat';
-import { getDateRangeParams } from '../../utils/dateHelpers';
-import { formatDate, formatRelativeTime, truncateText } from '../../utils/formatters';
+import { formatRelativeTime, truncateText } from '../../utils/formatters';
 import EioAlertModal from './EioAlertModal';
 
 const statusIconClasses = {
@@ -22,7 +19,7 @@ const insightDotColors = {
 };
 
 const EioOverviewCard = () => {
-  const { t, translate } = useLanguage();
+  const { translate } = useLanguage();
   const {
     summary,
     statusHighlights,
@@ -33,16 +30,10 @@ const EioOverviewCard = () => {
     fetchOverview,
     fetchAlertDetail,
     executeAction,
-    requestReport,
     triggerScan,
     selectedAlert,
     setSelectedAlert,
   } = useEio();
-  const { dateRange } = useData();
-  const { openChat, updateContext } = useChat();
-
-  const [reportLoading, setReportLoading] = useState(false);
-  const [reportMessage, setReportMessage] = useState(null);
   const [feedbackMessage, setFeedbackMessage] = useState(null);
 
   useEffect(() => {
@@ -50,13 +41,6 @@ const EioOverviewCard = () => {
       console.error('Failed to load EIO overview:', err);
     });
   }, [fetchOverview]);
-
-  const { startDate, endDate } = useMemo(() => getDateRangeParams(dateRange), [dateRange]);
-
-  const reportPeriodLabel = useMemo(() => {
-    if (!startDate || !endDate) return '';
-    return `${formatDate(startDate, 'dd MMM')} – ${formatDate(endDate, 'dd MMM')}`;
-  }, [startDate, endDate]);
 
   const insight = useMemo(() => {
     if (!dailyInsights) return null;
@@ -118,37 +102,6 @@ const EioOverviewCard = () => {
         text: err.message || translate('dashboard.eio.messages.error'),
       });
     }
-  };
-
-  const handleSendReport = async () => {
-    try {
-      setReportLoading(true);
-      setReportMessage(null);
-      await requestReport({
-        startDate,
-        endDate,
-        format: 'email',
-      });
-      setReportMessage({
-        type: 'success',
-        text: translate('dashboard.eio.messages.reportSent'),
-      });
-    } catch (err) {
-      setReportMessage({
-        type: 'error',
-        text: err.message || translate('dashboard.eio.messages.error'),
-      });
-    } finally {
-      setReportLoading(false);
-    }
-  };
-
-  const handleOpenChat = () => {
-    openChat();
-    updateContext({
-      topic: 'eio',
-      summary,
-    });
   };
 
   const closeModal = () => {
@@ -214,36 +167,29 @@ const EioOverviewCard = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="flex items-start gap-3">
-        
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
+    <div className="card p-6">
+      {/* Header with gradient left border like SectionHeader */}
+      <div className="relative mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3 relative">
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+            <h2 className="text-xl font-medium text-gray-900 pl-4">
               {translate('dashboard.eio.title')}
             </h2>
-            <p className="text-sm text-gray-500">
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-sm font-normal text-gray-500 whitespace-nowrap">
               {translate('dashboard.eio.subtitle')}
             </p>
-            {summary?.lastAlertTime && (
-              <p className="mt-2 text-xs text-gray-400">
-                {translate('dashboard.eio.lastAlert', {
-                  time: formatRelativeTime(summary.lastAlertTime),
-                })}
-              </p>
-            )}
+            <button
+              onClick={handleTriggerScan}
+              className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-60"
+              disabled={overviewLoading || actionLoading}
+              type="button"
+            >
+              <FiRefreshCcw className={`h-4 w-4 ${overviewLoading || actionLoading ? 'animate-spin' : ''}`} />
+            </button>
           </div>
-        </div>
-        <div className="flex items-center gap-3 self-end md:self-auto">
-          <button
-            onClick={handleTriggerScan}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-60"
-            disabled={overviewLoading || actionLoading}
-            type="button"
-          >
-            <FiRefreshCcw className={`h-4 w-4 ${overviewLoading || actionLoading ? 'animate-spin' : ''}`} />
-            {translate('dashboard.eio.actions.refresh')}
-          </button>
         </div>
       </div>
 
@@ -259,166 +205,127 @@ const EioOverviewCard = () => {
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-        {statusCards.map((card) => (
-          <div key={card.key} className="rounded-xl border border-gray-200 bg-white/60 p-4 shadow-sm">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <p className="text-sm font-semibold text-gray-800">{card.title}</p>
-                <p className="text-xs text-gray-500">{card.helper}</p>
-              </div>
-              <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${card.chipClass}`}>
-                {(summary?.[card.key] ?? 0).toLocaleString()}
-              </span>
-            </div>
-            <p className="mt-3 text-sm text-gray-600 min-h-[3.5rem]">
-              {highlightDescription(card.highlight)}
-            </p>
-            <div className="mt-3 flex flex-wrap gap-3 text-sm">
-              {card.actions.includes('apply') && card.highlight && (
-                <button
-                  onClick={() => handleQuickAction('apply', card.highlight)}
-                  disabled={actionLoading}
-                  className="font-medium text-primary-600 hover:text-primary-700 transition-colors disabled:opacity-60"
-                  type="button"
-                >
-                  {resolveActionLabel('apply')}
-                </button>
-              )}
-              {card.actions.includes('ignore') && card.highlight && (
-                <button
-                  onClick={() => handleQuickAction('ignore', card.highlight)}
-                  disabled={actionLoading}
-                  className="font-medium text-gray-500 hover:text-gray-600 transition-colors disabled:opacity-60"
-                  type="button"
-                >
-                  {resolveActionLabel('ignore')}
-                </button>
-              )}
-              {card.actions.includes('review') && card.highlight && (
-                <button
-                  onClick={() => handleQuickAction('review', card.highlight)}
-                  disabled={actionLoading}
-                  className="font-medium text-primary-600 hover:text-primary-700 transition-colors disabled:opacity-60"
-                  type="button"
-                >
-                  {resolveActionLabel('review')}
-                </button>
-              )}
-              {card.actions.includes('view') && card.highlight && (
-                <button
-                  onClick={() => handleViewDetail(card.highlight)}
-                  disabled={detailLoading}
-                  className="inline-flex items-center gap-1 font-medium text-gray-700 hover:text-gray-900 transition-colors disabled:opacity-60"
-                  type="button"
-                >
-                  {resolveActionLabel('view')}
-                  <FiArrowRight className="h-4 w-4" />
-                </button>
-              )}
-              {!card.highlight && (
-                <span className="text-sm text-gray-400">
-                  {translate('dashboard.eio.emptyState')}
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {statusCards.map((card) => {
+          const dotColor = card.key === 'pending' ? 'bg-orange-500' : card.key === 'applied' ? 'bg-green-500' : 'bg-blue-500';
+
+          return (
+            <div key={card.key} className="space-y-4">
+              {/* Column Header */}
+              <div className="flex items-center gap-2">
+                <div className={`w-2.5 h-2.5 rounded-full ${dotColor}`}></div>
+                <h3 className="text-base font-normal text-gray-900">{card.title}</h3>
+                <span className="text-base font-normal text-gray-400">
+                  {summary?.[card.key] ?? 0}
                 </span>
+              </div>
+
+              {/* Alert Card */}
+              {card.highlight ? (
+                <div className="card card-hover p-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="text-2xl">📊</div>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-medium text-gray-900 mb-1">
+                        {card.highlight.title || highlightDescription(card.highlight)}
+                      </h4>
+                      {card.highlight.description && (
+                        <p className="text-sm font-normal text-gray-500">
+                          {truncateText(card.highlight.description, 60)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></div>
+                    <span className="text-xs font-normal text-gray-500">
+                      {card.highlight.detectedAt ? formatRelativeTime(card.highlight.detectedAt) : '2.3h'}
+                    </span>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2">
+                    {card.actions.includes('apply') && (
+                      <button
+                        onClick={() => handleQuickAction('apply', card.highlight)}
+                        disabled={actionLoading}
+                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-60 text-sm"
+                        type="button"
+                      >
+                        <FiCheckCircle className="w-4 h-4" />
+                        {resolveActionLabel('apply')}
+                      </button>
+                    )}
+                    {card.actions.includes('ignore') && (
+                      <button
+                        onClick={() => handleQuickAction('ignore', card.highlight)}
+                        disabled={actionLoading}
+                        className="inline-flex items-center gap-1 px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors disabled:opacity-60 text-sm"
+                        type="button"
+                      >
+                        <FiX className="w-4 h-4" />
+                        {resolveActionLabel('ignore')}
+                      </button>
+                    )}
+                    {(card.actions.includes('view') || card.actions.includes('review')) && (
+                      <button
+                        onClick={() => handleViewDetail(card.highlight)}
+                        disabled={detailLoading}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 text-gray-700 hover:text-gray-900 transition-colors disabled:opacity-60 text-sm ml-auto"
+                        type="button"
+                      >
+                        <span>👁️</span>
+                        <span className="text-sm font-normal">{resolveActionLabel('view')}</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="card p-4 text-center">
+                  <span className="text-sm font-normal text-gray-400">
+                    {translate('dashboard.eio.emptyState')}
+                  </span>
+                </div>
               )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      <div className="mt-6 space-y-4">
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
-            <p className="text-sm font-semibold text-gray-800">
+      <div className="mt-8 space-y-4">
+        {/* Insights Section */}
+        <div className="relative">
+          <div className="flex items-center gap-3 relative mb-4">
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+            <h3 className="text-base font-medium text-gray-900 pl-4">
               {translate('dashboard.eio.insights.title')}
-            </p>
+            </h3>
+            <div className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent"></div>
             {dailyInsights?.generatedAt && (
-              <span className="text-xs text-gray-500">
-                {translate('dashboard.eio.insights.generatedAt', {
-                  time: formatRelativeTime(dailyInsights.generatedAt),
-                })}
-              </span>
+              <p className="text-sm font-normal text-gray-500 whitespace-nowrap">
+                {translate('dashboard.eio.insights.subtitle')}
+              </p>
             )}
           </div>
-          <p className="mt-3 text-sm text-gray-700">
-            {insight ? (
-              <span className="flex items-start gap-2">
-                <span
-                  className={`mt-1 h-2.5 w-2.5 rounded-full ${
-                    insightDotColors[insight.type] || insightDotColors.neutral
-                  }`}
-                />
-                <span>{insight.text}</span>
-              </span>
-            ) : (
-              translate('dashboard.eio.insights.empty')
-            )}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <button
-            onClick={handleSendReport}
-            className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm transition-colors hover:bg-gray-50 disabled:opacity-60"
-            disabled={reportLoading}
-            type="button"
-          >
-            <div className="flex items-center gap-3">
-              <div className="rounded-full border border-gray-200 p-3 text-gray-600">
-                <FiMail className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-800">
-                  {translate('dashboard.eio.report.title')}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {translate('dashboard.eio.report.subtitle', {
-                    range: reportPeriodLabel,
-                  })}
-                </p>
-              </div>
-            </div>
-            <FiArrowRight className="h-4 w-4 text-gray-400" />
-          </button>
-
-          <button
-            onClick={handleOpenChat}
-            className="flex items-center justify-between gap-4 rounded-xl bg-emerald-600 px-5 py-4 text-left text-white shadow-sm transition-colors hover:bg-emerald-700"
-            type="button"
-          >
-            <div className="flex items-center gap-3">
-              <div className="rounded-full bg-white/20 p-3 text-white">
-                <FiMessageCircle className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">
-                  {translate('dashboard.eio.chat.title')}
-                </p>
-                <p className="text-xs text-emerald-100">
-                  {translate('dashboard.eio.chat.subtitle')}
-                </p>
-              </div>
-            </div>
-            <FiArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-
-        {(reportMessage || reportLoading) && (
-          <div
-            className={`rounded-lg border px-3 py-2 text-sm ${
-              reportMessage?.type === 'success'
-                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                : reportMessage?.type === 'error'
-                  ? 'border-rose-200 bg-rose-50 text-rose-700'
-                  : 'border-gray-200 bg-gray-50 text-gray-600'
-            }`}
-          >
-            {reportLoading
-              ? translate('dashboard.eio.report.sending')
-              : reportMessage?.text}
+          <div className="card p-4">
+            <p className="text-sm font-normal text-gray-700">
+              {insight ? (
+                <span className="flex items-start gap-2">
+                  <span
+                    className={`mt-1 h-2 w-2 rounded-full ${
+                      insightDotColors[insight.type] || insightDotColors.neutral
+                    }`}
+                  />
+                  <span>{insight.text}</span>
+                </span>
+              ) : (
+                translate('dashboard.eio.insights.empty')
+              )}
+            </p>
           </div>
-        )}
+        </div>
+
       </div>
 
       {selectedAlert && (

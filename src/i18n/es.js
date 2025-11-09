@@ -65,7 +65,7 @@ export const es = {
 
   // Dashboard
   dashboard: {
-    title: 'Panel de Control',
+    title: 'Salud del negocio',
     subtitle: 'Resumen del desempeño de tu negocio en todas las áreas',
     overview: 'Resumen General',
     kpis: 'Indicadores Clave',
@@ -78,6 +78,57 @@ export const es = {
     dataSources: 'Fuentes de datos',
     loading: 'Cargando panel...',
     reportingPeriod: 'Período de reporte: {start} - {end}',
+    pageStatus: {
+      stable: 'Estable',
+      warning: 'Advertencia',
+      critical: 'Crítico',
+    },
+    chatButton: 'Chat con Nerdee',
+    quickActions: {
+      title: 'Acciones rápidas',
+      cashClosure: 'Cierre de caja',
+      lowInventory: 'Inventario bajo',
+      performanceSummary: 'Resumen de desempeño',
+      salesAnalysis: 'Análisis de ventas',
+    },
+    categories: {
+      title: 'Categorías',
+      subtitle: 'Métricas principales por área',
+      marketing: {
+        title: 'Marketing',
+        roas: 'ROAS',
+        cpa: 'CPA',
+        ctr: 'CTR',
+      },
+      finance: {
+        title: 'Finanzas',
+        monthlyRevenue: 'Ingresos del mes',
+        margin: 'Margen',
+        cashDifference: 'Diferencia de caja',
+      },
+      sac: {
+        title: 'SAC',
+        resolvedCases: 'Casos resueltos',
+        avgResponseTime: 'Tiempo promedio de respuesta',
+      },
+      retention: {
+        title: 'Retención',
+        retention: 'Retención',
+        newCustomers: 'Nuevos clientes',
+        avgLtv: 'LTV promedio',
+      },
+      growth: {
+        title: 'Growth',
+        promiseTime: 'Tiempo promedio',
+        conversion: 'Conversión',
+      },
+      data: {
+        title: 'Data',
+        quality: 'Calidad',
+        connectedSources: 'Fuentes conectadas',
+        precision: 'Precisión',
+      },
+    },
     eio: {
       title: 'Inteligencia Operativa (EIO)',
       subtitle: 'Monitorea anomalías, acciones recomendadas e insights de IA para tu operación.',
@@ -107,6 +158,7 @@ export const es = {
       },
       insights: {
         title: 'Insights',
+        subtitle: 'Análisis y hallazgos clave',
         generatedAt: 'Actualizado {time}',
         empty: 'No se generaron insights para este período.',
       },

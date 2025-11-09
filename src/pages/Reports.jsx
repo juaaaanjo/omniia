@@ -250,19 +250,13 @@ const Reports = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">{t.reports.title}</h1>
-        <p className="mt-2 text-gray-600">{t.reports.subtitle}</p>
-      </div>
-
+    <div className="space-y-section">
       {/* Email Status Warning */}
       {emailStatus && !emailStatus.configured && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
           <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-red-900 mb-1">{t.reports.emailNotConfigured}</h3>
+            <h3 className="font-medium text-red-900 mb-1">{t.reports.emailNotConfigured}</h3>
             <p className="text-sm text-red-700">{t.reports.emailNotConfiguredDesc}</p>
           </div>
         </div>
@@ -273,7 +267,7 @@ const Reports = () => {
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start gap-3">
           <FiAlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-yellow-900 mb-1">{t.reports.dummyMode}</h3>
+            <h3 className="font-medium text-yellow-900 mb-1">{t.reports.dummyMode}</h3>
             <p className="text-sm text-yellow-700">{t.reports.dummyModeDesc}</p>
           </div>
         </div>
@@ -284,7 +278,7 @@ const Reports = () => {
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
           <FiCheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-green-900 mb-1">{t.reports.emailConfigured}</h3>
+            <h3 className="font-medium text-green-900 mb-1">{t.reports.emailConfigured}</h3>
             <p className="text-sm text-green-700">{emailStatus.message}</p>
           </div>
         </div>
@@ -313,8 +307,8 @@ const Reports = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Custom Report Form */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="card p-6">
+            <h2 className="text-base font-medium text-gray-900 mb-4 flex items-center gap-2">
               <FiSend className="w-5 h-5" />
               {t.reports.customReport.title}
             </h2>
@@ -322,7 +316,7 @@ const Reports = () => {
             <div className="space-y-4">
               {/* Recipients */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-normal text-gray-700 mb-2">
                   {t.reports.customReport.recipients}
                 </label>
                 <input
@@ -343,7 +337,7 @@ const Reports = () => {
               {/* Date Range */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-normal text-gray-700 mb-2">
                     {t.reports.customReport.startDate}
                   </label>
                   <input
@@ -357,7 +351,7 @@ const Reports = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-normal text-gray-700 mb-2">
                     {t.reports.customReport.endDate}
                   </label>
                   <input
@@ -394,7 +388,7 @@ const Reports = () => {
               {/* Report Sections */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-normal text-gray-700">
                     {t.reports.customReport.sections}
                   </label>
                   <div className="flex gap-2">
@@ -470,8 +464,8 @@ const Reports = () => {
         {/* Quick Actions Sidebar */}
         <div className="space-y-6">
           {/* Quick Actions */}
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="card p-6">
+            <h2 className="text-base font-medium text-gray-900 mb-4 flex items-center gap-2">
               <FiUsers className="w-5 h-5" />
               {t.reports.quickActions.title}
             </h2>
@@ -520,8 +514,8 @@ const Reports = () => {
           </div>
 
           {/* Test Email */}
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="card p-6">
+            <h2 className="text-base font-medium text-gray-900 mb-4 flex items-center gap-2">
               <FiMail className="w-5 h-5" />
               {t.reports.testEmail.title}
             </h2>
@@ -550,8 +544,8 @@ const Reports = () => {
           </div>
 
           {/* Email Status Card */}
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="card p-6">
+            <h2 className="text-base font-medium text-gray-900 mb-4">
               {t.reports.status.title}
             </h2>
 

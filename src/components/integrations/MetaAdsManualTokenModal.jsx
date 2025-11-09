@@ -57,7 +57,7 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-base font-medium text-gray-900">
               {t.integrations.metaAdsModal.title}
             </h3>
             <button
@@ -93,7 +93,7 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
             {/* Instructions */}
             {showHelp && (
               <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm">
-                <h4 className="font-semibold text-blue-900 mb-2">
+                <h4 className="font-medium text-blue-900 mb-2">
                   {t.integrations.metaAdsModal.instructionsTitle}
                 </h4>
                 <ol className="list-decimal list-inside space-y-2 text-blue-800">
@@ -111,7 +111,7 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
             <div className="mb-4">
               <label
                 htmlFor="accessToken"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-normal text-gray-700 mb-2"
               >
                 {t.integrations.metaAdsModal.accessTokenLabel}{' '}
                 <span className="text-red-500">*</span>
@@ -135,7 +135,7 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
             <div className="mb-4">
               <label
                 htmlFor="accountId"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-normal text-gray-700 mb-2"
               >
                 {t.integrations.metaAdsModal.accountIdLabel}{' '}
                 <span className="text-red-500">*</span>
@@ -159,7 +159,7 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
             <div className="mb-6">
               <label
                 htmlFor="accountName"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-normal text-gray-700 mb-2"
               >
                 {t.integrations.metaAdsModal.accountNameLabel}
               </label>
@@ -182,14 +182,14 @@ const MetaAdsManualTokenModal = ({ isOpen, onClose, onSubmit, loading, error }) 
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 disabled={loading}
               >
                 {t.common.cancel}
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 disabled={loading || !accessToken || !accountId}
               >
                 {loading ? (

@@ -65,45 +65,34 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 px-4 py-12">
+      <div className="max-w-[420px] w-full space-y-10">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-primary-600 mb-2">
-          Nerdee
+        <div className="text-center space-y-3">
+          <h1 className="text-6xl font-bold text-gray-900 tracking-tight">
+            Nerdee
           </h1>
-          <h2 className="text-2xl font-semibold text-gray-900">
+          <p className="text-gray-500 text-sm font-medium">
             {t.auth.createAccount}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {t.auth.signInToDashboard}
           </p>
         </div>
 
         {/* Registration form */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white/60 backdrop-blur-sm border border-gray-200/60 rounded-2xl p-10 shadow-xl shadow-gray-900/5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Error message */}
             {registerError && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-                <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm text-red-800">{registerError}</p>
-                </div>
+              <div className="bg-red-50/80 border border-red-100 rounded-xl p-3.5 flex items-center gap-3">
+                <FiAlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                <p className="text-sm text-red-700 font-medium">{registerError}</p>
               </div>
             )}
 
             {/* Name field */}
             <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t.auth.name}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiUser className="h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FiUser className="h-4 w-4 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
                 </div>
                 <input
                   id="name"
@@ -113,26 +102,20 @@ const RegisterForm = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="John Doe"
+                  className="block w-full pl-11 pr-4 py-4 bg-white/80 border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 focus:bg-white transition-all duration-200 text-gray-900 placeholder:text-gray-400 text-sm font-medium"
+                  placeholder={t.auth.name}
                 />
               </div>
               {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                <p className="mt-2 text-xs text-red-600 font-medium">{errors.name}</p>
               )}
             </div>
 
             {/* Company field */}
             <div>
-              <label
-                htmlFor="company"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t.auth.company}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiBriefcase className="h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FiBriefcase className="h-4 w-4 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
                 </div>
                 <input
                   id="company"
@@ -142,26 +125,20 @@ const RegisterForm = () => {
                   required
                   value={formData.company}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Your Company Inc."
+                  className="block w-full pl-11 pr-4 py-4 bg-white/80 border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 focus:bg-white transition-all duration-200 text-gray-900 placeholder:text-gray-400 text-sm font-medium"
+                  placeholder={t.auth.company}
                 />
               </div>
               {errors.company && (
-                <p className="mt-1 text-sm text-red-600">{errors.company}</p>
+                <p className="mt-2 text-xs text-red-600 font-medium">{errors.company}</p>
               )}
             </div>
 
             {/* Email field */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t.auth.email}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiMail className="h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FiMail className="h-4 w-4 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
                 </div>
                 <input
                   id="email"
@@ -171,26 +148,20 @@ const RegisterForm = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="block w-full pl-11 pr-4 py-4 bg-white/80 border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 focus:bg-white transition-all duration-200 text-gray-900 placeholder:text-gray-400 text-sm font-medium"
                   placeholder={t.auth.emailPlaceholder}
                 />
               </div>
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                <p className="mt-2 text-xs text-red-600 font-medium">{errors.email}</p>
               )}
             </div>
 
             {/* Password field */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t.auth.password}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiLock className="h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FiLock className="h-4 w-4 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
                 </div>
                 <input
                   id="password"
@@ -200,26 +171,20 @@ const RegisterForm = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="block w-full pl-11 pr-4 py-4 bg-white/80 border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 focus:bg-white transition-all duration-200 text-gray-900 placeholder:text-gray-400 text-sm font-medium"
                   placeholder={t.auth.passwordPlaceholder}
                 />
               </div>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                <p className="mt-2 text-xs text-red-600 font-medium">{errors.password}</p>
               )}
             </div>
 
             {/* Confirm Password field */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t.auth.confirmPassword}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiLock className="h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FiLock className="h-4 w-4 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
                 </div>
                 <input
                   id="confirmPassword"
@@ -229,33 +194,27 @@ const RegisterForm = () => {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="block w-full pl-11 pr-4 py-4 bg-white/80 border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 focus:bg-white transition-all duration-200 text-gray-900 placeholder:text-gray-400 text-sm font-medium"
                   placeholder={t.auth.confirmPassword}
                 />
               </div>
               {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                <p className="mt-2 text-xs text-red-600 font-medium">{errors.confirmPassword}</p>
               )}
             </div>
 
             {/* Language field */}
             <div>
-              <label
-                htmlFor="language"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t.settings.language}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiGlobe className="h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FiGlobe className="h-4 w-4 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
                 </div>
                 <select
                   id="language"
                   name="language"
                   value={formData.language}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white"
+                  className="block w-full pl-11 pr-4 py-4 bg-white/80 border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 focus:bg-white transition-all duration-200 text-gray-900 text-sm font-medium appearance-none cursor-pointer"
                 >
                   <option value="es">Español</option>
                   <option value="en">English</option>
@@ -267,7 +226,7 @@ const RegisterForm = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-xl py-4 font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-gray-900/10 hover:shadow-xl hover:shadow-gray-900/20 mt-8"
             >
               {isLoading ? (
                 <LoadingSpinner size="sm" />
@@ -281,7 +240,7 @@ const RegisterForm = () => {
         {/* Footer */}
         <p className="text-center text-sm text-gray-500">
           {t.auth.alreadyHaveAccount}{' '}
-          <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
+          <Link to="/login" className="font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200 underline decoration-gray-300 hover:decoration-primary-600 underline-offset-2">
             {t.auth.signIn}
           </Link>
         </p>

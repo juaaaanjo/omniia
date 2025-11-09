@@ -19,9 +19,9 @@ const ChatHistory = ({ messages, isTyping }) => {
     return (
       <div className="flex-1 flex items-center justify-center p-8 text-center">
         <div>
-          <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-500/20">
             <svg
-              className="w-8 h-8 text-primary-600"
+              className="w-8 h-8 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -34,10 +34,10 @@ const ChatHistory = ({ messages, isTyping }) => {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-base font-semibold text-gray-900 mb-2">
             {t.chat.startConversation}
           </h3>
-          <p className="text-sm text-gray-500 max-w-md">
+          <p className="text-xs text-gray-500 max-w-md">
             {t.chat.askAnything}
           </p>
         </div>
@@ -53,10 +53,10 @@ const ChatHistory = ({ messages, isTyping }) => {
 
       {/* Typing indicator */}
       {isTyping && (
-        <div className="flex gap-3 p-4 bg-gray-50">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+        <div className="flex gap-3 p-5 bg-gray-50/50">
+          <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-sm">
             <svg
-              className="w-5 h-5 text-primary-600"
+              className="w-4 h-4 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -70,7 +70,7 @@ const ChatHistory = ({ messages, isTyping }) => {
             </svg>
           </div>
           <div className="flex-1">
-            <div className="text-sm font-medium text-gray-900 mb-2">
+            <div className="text-xs font-semibold text-gray-900 mb-2">
               {t.chat.assistantName ?? t.chat.title}
             </div>
             <LoadingSpinner size="sm" />

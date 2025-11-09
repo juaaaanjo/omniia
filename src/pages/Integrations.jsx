@@ -201,15 +201,7 @@ const Integrations = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">{t.integrations.title}</h1>
-        <p className="mt-2 text-gray-600">
-          {t.integrations.subtitle}
-        </p>
-      </div>
-
+    <div className="space-y-section">
       {/* Integration Cards */}
       {actionError && (
         <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
@@ -236,8 +228,8 @@ const Integrations = () => {
 
       {/* Sync Status Summary */}
       {syncStatus && (
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Sync Status Summary</h3>
+        <div className="card p-6">
+          <h3 className="text-base font-medium text-gray-900 mb-4">Sync Status Summary</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {['transactions', 'metaAds'].map((key) => {
               const value = syncStatus[key];
@@ -248,10 +240,10 @@ const Integrations = () => {
                   : t.integrations.metaAds;
               return (
                 <div key={key} className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-2xl font-medium text-gray-900">
                     {value.connected ? '✓' : '○'}
                   </div>
-                  <div className="text-sm text-gray-600">{label}</div>
+                  <div className="text-sm font-normal text-gray-600">{label}</div>
                 </div>
               );
             })}

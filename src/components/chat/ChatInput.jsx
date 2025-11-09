@@ -27,7 +27,7 @@ const ChatInput = ({ onSend, disabled = false, placeholder }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border-t border-gray-200 p-4 bg-white">
+    <form onSubmit={handleSubmit} className="border-t border-gray-100 p-4 bg-white rounded-b-2xl">
       <div className="flex items-end gap-2">
         {/* Input field */}
         <div className="flex-1 relative">
@@ -39,19 +39,19 @@ const ChatInput = ({ onSend, disabled = false, placeholder }) => {
             disabled={disabled}
             rows={1}
             className={clsx(
-              'w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg',
-              'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
-              'resize-none',
-              disabled && 'bg-gray-100 cursor-not-allowed'
+              'w-full px-4 py-3 pr-10 border border-gray-200/80 rounded-xl text-sm',
+              'focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500',
+              'resize-none transition-all duration-200 placeholder:text-gray-400',
+              disabled && 'bg-gray-50 cursor-not-allowed'
             )}
-            style={{ maxHeight: '120px', minHeight: '40px' }}
+            style={{ maxHeight: '120px', minHeight: '44px' }}
           />
           <button
             type="button"
-            className="absolute right-2 bottom-2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute right-3 bottom-3 p-1 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
             title={attachTitle}
           >
-            <FiPaperclip className="w-5 h-5" />
+            <FiPaperclip className="w-4 h-4" />
           </button>
         </div>
 
@@ -60,19 +60,19 @@ const ChatInput = ({ onSend, disabled = false, placeholder }) => {
           type="submit"
           disabled={!input.trim() || disabled}
           className={clsx(
-            'p-2 rounded-lg transition-colors',
+            'p-3 rounded-xl transition-all duration-200 shadow-sm',
             input.trim() && !disabled
-              ? 'bg-primary-600 text-white hover:bg-primary-700'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'bg-gray-900 text-white hover:bg-gray-800 shadow-gray-900/10'
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
           )}
           title={sendTitle}
         >
-          <FiSend className="w-5 h-5" />
+          <FiSend className="w-4 h-4" />
         </button>
       </div>
 
       {/* Character count */}
-      <div className="mt-1 text-xs text-gray-500 text-right">
+      <div className="mt-2 text-xs text-gray-400 text-right font-medium">
         {translate('chat.characterCount', {
           used: input.length,
           max: maxCharacters,

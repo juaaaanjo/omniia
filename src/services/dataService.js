@@ -679,6 +679,165 @@ class DataService {
       throw error;
     }
   }
+
+  /**
+   * Record actual outcome for a forecast (LEARNS feature)
+   * @param {string} forecastId - Forecast ID
+   * @param {Object} actualValues - Actual values that occurred
+   * @param {string} notes - Optional notes about the outcome
+   */
+  async recordForecastActual(forecastId, actualValues, notes = '') {
+    try {
+      const endpoint = API_ENDPOINTS.FORECASTING_RECORD_ACTUAL.replace(':id', forecastId);
+      const response = await api.post(endpoint, {
+        values: actualValues,
+        notes
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get forecast accuracy statistics dashboard (LEARNS feature)
+   */
+  async getForecastAccuracyStats() {
+    try {
+      const response = await api.get(API_ENDPOINTS.FORECASTING_ACCURACY_STATS);
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get period comparison (RESEARCHES feature)
+   * @param {string} startDate - Start date for comparison
+   * @param {string} endDate - End date for comparison
+   */
+  async getPeriodComparison(startDate, endDate) {
+    try {
+      const response = await api.get(API_ENDPOINTS.DASHBOARD_COMPARE, {
+        params: { startDate, endDate }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get dashboard insights (RESEARCHES feature)
+   * @param {string} startDate - Start date
+   * @param {string} endDate - End date
+   */
+  async getDashboardInsights(startDate, endDate) {
+    try {
+      const response = await api.get(API_ENDPOINTS.DASHBOARD_INSIGHTS, {
+        params: { startDate, endDate }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get anomalies (RESEARCHES feature)
+   * @param {string} startDate - Start date
+   * @param {string} endDate - End date
+   */
+  async getAnomalies(startDate, endDate) {
+    try {
+      const response = await api.get(API_ENDPOINTS.DATA_ANOMALIES, {
+        params: { startDate, endDate }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get all dashboard metrics (retention, growth, data quality, SAC)
+   * @param {string} dateRange - Date range preset
+   */
+  async getAllMetrics(dateRange = 'last_30_days') {
+    try {
+      const { startDate, endDate } = getDateRangeParams(dateRange);
+      const response = await api.get(API_ENDPOINTS.ALL_METRICS, {
+        params: { startDate, endDate }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get retention metrics
+   * @param {string} dateRange - Date range preset
+   */
+  async getRetentionMetrics(dateRange = 'last_30_days') {
+    try {
+      const { startDate, endDate } = getDateRangeParams(dateRange);
+      const response = await api.get(API_ENDPOINTS.RETENTION_METRICS, {
+        params: { startDate, endDate }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get growth metrics
+   * @param {string} dateRange - Date range preset
+   */
+  async getGrowthMetrics(dateRange = 'last_30_days') {
+    try {
+      const { startDate, endDate } = getDateRangeParams(dateRange);
+      const response = await api.get(API_ENDPOINTS.GROWTH_METRICS, {
+        params: { startDate, endDate }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get data quality metrics
+   * @param {string} dateRange - Date range preset
+   */
+  async getDataQualityMetrics(dateRange = 'last_30_days') {
+    try {
+      const { startDate, endDate } = getDateRangeParams(dateRange);
+      const response = await api.get(API_ENDPOINTS.DATA_QUALITY_METRICS, {
+        params: { startDate, endDate }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get SAC (Customer Service) metrics
+   * @param {string} dateRange - Date range preset
+   */
+  async getSACMetrics(dateRange = 'last_30_days') {
+    try {
+      const { startDate, endDate } = getDateRangeParams(dateRange);
+      const response = await api.get(API_ENDPOINTS.SAC_METRICS, {
+        params: { startDate, endDate }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new DataService();

@@ -179,6 +179,39 @@ class PlanningService {
       throw error;
     }
   }
+
+  /**
+   * Record actual results for a plan (LEARNS feature)
+   * @param {string} planId - Plan ID
+   * @param {Object} actualMetrics - Actual metrics achieved
+   * @param {string} notes - Optional notes about the results
+   */
+  async recordPlanResults(planId, actualMetrics, notes = '') {
+    try {
+      const endpoint = API_ENDPOINTS.PLANNING_RECORD_RESULTS.replace(':planId', planId);
+      const response = await api.post(endpoint, {
+        metrics: actualMetrics,
+        notes
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get plan performance metrics (LEARNS feature)
+   * @param {string} planId - Plan ID
+   */
+  async getPlanPerformance(planId) {
+    try {
+      const endpoint = API_ENDPOINTS.PLANNING_PERFORMANCE.replace(':planId', planId);
+      const response = await api.get(endpoint);
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new PlanningService();

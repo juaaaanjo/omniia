@@ -63,14 +63,14 @@ const IntegrationCard = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="card card-hover p-6">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-lg flex items-center justify-center text-white">
-            {Icon && <Icon className="w-6 h-6" />}
+          <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-lg flex items-center justify-center text-white">
+            {Icon && <Icon className="w-5 h-5" />}
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{name}</h3>
+            <h3 className="text-base font-medium text-gray-900">{name}</h3>
             {getStatusBadge()}
           </div>
         </div>
@@ -85,10 +85,10 @@ const IntegrationCard = ({
         )}
       </div>
 
-      <p className="text-sm text-gray-600 mb-4">{description}</p>
+      <p className="text-sm font-normal text-gray-600 mb-4">{description}</p>
 
       {connected && lastSync && (
-        <div className="mb-4 text-sm text-gray-500">
+        <div className="mb-4 text-sm font-normal text-gray-500">
           <span className="font-medium">{t.integrations.lastSync}:</span>{' '}
           {formatLastSync(lastSync)}
         </div>
@@ -99,7 +99,7 @@ const IntegrationCard = ({
           <button
             onClick={onConnect}
             disabled={loading}
-            className="flex-1 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="flex-1 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? t.common.loading : t.integrations.connect}
           </button>
@@ -108,7 +108,7 @@ const IntegrationCard = ({
             <button
               onClick={handleSync}
               disabled={syncing || loading}
-              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               <FiRefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
               {syncing ? t.integrations.syncing : t.integrations.sync}
@@ -116,7 +116,7 @@ const IntegrationCard = ({
             <button
               onClick={onDisconnect}
               disabled={loading}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t.integrations.disconnect}
             </button>

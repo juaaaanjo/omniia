@@ -52,7 +52,7 @@ src/
    ```
 
 2. **Configure environment variables:**
-   Copy `.env.example` to `.env` and update the values:
+   Copy `.env.example` to `.env` and update the values for your dev server:
    ```bash
    cp .env.example .env
    ```
@@ -64,6 +64,11 @@ src/
    VITE_ENV=development
    ```
 
+   Vite will automatically pick up mode-specific files during builds:
+   - `.env.localhost` targets your local backend (`http://localhost:5000`)
+   - `.env.production` targets the hosted API (`https://api.nerdee.ai`)
+   Override either file if your endpoints differ.
+
 3. **Start the development server:**
    ```bash
    npm run dev
@@ -74,7 +79,9 @@ src/
 ## Available Scripts
 
 - `npm run dev` - Start development server
-- `npm run build` - Build for production
+- `npm run build` - Default build (runs `npm run build:prod`)
+- `npm run build:local` - Build with the localhost API/socket endpoints
+- `npm run build:prod` - Build with `https://api.nerdee.ai`
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
 

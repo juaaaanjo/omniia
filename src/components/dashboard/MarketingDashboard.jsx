@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useData } from '../../hooks/useData';
 import { useLanguage } from '../../hooks/useLanguage';
+import SectionHeader from '../common/SectionHeader';
 import LineChart from '../charts/LineChart';
 import BarChart from '../charts/BarChart';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -142,75 +143,61 @@ const MarketingDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            {t.marketing.dashboard.title}
-          </h2>
-          <p className="mt-1 text-gray-600">
-            {t.marketing.dashboard.subtitle}
-          </p>
-        </div>
-        {formattedRange && (
-          <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
-            <p className="font-medium text-gray-700">
-              {t.marketing.dashboard.reportingWindow}
-            </p>
-            <p>{formattedRange}</p>
-          </div>
-        )}
-      </div>
+      <SectionHeader
+        title={t.marketing.dashboard.title}
+        subtitle={formattedRange || t.marketing.dashboard.subtitle}
+      />
 
       {/* Summary cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
         {summaryCards.map((card) => (
           <div
             key={card.label}
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow hover:shadow-lg transition-shadow"
+            className="card card-hover p-5"
           >
-            <p className="text-sm font-medium text-gray-600">{card.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-gray-900">{card.value}</p>
-            {card.helper && <p className="mt-2 text-sm text-gray-500">{card.helper}</p>}
+            <p className="text-sm font-normal text-gray-500">{card.label}</p>
+            <p className="mt-3 text-xl font-medium text-gray-900">{card.value}</p>
+            {card.helper && <p className="mt-2 text-xs text-gray-400">{card.helper}</p>}
           </div>
         ))}
       </div>
 
       {/* Top performer */}
       {topPerformer && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
+        <div className="card p-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-base font-medium text-gray-900">
                 {t.marketing.dashboard.topPerformer.title}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm font-normal text-gray-500">
                 {t.marketing.dashboard.topPerformer.subtitle}
               </p>
             </div>
-            <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600">
+            <span className="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-sm font-medium text-primary-600">
               {translate('marketing.dashboard.topPerformer.spendPill', {
                 value: formatCurrency(topPerformer?.totalSpend ?? 0, REPORTING_CURRENCY),
               })}
             </span>
           </div>
-          <h4 className="mt-4 text-xl font-semibold text-gray-900">
+          <h4 className="mt-4 text-lg font-medium text-gray-900">
             {topPerformer?.campaignName ?? 'Unnamed campaign'}
           </h4>
           <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <dt className="text-sm text-gray-500">{t.kpi.impressions}</dt>
+              <dt className="text-sm font-normal text-gray-500">{t.kpi.impressions}</dt>
               <dd className="text-lg font-medium text-gray-900">
                 {formatNumber(topPerformer?.totalImpressions ?? 0, 1)}
               </dd>
             </div>
             <div>
-              <dt className="text-sm text-gray-500">{t.kpi.clicks}</dt>
+              <dt className="text-sm font-normal text-gray-500">{t.kpi.clicks}</dt>
               <dd className="text-lg font-medium text-gray-900">
                 {formatNumber(topPerformer?.totalClicks ?? 0, 1)}
               </dd>
             </div>
             <div>
-              <dt className="text-sm text-gray-500">
+              <dt className="text-sm font-normal text-gray-500">
                 {t.marketing.dashboard.topPerformer.avgCpc}
               </dt>
               <dd className="text-lg font-medium text-gray-900">
@@ -218,7 +205,7 @@ const MarketingDashboard = () => {
               </dd>
             </div>
             <div>
-              <dt className="text-sm text-gray-500">{t.kpi.roas}</dt>
+              <dt className="text-sm font-normal text-gray-500">{t.kpi.roas}</dt>
               <dd className="text-lg font-medium text-gray-900">
                 {Number(topPerformer?.roas ?? 0).toFixed(2)}x
               </dd>
@@ -228,18 +215,18 @@ const MarketingDashboard = () => {
       )}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
+        <div className="card p-6">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-base font-medium text-gray-900">
                 {t.marketing.dashboard.dailyPerformance.title}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm font-normal text-gray-500">
                 {t.marketing.dashboard.dailyPerformance.subtitle}
               </p>
             </div>
             {isLoading && (
-              <span className="text-xs font-medium text-blue-600">
+              <span className="text-xs font-medium text-primary-600">
                 {t.marketing.dashboard.dailyPerformance.refreshing}
               </span>
             )}
@@ -256,17 +243,17 @@ const MarketingDashboard = () => {
           />
         </div>
 
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
+        <div className="card p-6">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-base font-medium text-gray-900">
                 {t.marketing.dashboard.topCampaigns.title}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm font-normal text-gray-500">
                 {t.marketing.dashboard.topCampaigns.subtitle}
               </p>
             </div>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-400">
               {translate('marketing.dashboard.topCampaigns.showing', {
                 visible: campaignChartData.length,
                 total: campaigns.length,
@@ -285,17 +272,17 @@ const MarketingDashboard = () => {
         </div>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
+      <div className="card p-6">
         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-base font-medium text-gray-900">
               {t.marketing.dashboard.table.title}
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm font-normal text-gray-500">
               {t.marketing.dashboard.table.subtitle}
             </p>
           </div>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-400">
             {translate('marketing.dashboard.table.showing', {
               count: topCampaigns.length,
             })}

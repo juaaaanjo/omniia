@@ -29,6 +29,16 @@ export const API_ENDPOINTS = {
   MARKETING: '/dashboard/marketing',
   FINANCE: '/dashboard/finance',
   CROSS_ANALYSIS: '/dashboard/cross-analysis',
+  DASHBOARD_COMPARE: '/dashboard/compare',
+  DASHBOARD_INSIGHTS: '/dashboard/insights',
+  DATA_ANOMALIES: '/data/anomalies',
+
+  // New Metrics
+  RETENTION_METRICS: '/dashboard/retention',
+  GROWTH_METRICS: '/dashboard/growth',
+  DATA_QUALITY_METRICS: '/dashboard/data-quality',
+  SAC_METRICS: '/dashboard/sac',
+  ALL_METRICS: '/dashboard/all-metrics',
 
   // Chat
   CHAT_ASK: '/chat/ask',
@@ -64,6 +74,8 @@ export const API_ENDPOINTS = {
   FORECASTING_QUICK: '/forecasting/quick',
   FORECASTING_GENERATE: '/forecasting/generate',
   FORECASTING_SCENARIOS: '/forecasting/scenarios',
+  FORECASTING_RECORD_ACTUAL: '/admin/forecasts/:id/actual',
+  FORECASTING_ACCURACY_STATS: '/admin/forecasts/stats/dashboard',
 
   // Planning (Auto-Generated)
   PLANNING: '/planning',
@@ -75,6 +87,8 @@ export const API_ENDPOINTS = {
   PLANNING_ACTION_ITEM: '/planning/:planId/actions/:actionId',
   PLANNING_MILESTONE: '/planning/:planId/milestones/:milestoneId',
   PLANNING_STATS: '/planning/stats',
+  PLANNING_RECORD_RESULTS: '/planning/:planId/results',
+  PLANNING_PERFORMANCE: '/planning/:planId/performance',
 
   // EIO (Operational Intelligence)
   EIO_ALERTS: '/eio/alerts',

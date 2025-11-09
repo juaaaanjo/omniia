@@ -111,8 +111,8 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
             <p className="text-xs uppercase tracking-wide text-gray-400">
               {translate('dashboard.eio.detail.category')} · {alert.category}
             </p>
-            <h3 className="mt-1 text-xl font-semibold text-gray-900">{alert.title}</h3>
-            <p className="mt-2 text-sm text-gray-600">{alert.description}</p>
+            <h3 className="mt-1 text-xl font-medium text-gray-900">{alert.title}</h3>
+            <p className="mt-2 text-sm font-normal text-gray-600">{alert.description}</p>
           </div>
           <button
             type="button"
@@ -125,7 +125,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
 
         <div className="flex-1 space-y-6 overflow-y-auto px-6 py-5">
           <div className="flex flex-wrap items-center gap-3">
-            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${severityClasses[normalizeStatus(alert.severity)] || severityClasses.low}`}>
+            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${severityClasses[normalizeStatus(alert.severity)] || severityClasses.low}`}>
               <FiAlertCircle className="mr-1 h-4 w-4" />
               {severityLabel}
             </span>
@@ -142,7 +142,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
 
           {alert.metric && (
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {translate('dashboard.eio.detail.metricTitle')}
               </p>
               <div className="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -178,7 +178,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
                   <p className="text-xs text-gray-500">
                     {translate('dashboard.eio.detail.metricChange')}
                   </p>
-                  <p className={`text-sm font-semibold ${metricChange > 0 ? 'text-emerald-600' : metricChange < 0 ? 'text-rose-600' : 'text-gray-700'}`}>
+                  <p className={`text-sm font-medium ${metricChange > 0 ? 'text-emerald-600' : metricChange < 0 ? 'text-rose-600' : 'text-gray-700'}`}>
                     {metricChange != null ? `${metricChange.toFixed(2)}%` : '—'}
                   </p>
                 </div>
@@ -188,7 +188,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
 
           {Array.isArray(alert.insights) && alert.insights.length > 0 && (
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {translate('dashboard.eio.detail.insights')}
               </p>
               <ul className="mt-2 space-y-2">
@@ -203,7 +203,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
 
           {recommendedActions.length > 0 && (
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {translate('dashboard.eio.detail.recommendedActions')}
               </p>
               <div className="mt-2 space-y-3">
@@ -211,7 +211,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
                   <div key={action._id || action.title} className="rounded-lg border border-gray-200 p-3">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">
+                        <p className="text-sm font-medium text-gray-800">
                           {action.title}
                         </p>
                         <p className="mt-1 text-sm text-gray-600">
@@ -240,7 +240,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-lg border border-gray-200 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {translate('dashboard.eio.detail.timeline')}
               </p>
               <ul className="mt-3 space-y-2 text-sm text-gray-600">
@@ -272,7 +272,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
             </div>
 
             <div className="rounded-lg border border-gray-200 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {translate('dashboard.eio.detail.metadata')}
               </p>
               <div className="mt-3 space-y-2 text-sm text-gray-600">
@@ -300,7 +300,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
 
           {contextEntries.length > 0 && (
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {translate('dashboard.eio.detail.context')}
               </p>
               <div className="mt-2 grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -321,7 +321,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
 
           {viewedBy.length > 0 && (
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {translate('dashboard.eio.detail.viewedBy')}
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
@@ -397,7 +397,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
                 type="button"
                 onClick={() => handleAction('review')}
                 disabled={loading}
-                className="inline-flex items-center rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-100 disabled:opacity-60"
+                className="inline-flex items-center rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100 disabled:opacity-60"
               >
                 {translate('dashboard.eio.actions.review')}
               </button>
@@ -405,7 +405,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
                 type="button"
                 onClick={() => handleAction('resolve')}
                 disabled={loading}
-                className="inline-flex items-center rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-600 hover:bg-emerald-100 disabled:opacity-60"
+                className="inline-flex items-center rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-100 disabled:opacity-60"
               >
                 {translate('dashboard.eio.actions.resolve')}
               </button>
@@ -413,7 +413,7 @@ const EioAlertModal = ({ isOpen, alert, onClose, onAction, loading }) => {
                 type="button"
                 onClick={() => handleAction('apply')}
                 disabled={loading}
-                className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm text-white shadow-sm hover:bg-primary-700 disabled:opacity-60"
               >
                 {loading && <FiClock className="h-4 w-4 animate-spin" />}
                 {translate('dashboard.eio.actions.apply')}

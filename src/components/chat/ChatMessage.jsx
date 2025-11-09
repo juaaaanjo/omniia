@@ -87,31 +87,31 @@ const ChatMessage = ({ message }) => {
   return (
     <div
       className={clsx(
-        'flex gap-3 p-4',
-        isAI ? 'bg-gray-50' : 'bg-white'
+        'flex gap-3 p-5',
+        isAI ? 'bg-gray-50/50' : 'bg-white'
       )}
     >
       {/* Avatar */}
       <div
         className={clsx(
-          'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
-          isAI ? 'bg-primary-100' : 'bg-gray-200'
+          'flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center shadow-sm',
+          isAI ? 'bg-gradient-to-br from-primary-500 to-primary-600' : 'bg-gray-200'
         )}
       >
         {isAI ? (
-          <FiCpu className="w-5 h-5 text-primary-600" />
+          <FiCpu className="w-4 h-4 text-white" />
         ) : (
-          <FiUser className="w-5 h-5 text-gray-600" />
+          <FiUser className="w-4 h-4 text-gray-600" />
         )}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-sm font-medium text-gray-900">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-semibold text-gray-900">
             {isAI ? assistantLabel : userLabel}
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-gray-400">
             {formatRelativeTime(message.timestamp)}
           </span>
         </div>
@@ -173,14 +173,14 @@ const ChatMessage = ({ message }) => {
 
         {/* Chart */}
         {message.chart && (
-          <div className="mt-4 bg-white rounded-lg border border-gray-200 p-4">
+          <div className="mt-4 bg-white rounded-xl border border-gray-200/60 p-4 shadow-sm">
             {renderChart()}
           </div>
         )}
 
         {/* Table */}
         {message.table && (
-          <div className="mt-4 bg-white rounded-lg border border-gray-200 p-4">
+          <div className="mt-4 bg-white rounded-xl border border-gray-200/60 p-4 shadow-sm">
             {renderTable()}
           </div>
         )}
@@ -191,7 +191,7 @@ const ChatMessage = ({ message }) => {
             {message.suggestions.map((suggestion, idx) => (
               <button
                 key={idx}
-                className="text-xs px-3 py-1 bg-primary-50 text-primary-600 rounded-full hover:bg-primary-100 transition-colors"
+                className="text-xs px-3 py-1.5 bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200 font-medium border border-primary-100 hover:border-primary-600"
               >
                 {suggestion}
               </button>

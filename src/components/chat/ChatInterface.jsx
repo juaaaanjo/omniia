@@ -56,22 +56,22 @@ const ChatInterface = ({ area = 'analytics' }) => {
   return (
     <div
       className={clsx(
-        'fixed right-6 bottom-6 bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-50 transition-all',
+        'fixed right-6 bottom-6 card flex flex-col z-50 transition-all shadow-xl shadow-gray-900/10',
         isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-primary-600 text-white rounded-t-lg">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-          <h3 className="font-semibold">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-t-2xl">
+        <div className="flex items-center gap-2.5">
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
+          <h3 className="font-semibold text-sm">
             {t.chat.assistantName ?? t.chat.title}
           </h3>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
             onClick={() => setIsMinimized(!isMinimized)}
-            className="p-1 hover:bg-primary-700 rounded transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
             title={isMinimized ? t.chat.actions.maximize : t.chat.actions.minimize}
           >
             {isMinimized ? (
@@ -82,14 +82,14 @@ const ChatInterface = ({ area = 'analytics' }) => {
           </button>
           <button
             onClick={handleClearHistory}
-            className="p-1 hover:bg-primary-700 rounded transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
             title={t.chat.actions.clear}
           >
             <FiTrash2 className="w-4 h-4" />
           </button>
           <button
             onClick={closeChat}
-            className="p-1 hover:bg-primary-700 rounded transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
             title={t.chat.actions.close}
           >
             <FiX className="w-4 h-4" />
@@ -102,8 +102,8 @@ const ChatInterface = ({ area = 'analytics' }) => {
         <>
           {/* Suggested questions */}
           {messages.length === 0 && (
-            <div className="p-4 border-b border-gray-200 bg-gray-50">
-              <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+            <div className="p-5 border-b border-gray-100 bg-gray-50/50">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                 {t.chat.suggestedQuestions}
               </p>
               <div className="space-y-2">
@@ -111,7 +111,7 @@ const ChatInterface = ({ area = 'analytics' }) => {
                   <button
                     key={idx}
                     onClick={() => handleSuggestedQuestion(question)}
-                    className="w-full text-left text-sm px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-primary-50 hover:border-primary-300 transition-colors"
+                    className="w-full text-left text-xs px-4 py-3 bg-white border border-gray-200/60 rounded-xl hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-200 font-medium shadow-sm"
                   >
                     {question}
                   </button>

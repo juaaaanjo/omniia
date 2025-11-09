@@ -27,6 +27,60 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Card styles from design system */
+  .card {
+    @apply bg-white rounded-2xl;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .card-hover {
+    @apply transition-all duration-200;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply px-6 py-2.5 bg-primary-600 text-white rounded-button font-medium shadow-button hover:bg-primary-700 transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2.5 bg-white text-gray-700 border border-gray-300 rounded-button font-medium shadow-button hover:bg-gray-50 transition-colors duration-200;
+  }
+
+  .btn-pill {
+    @apply px-5 py-2 bg-white text-gray-700 border border-gray-200 rounded-pill font-medium text-sm hover:bg-gray-50 transition-colors duration-200;
+  }
+
+  /* Status badge */
+  .badge {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-pill text-sm font-medium;
+  }
+
+  .badge-stable {
+    @apply bg-status-stable-50 text-status-stable-600;
+  }
+
+  .badge-pending {
+    @apply bg-status-pending-50 text-status-pending-600;
+  }
+
+  .badge-executed {
+    @apply bg-status-executed-50 text-status-executed-600;
+  }
+
+  .badge-review {
+    @apply bg-status-review-50 text-status-review-600;
+  }
+
+  /* Category card styles */
+  .category-card {
+    @apply card;
+    padding: 20px;
+  }
 }
 
 /* Custom animations */

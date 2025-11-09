@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useData } from '../../hooks/useData';
 import { useLanguage } from '../../hooks/useLanguage';
+import SectionHeader from '../common/SectionHeader';
 import LoadingSpinner from '../common/LoadingSpinner';
-import Badge from '../common/Badge';
+import StatusBadge from '../common/StatusBadge';
 import PieChart from '../charts/PieChart';
 import LineChart from '../charts/LineChart';
 import BarChart from '../charts/BarChart';
@@ -149,32 +150,24 @@ const FinanceDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t.finance.overview}</h1>
-          {formattedDateRange && (
-            <p className="mt-1 text-sm text-gray-500">
-              {(t.finance.dateRangeLabel ?? 'Reporting period') + ': ' + formattedDateRange}
-            </p>
-          )}
-        </div>
-        {financeData.paymentDataSource && (
-          <Badge color="blue" size="sm">
-            {t.finance.dataSource}: {financeData.paymentDataSource}
-          </Badge>
+      <SectionHeader
+        title={t.finance.overview}
+        subtitle={formattedDateRange}
+        action={financeData.paymentDataSource && (
+          <StatusBadge status="stable" label={`${t.finance.dataSource}: ${financeData.paymentDataSource}`} showDot={false} />
         )}
-      </div>
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {summaryCards.map(({ id, label, value, icon: Icon, bg, iconColor }) => (
-          <div key={id} className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`w-12 h-12 ${bg} rounded-full flex items-center justify-center`}>
-                <Icon className={`w-6 h-6 ${iconColor}`} />
+          <div key={id} className="card card-hover p-5">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 ${bg} rounded-lg flex items-center justify-center`}>
+                <Icon className={`w-5 h-5 ${iconColor}`} />
               </div>
               <div>
-                <p className="text-sm text-gray-500">{label}</p>
-                <p className="text-2xl font-semibold text-gray-900">{value}</p>
+                <p className="text-sm font-normal text-gray-500">{label}</p>
+                <p className="text-xl font-medium text-gray-900">{value}</p>
               </div>
             </div>
           </div>
@@ -192,8 +185,8 @@ const FinanceDashboard = () => {
 
       {(hasRevenueVsCosts || hasCashFlow) && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="card p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">
               {t.finance.revenueVsCosts ?? 'Revenue vs Costs'}
             </h3>
             {hasRevenueVsCosts ? (
@@ -212,8 +205,8 @@ const FinanceDashboard = () => {
             )}
           </div>
 
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="card p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">
               {t.finance.cashFlow ?? 'Cash Flow'}
             </h3>
             {hasCashFlow ? (
@@ -234,8 +227,8 @@ const FinanceDashboard = () => {
       )}
 
       {hasBudgetVsActual && (
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="card p-6">
+          <h3 className="text-base font-medium text-gray-900 mb-4">
             {t.finance.budgetVsActual}
           </h3>
           <BarChart
@@ -252,8 +245,8 @@ const FinanceDashboard = () => {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="card p-6">
+          <h3 className="text-base font-medium text-gray-900 mb-4">
             {t.finance.expensesByCategory ?? 'Expenses by Category'}
           </h3>
           {expensesByCategory.length > 0 ? (
@@ -263,15 +256,15 @@ const FinanceDashboard = () => {
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="card p-6">
+          <h3 className="text-base font-medium text-gray-900 mb-4">
             {t.finance.arAging ?? 'Accounts Receivable Aging'}
           </h3>
           {arAging.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
-                  <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <tr className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     <th className="px-4 py-2">{t.finance.bucket ?? 'Bucket'}</th>
                     <th className="px-4 py-2">{t.finance.amount ?? 'Amount'}</th>
                     <th className="px-4 py-2">{t.finance.invoices ?? 'Invoices'}</th>

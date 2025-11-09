@@ -11,7 +11,9 @@ import {
   FiTrendingUp,
   FiDollarSign,
   FiCalendar,
-  FiAlertCircle
+  FiAlertCircle,
+  FiCheckCircle,
+  FiBarChart
 } from 'react-icons/fi';
 import { useLanguage } from '../hooks/useLanguage';
 import { ROUTES } from '../utils/constants';
@@ -27,6 +29,17 @@ const PlanDetail = () => {
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showResultsModal, setShowResultsModal] = useState(false);
+  const [resultsData, setResultsData] = useState({
+    revenue: '',
+    customers: '',
+    adSpend: '',
+    roas: '',
+    notes: '',
+  });
+  const [recordingResults, setRecordingResults] = useState(false);
+  const [recordSuccess, setRecordSuccess] = useState(false);
+  const [performance, setPerformance] = useState(null);
 
   useEffect(() => {
     fetchPlanDetail();
@@ -37,10 +50,80 @@ const PlanDetail = () => {
       setLoading(true);
       const response = await planningService.getPlanById(planId);
       setPlan(response);
+
+      // Fetch performance metrics if plan is completed
+      if (response.status === 'completed') {
+        try {
+          const perfData = await planningService.getPlanPerformance(planId);
+          setPerformance(perfData);
+        } catch (err) {
+          console.error('Error fetching performance:', err);
+        }
+      }
     } catch (error) {
       console.error('Error fetching plan details:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleOpenResultsModal = () => {
+    // Pre-fill with baseline or existing results
+    if (plan.baseline) {
+      setResultsData({
+        revenue: plan.baseline.revenue || '',
+        customers: plan.baseline.customers || '',
+        adSpend: plan.baseline.adSpend || '',
+        roas: plan.baseline.roas || '',
+        notes: '',
+      });
+    }
+    setRecordSuccess(false);
+    setShowResultsModal(true);
+  };
+
+  const handleCloseResultsModal = () => {
+    setShowResultsModal(false);
+    setResultsData({
+      revenue: '',
+      customers: '',
+      adSpend: '',
+      roas: '',
+      notes: '',
+    });
+    setRecordSuccess(false);
+  };
+
+  const handleRecordResults = async (e) => {
+    e.preventDefault();
+
+    try {
+      setRecordingResults(true);
+
+      // Build actualMetrics object from form data
+      const actualMetrics = {};
+      if (resultsData.revenue) actualMetrics.revenue = parseFloat(resultsData.revenue);
+      if (resultsData.customers) actualMetrics.customers = parseFloat(resultsData.customers);
+      if (resultsData.adSpend) actualMetrics.adSpend = parseFloat(resultsData.adSpend);
+      if (resultsData.roas) actualMetrics.roas = parseFloat(resultsData.roas);
+
+      await planningService.recordPlanResults(
+        planId,
+        actualMetrics,
+        resultsData.notes
+      );
+
+      setRecordSuccess(true);
+
+      // Reload plan and performance data after 2 seconds
+      setTimeout(async () => {
+        await fetchPlanDetail();
+        handleCloseResultsModal();
+      }, 2000);
+    } catch (error) {
+      console.error('Error recording results:', error);
+    } finally {
+      setRecordingResults(false);
     }
   };
 
@@ -203,6 +286,15 @@ const PlanDetail = () => {
               </button>
             </>
           )}
+          {(plan.status === 'active' || plan.status === 'completed') && (
+            <button
+              onClick={handleOpenResultsModal}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <FiBarChart className="w-4 h-4" />
+              {t.planning.results.record}
+            </button>
+          )}
         </div>
       </div>
 
@@ -294,6 +386,132 @@ const PlanDetail = () => {
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* Baseline Metrics */}
+              {plan.baseline && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Baseline (Starting Point)</h3>
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {plan.baseline.revenue !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Revenue</p>
+                          <p className="text-lg font-semibold text-gray-900">{formatCurrency(plan.baseline.revenue)}</p>
+                        </div>
+                      )}
+                      {plan.baseline.customers !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Customers</p>
+                          <p className="text-lg font-semibold text-gray-900">{plan.baseline.customers}</p>
+                        </div>
+                      )}
+                      {plan.baseline.adSpend !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Ad Spend</p>
+                          <p className="text-lg font-semibold text-gray-900">{formatCurrency(plan.baseline.adSpend)}</p>
+                        </div>
+                      )}
+                      {plan.baseline.roas !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">ROAS</p>
+                          <p className="text-lg font-semibold text-gray-900">{plan.baseline.roas.toFixed(2)}x</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Performance Metrics */}
+              {performance && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.results.performance}</h3>
+
+                  {/* Overall Performance */}
+                  {performance.goalAchievement !== undefined && (
+                    <div className={`rounded-lg p-6 border-2 mb-4 ${
+                      performance.goalAchievement >= 100
+                        ? 'bg-green-50 border-green-300'
+                        : performance.goalAchievement >= 80
+                        ? 'bg-yellow-50 border-yellow-300'
+                        : 'bg-red-50 border-red-300'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">{t.planning.results.goalAchievement}</p>
+                          <p className={`text-4xl font-bold ${
+                            performance.goalAchievement >= 100
+                              ? 'text-green-700'
+                              : performance.goalAchievement >= 80
+                              ? 'text-yellow-700'
+                              : 'text-red-700'
+                          }`}>
+                            {performance.goalAchievement.toFixed(1)}%
+                          </p>
+                        </div>
+                        {performance.goalAchievement >= 100 ? (
+                          <div className="text-center">
+                            <FiCheckCircle className="w-12 h-12 text-green-600 mx-auto mb-2" />
+                            <p className="text-sm font-medium text-green-700">{t.planning.results.goalExceeded}</p>
+                          </div>
+                        ) : performance.goalAchievement < 80 ? (
+                          <div className="text-center">
+                            <FiAlertCircle className="w-12 h-12 text-red-600 mx-auto mb-2" />
+                            <p className="text-sm font-medium text-red-700">{t.planning.results.goalMissed}</p>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Metrics Comparison */}
+                  {performance.metrics && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {Object.entries(performance.metrics).map(([key, data]) => (
+                        <div key={key} className="bg-white rounded-lg p-4 border border-gray-200">
+                          <p className="text-xs text-gray-500 mb-2 capitalize">{key}</p>
+                          <div className="space-y-2">
+                            {data.baseline !== undefined && (
+                              <div>
+                                <p className="text-xs text-gray-600">{t.planning.results.baseline}</p>
+                                <p className="text-sm font-semibold text-gray-900">
+                                  {key === 'revenue' || key === 'adSpend'
+                                    ? formatCurrency(data.baseline)
+                                    : key === 'roas'
+                                    ? `${data.baseline.toFixed(2)}x`
+                                    : data.baseline}
+                                </p>
+                              </div>
+                            )}
+                            {data.actual !== undefined && (
+                              <div>
+                                <p className="text-xs text-gray-600">{t.planning.results.actual}</p>
+                                <p className="text-sm font-semibold text-gray-900">
+                                  {key === 'revenue' || key === 'adSpend'
+                                    ? formatCurrency(data.actual)
+                                    : key === 'roas'
+                                    ? `${data.actual.toFixed(2)}x`
+                                    : data.actual}
+                                </p>
+                              </div>
+                            )}
+                            {data.variance !== undefined && (
+                              <div className="pt-2 border-t border-gray-200">
+                                <p className="text-xs text-gray-600">{t.planning.results.variance}</p>
+                                <p className={`text-sm font-bold ${
+                                  data.variance >= 0 ? 'text-green-600' : 'text-red-600'
+                                }`}>
+                                  {data.variance >= 0 ? '+' : ''}{data.variance.toFixed(1)}%
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -485,6 +703,13 @@ const PlanDetail = () => {
                             </span>
                           </div>
                           <p className="text-sm text-gray-600 mb-2">{action.description}</p>
+                          {action.estimatedImpact && (
+                            <div className="mb-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
+                              <p className="text-sm font-medium text-green-800">
+                                <span className="font-semibold">{t.planning.actions.estimatedImpact}:</span> {action.estimatedImpact}
+                              </p>
+                            </div>
+                          )}
                           {action.deadline && (
                             <p className="text-sm text-gray-500 flex items-center gap-1">
                               <FiCalendar className="w-4 h-4" />
@@ -579,6 +804,193 @@ const PlanDetail = () => {
           )}
         </div>
       </div>
+
+      {/* Record Results Modal */}
+      {showResultsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
+              <h3 className="text-xl font-semibold text-gray-900">
+                {t.planning.results.record}
+              </h3>
+              <button
+                onClick={handleCloseResultsModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {recordSuccess ? (
+                <div className="text-center py-8">
+                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <FiCheckCircle className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                    {t.planning.results.recordSuccess}
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    {t.planning.results.aiWillLearn}
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleRecordResults} className="space-y-4">
+                  <p className="text-sm text-gray-600 mb-4">
+                    {t.planning.results.description}
+                  </p>
+
+                  {/* Show baseline for comparison */}
+                  {plan.baseline && (
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200 mb-6">
+                      <p className="text-sm text-blue-700 mb-2 font-medium">
+                        {t.planning.results.baseline}:
+                      </p>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        {plan.baseline.revenue !== undefined && (
+                          <div>
+                            <span className="text-blue-600">Revenue:</span>{' '}
+                            <span className="font-semibold text-blue-900">
+                              {formatCurrency(plan.baseline.revenue)}
+                            </span>
+                          </div>
+                        )}
+                        {plan.baseline.customers !== undefined && (
+                          <div>
+                            <span className="text-blue-600">Customers:</span>{' '}
+                            <span className="font-semibold text-blue-900">
+                              {plan.baseline.customers}
+                            </span>
+                          </div>
+                        )}
+                        {plan.baseline.adSpend !== undefined && (
+                          <div>
+                            <span className="text-blue-600">Ad Spend:</span>{' '}
+                            <span className="font-semibold text-blue-900">
+                              {formatCurrency(plan.baseline.adSpend)}
+                            </span>
+                          </div>
+                        )}
+                        {plan.baseline.roas !== undefined && (
+                          <div>
+                            <span className="text-blue-600">ROAS:</span>{' '}
+                            <span className="font-semibold text-blue-900">
+                              {plan.baseline.roas.toFixed(2)}x
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Actual Metrics Input */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t.planning.results.actualRevenue}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={resultsData.revenue}
+                        onChange={(e) => setResultsData({ ...resultsData, revenue: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="0.00"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t.planning.results.actualCustomers}
+                      </label>
+                      <input
+                        type="number"
+                        step="1"
+                        value={resultsData.customers}
+                        onChange={(e) => setResultsData({ ...resultsData, customers: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="0"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t.planning.results.actualAdSpend}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={resultsData.adSpend}
+                        onChange={(e) => setResultsData({ ...resultsData, adSpend: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="0.00"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t.planning.results.actualRoas}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={resultsData.roas}
+                        onChange={(e) => setResultsData({ ...resultsData, roas: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Notes Input */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.planning.results.notes}
+                    </label>
+                    <textarea
+                      value={resultsData.notes}
+                      onChange={(e) => setResultsData({ ...resultsData, notes: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder={t.planning.results.notesPlaceholder}
+                      rows="4"
+                    />
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={handleCloseResultsModal}
+                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+                    >
+                      {t.common.cancel}
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={recordingResults}
+                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                    >
+                      {recordingResults ? (
+                        <>
+                          <LoadingSpinner size="sm" />
+                          {t.common.saving}
+                        </>
+                      ) : (
+                        <>
+                          <FiCheckCircle className="w-4 h-4" />
+                          {t.planning.results.submit}
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
