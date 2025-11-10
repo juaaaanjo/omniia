@@ -238,86 +238,88 @@ const PlanDetail = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4">
-          <button
-            onClick={() => navigate(ROUTES.PLANNING)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors mt-1"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{plan.planName}</h1>
-            <p className="text-gray-600 mb-3">{plan.description}</p>
-            <div className="flex flex-wrap gap-2">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getTypeBadge(plan.planType)}`}>
-                {t.planning.planTypes[plan.planType] || plan.planType}
-              </span>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(plan.status)}`}>
-                {t.planning.status[plan.status] || plan.status}
-              </span>
-              <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium flex items-center gap-1">
-                <FiCalendar className="w-4 h-4" />
-                {new Date(plan.createdAt).toLocaleDateString()}
-              </span>
+    <div className="space-y-section">
+      {/* Header Card */}
+      <div className="card p-6">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-4">
+            <button
+              onClick={() => navigate(ROUTES.PLANNING)}
+              className="p-2 hover:bg-gray-50 rounded-lg transition-colors mt-1"
+            >
+              <FiArrowLeft className="w-5 h-5 text-gray-600" />
+            </button>
+            <div>
+              <h1 className="text-2xl font-medium text-gray-900 mb-2">{plan.planName}</h1>
+              <p className="text-sm font-normal text-gray-600 mb-3">{plan.description}</p>
+              <div className="flex flex-wrap gap-2">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getTypeBadge(plan.planType)}`}>
+                  {t.planning.planTypes[plan.planType] || plan.planType}
+                </span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(plan.status)}`}>
+                  {t.planning.status[plan.status] || plan.status}
+                </span>
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium flex items-center gap-1">
+                  <FiCalendar className="w-4 h-4" />
+                  {new Date(plan.createdAt).toLocaleDateString()}
+                </span>
+              </div>
             </div>
           </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            {plan.status === 'draft' && (
+              <>
+                <button
+                  onClick={handleAcceptPlan}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                >
+                  <FiCheck className="w-4 h-4" />
+                  {t.planning.acceptPlan}
+                </button>
+                <button
+                  onClick={handleRejectPlan}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                >
+                  <FiX className="w-4 h-4" />
+                  {t.planning.rejectPlan}
+                </button>
+              </>
+            )}
+            {(plan.status === 'active' || plan.status === 'completed') && (
+              <button
+                onClick={handleOpenResultsModal}
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
+              >
+                <FiBarChart className="w-4 h-4" />
+                {t.planning.results.record}
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          {plan.status === 'draft' && (
-            <>
-              <button
-                onClick={handleAcceptPlan}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                <FiCheck className="w-4 h-4" />
-                {t.planning.acceptPlan}
-              </button>
-              <button
-                onClick={handleRejectPlan}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-              >
-                <FiX className="w-4 h-4" />
-                {t.planning.rejectPlan}
-              </button>
-            </>
-          )}
-          {(plan.status === 'active' || plan.status === 'completed') && (
-            <button
-              onClick={handleOpenResultsModal}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <FiBarChart className="w-4 h-4" />
-              {t.planning.results.record}
-            </button>
-          )}
-        </div>
+        {/* Progress Bar */}
+        {plan.status === 'active' && plan.progress && (
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-base font-medium text-gray-900">{t.planning.detail.progress}</span>
+              <span className="text-xl font-medium text-primary-600">{plan.progress.overall}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div
+                className="bg-primary-600 h-3 rounded-full transition-all duration-300"
+                style={{ width: `${plan.progress.overall}%` }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Progress Bar */}
-      {plan.status === 'active' && plan.progress && (
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-lg font-semibold text-gray-900">{t.planning.detail.progress}</span>
-            <span className="text-2xl font-bold text-primary-600">{plan.progress.overall}%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-4">
-            <div
-              className="bg-primary-600 h-4 rounded-full transition-all duration-300"
-              style={{ width: `${plan.progress.overall}%` }}
-            />
-          </div>
-        </div>
-      )}
-
       {/* Tabs */}
-      <div className="bg-white rounded-lg shadow border border-gray-200">
+      <div className="card">
         <div className="border-b border-gray-200">
-          <nav className="flex -mb-px">
+          <nav className="flex -mb-px overflow-x-auto">
             {[
               { id: 'overview', label: t.planning.detail.overview, icon: FiTarget },
               { id: 'strategy', label: t.planning.detail.strategy, icon: FiTrendingUp },
@@ -330,7 +332,7 @@ const PlanDetail = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors ${
+                  className={`flex items-center gap-2 px-6 py-4 border-b-2 text-sm font-medium transition-colors whitespace-nowrap ${
                     activeTab === tab.id
                       ? 'border-primary-600 text-primary-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -350,20 +352,23 @@ const PlanDetail = () => {
             <div className="space-y-6">
               {/* Goals */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.form.primaryGoal}</h3>
+                <div className="flex items-center gap-3 relative mb-4">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                  <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.form.primaryGoal}</h3>
+                </div>
                 {plan.goals?.primary && (
-                  <div className="bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg p-6 border border-primary-200">
+                  <div className="bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg p-5 border border-primary-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">{plan.goals.primary.metric}</p>
-                        <p className="text-3xl font-bold text-gray-900">
+                        <p className="text-xs font-normal text-gray-600 mb-2">{plan.goals.primary.metric}</p>
+                        <p className="text-2xl font-medium text-gray-900">
                           {formatCurrency(plan.goals.primary.target)} {plan.goals.primary.unit}
                         </p>
                         {plan.goals.primary.description && (
-                          <p className="text-sm text-gray-600 mt-2">{plan.goals.primary.description}</p>
+                          <p className="text-sm font-normal text-gray-600 mt-2">{plan.goals.primary.description}</p>
                         )}
                       </div>
-                      <FiTarget className="w-12 h-12 text-primary-600" />
+                      <FiTarget className="w-10 h-10 text-primary-600" />
                     </div>
                   </div>
                 )}
@@ -372,16 +377,19 @@ const PlanDetail = () => {
               {/* Secondary Goals */}
               {plan.goals?.secondary && plan.goals.secondary.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.form.secondaryGoals}</h3>
+                  <div className="flex items-center gap-3 relative mb-4">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.form.secondaryGoals}</h3>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {plan.goals.secondary.map((goal, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                        <p className="text-sm text-gray-600 mb-1">{goal.metric}</p>
-                        <p className="text-xl font-semibold text-gray-900">
+                        <p className="text-xs font-normal text-gray-600 mb-1">{goal.metric}</p>
+                        <p className="text-lg font-medium text-gray-900">
                           {formatCurrency(goal.target)} {goal.unit}
                         </p>
                         {goal.description && (
-                          <p className="text-sm text-gray-600 mt-2">{goal.description}</p>
+                          <p className="text-sm font-normal text-gray-600 mt-2">{goal.description}</p>
                         )}
                       </div>
                     ))}
@@ -392,31 +400,34 @@ const PlanDetail = () => {
               {/* Baseline Metrics */}
               {plan.baseline && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Baseline (Starting Point)</h3>
+                  <div className="flex items-center gap-3 relative mb-4">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">Baseline (Starting Point)</h3>
+                  </div>
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {plan.baseline.revenue !== undefined && (
                         <div>
-                          <p className="text-xs text-gray-500 mb-1">Revenue</p>
-                          <p className="text-lg font-semibold text-gray-900">{formatCurrency(plan.baseline.revenue)}</p>
+                          <p className="text-xs font-normal text-gray-500 mb-1">Revenue</p>
+                          <p className="text-base font-medium text-gray-900">{formatCurrency(plan.baseline.revenue)}</p>
                         </div>
                       )}
                       {plan.baseline.customers !== undefined && (
                         <div>
-                          <p className="text-xs text-gray-500 mb-1">Customers</p>
-                          <p className="text-lg font-semibold text-gray-900">{plan.baseline.customers}</p>
+                          <p className="text-xs font-normal text-gray-500 mb-1">Customers</p>
+                          <p className="text-base font-medium text-gray-900">{plan.baseline.customers}</p>
                         </div>
                       )}
                       {plan.baseline.adSpend !== undefined && (
                         <div>
-                          <p className="text-xs text-gray-500 mb-1">Ad Spend</p>
-                          <p className="text-lg font-semibold text-gray-900">{formatCurrency(plan.baseline.adSpend)}</p>
+                          <p className="text-xs font-normal text-gray-500 mb-1">Ad Spend</p>
+                          <p className="text-base font-medium text-gray-900">{formatCurrency(plan.baseline.adSpend)}</p>
                         </div>
                       )}
                       {plan.baseline.roas !== undefined && (
                         <div>
-                          <p className="text-xs text-gray-500 mb-1">ROAS</p>
-                          <p className="text-lg font-semibold text-gray-900">{plan.baseline.roas.toFixed(2)}x</p>
+                          <p className="text-xs font-normal text-gray-500 mb-1">ROAS</p>
+                          <p className="text-base font-medium text-gray-900">{plan.baseline.roas.toFixed(2)}x</p>
                         </div>
                       )}
                     </div>
@@ -427,21 +438,24 @@ const PlanDetail = () => {
               {/* Performance Metrics */}
               {performance && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.results.performance}</h3>
+                  <div className="flex items-center gap-3 relative mb-4">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.results.performance}</h3>
+                  </div>
 
                   {/* Overall Performance */}
                   {performance.goalAchievement !== undefined && (
-                    <div className={`rounded-lg p-6 border-2 mb-4 ${
+                    <div className={`rounded-lg p-5 border mb-4 ${
                       performance.goalAchievement >= 100
-                        ? 'bg-green-50 border-green-300'
+                        ? 'bg-green-50 border-green-200'
                         : performance.goalAchievement >= 80
-                        ? 'bg-yellow-50 border-yellow-300'
-                        : 'bg-red-50 border-red-300'
+                        ? 'bg-yellow-50 border-yellow-200'
+                        : 'bg-red-50 border-red-200'
                     }`}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">{t.planning.results.goalAchievement}</p>
-                          <p className={`text-4xl font-bold ${
+                          <p className="text-sm font-normal text-gray-600 mb-2">{t.planning.results.goalAchievement}</p>
+                          <p className={`text-3xl font-medium ${
                             performance.goalAchievement >= 100
                               ? 'text-green-700'
                               : performance.goalAchievement >= 80
@@ -453,12 +467,12 @@ const PlanDetail = () => {
                         </div>
                         {performance.goalAchievement >= 100 ? (
                           <div className="text-center">
-                            <FiCheckCircle className="w-12 h-12 text-green-600 mx-auto mb-2" />
+                            <FiCheckCircle className="w-10 h-10 text-green-600 mx-auto mb-2" />
                             <p className="text-sm font-medium text-green-700">{t.planning.results.goalExceeded}</p>
                           </div>
                         ) : performance.goalAchievement < 80 ? (
                           <div className="text-center">
-                            <FiAlertCircle className="w-12 h-12 text-red-600 mx-auto mb-2" />
+                            <FiAlertCircle className="w-10 h-10 text-red-600 mx-auto mb-2" />
                             <p className="text-sm font-medium text-red-700">{t.planning.results.goalMissed}</p>
                           </div>
                         ) : null}
@@ -471,12 +485,12 @@ const PlanDetail = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                       {Object.entries(performance.metrics).map(([key, data]) => (
                         <div key={key} className="bg-white rounded-lg p-4 border border-gray-200">
-                          <p className="text-xs text-gray-500 mb-2 capitalize">{key}</p>
+                          <p className="text-xs font-normal text-gray-500 mb-2 capitalize">{key}</p>
                           <div className="space-y-2">
                             {data.baseline !== undefined && (
                               <div>
-                                <p className="text-xs text-gray-600">{t.planning.results.baseline}</p>
-                                <p className="text-sm font-semibold text-gray-900">
+                                <p className="text-xs font-normal text-gray-600">{t.planning.results.baseline}</p>
+                                <p className="text-sm font-medium text-gray-900">
                                   {key === 'revenue' || key === 'adSpend'
                                     ? formatCurrency(data.baseline)
                                     : key === 'roas'
@@ -487,8 +501,8 @@ const PlanDetail = () => {
                             )}
                             {data.actual !== undefined && (
                               <div>
-                                <p className="text-xs text-gray-600">{t.planning.results.actual}</p>
-                                <p className="text-sm font-semibold text-gray-900">
+                                <p className="text-xs font-normal text-gray-600">{t.planning.results.actual}</p>
+                                <p className="text-sm font-medium text-gray-900">
                                   {key === 'revenue' || key === 'adSpend'
                                     ? formatCurrency(data.actual)
                                     : key === 'roas'
@@ -499,8 +513,8 @@ const PlanDetail = () => {
                             )}
                             {data.variance !== undefined && (
                               <div className="pt-2 border-t border-gray-200">
-                                <p className="text-xs text-gray-600">{t.planning.results.variance}</p>
-                                <p className={`text-sm font-bold ${
+                                <p className="text-xs font-normal text-gray-600">{t.planning.results.variance}</p>
+                                <p className={`text-sm font-medium ${
                                   data.variance >= 0 ? 'text-green-600' : 'text-red-600'
                                 }`}>
                                   {data.variance >= 0 ? '+' : ''}{data.variance.toFixed(1)}%
@@ -517,23 +531,26 @@ const PlanDetail = () => {
 
               {/* Timeline */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.detail.duration}</h3>
+                <div className="flex items-center gap-3 relative mb-4">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                  <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.detail.duration}</h3>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <p className="text-sm text-gray-600 mb-1">{t.planning.detail.startDate}</p>
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-xs font-normal text-gray-600 mb-1">{t.planning.detail.startDate}</p>
+                    <p className="text-base font-medium text-gray-900">
                       {plan.startDate ? new Date(plan.startDate).toLocaleDateString() : 'N/A'}
                     </p>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <p className="text-sm text-gray-600 mb-1">{t.planning.detail.endDate}</p>
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-xs font-normal text-gray-600 mb-1">{t.planning.detail.endDate}</p>
+                    <p className="text-base font-medium text-gray-900">
                       {plan.endDate ? new Date(plan.endDate).toLocaleDateString() : 'N/A'}
                     </p>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <p className="text-sm text-gray-600 mb-1">{t.planning.form.planPeriod}</p>
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-xs font-normal text-gray-600 mb-1">{t.planning.form.planPeriod}</p>
+                    <p className="text-base font-medium text-gray-900">
                       {t.planning.periods[plan.planPeriod] || plan.planPeriod}
                     </p>
                   </div>
@@ -543,24 +560,27 @@ const PlanDetail = () => {
               {/* KPIs */}
               {plan.kpis && plan.kpis.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.kpis.title}</h3>
+                  <div className="flex items-center gap-3 relative mb-4">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.kpis.title}</h3>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {plan.kpis.map((kpi, index) => (
                       <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-gray-900">{kpi.name}</h4>
-                          <span className="text-sm text-gray-500">
+                          <h4 className="font-medium text-gray-900">{kpi.name}</h4>
+                          <span className="text-xs font-normal text-gray-500">
                             {t.planning.kpis[kpi.trackingFrequency] || kpi.trackingFrequency}
                           </span>
                         </div>
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">{t.planning.kpis.target}:</span>
+                            <span className="font-normal text-gray-600">{t.planning.kpis.target}:</span>
                             <span className="font-medium text-gray-900">{formatCurrency(kpi.target)}</span>
                           </div>
                           {kpi.current !== undefined && (
                             <div className="flex justify-between text-sm">
-                              <span className="text-gray-600">{t.planning.kpis.current}:</span>
+                              <span className="font-normal text-gray-600">{t.planning.kpis.current}:</span>
                               <span className="font-medium text-gray-900">{formatCurrency(kpi.current)}</span>
                             </div>
                           )}
@@ -578,26 +598,35 @@ const PlanDetail = () => {
             <div className="space-y-6">
               {plan.strategy?.summary && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.summary}</h3>
-                  <p className="text-gray-700 whitespace-pre-wrap">{plan.strategy.summary}</p>
+                  <div className="flex items-center gap-3 relative mb-3">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.strategy.summary}</h3>
+                  </div>
+                  <p className="text-sm font-normal text-gray-700 whitespace-pre-wrap">{plan.strategy.summary}</p>
                 </div>
               )}
 
               {plan.strategy?.analysis && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.analysis}</h3>
-                  <p className="text-gray-700 whitespace-pre-wrap">{plan.strategy.analysis}</p>
+                  <div className="flex items-center gap-3 relative mb-3">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.strategy.analysis}</h3>
+                  </div>
+                  <p className="text-sm font-normal text-gray-700 whitespace-pre-wrap">{plan.strategy.analysis}</p>
                 </div>
               )}
 
               {plan.strategy?.keyInsights && plan.strategy.keyInsights.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.keyInsights}</h3>
+                  <div className="flex items-center gap-3 relative mb-3">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.strategy.keyInsights}</h3>
+                  </div>
                   <ul className="space-y-2">
                     {plan.strategy.keyInsights.map((insight, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <FiCheck className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-700">{insight}</span>
+                        <FiCheck className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                        <span className="text-sm font-normal text-gray-700">{insight}</span>
                       </li>
                     ))}
                   </ul>
@@ -606,12 +635,15 @@ const PlanDetail = () => {
 
               {plan.strategy?.risks && plan.strategy.risks.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.risks}</h3>
+                  <div className="flex items-center gap-3 relative mb-3">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.strategy.risks}</h3>
+                  </div>
                   <ul className="space-y-2">
                     {plan.strategy.risks.map((risk, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <FiAlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-700">{risk}</span>
+                        <FiAlertCircle className="w-4 h-4 text-red-600 mt-1 flex-shrink-0" />
+                        <span className="text-sm font-normal text-gray-700">{risk}</span>
                       </li>
                     ))}
                   </ul>
@@ -620,12 +652,15 @@ const PlanDetail = () => {
 
               {plan.strategy?.opportunities && plan.strategy.opportunities.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.planning.strategy.opportunities}</h3>
+                  <div className="flex items-center gap-3 relative mb-3">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.strategy.opportunities}</h3>
+                  </div>
                   <ul className="space-y-2">
                     {plan.strategy.opportunities.map((opportunity, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <FiTrendingUp className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-700">{opportunity}</span>
+                        <FiTrendingUp className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                        <span className="text-sm font-normal text-gray-700">{opportunity}</span>
                       </li>
                     ))}
                   </ul>
@@ -634,8 +669,8 @@ const PlanDetail = () => {
 
               {plan.reasoning && (
                 <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                  <h3 className="text-lg font-semibold text-blue-900 mb-2">{t.planning.whyThisPlan}</h3>
-                  <p className="text-blue-800 whitespace-pre-wrap">{plan.reasoning}</p>
+                  <h3 className="text-base font-medium text-blue-900 mb-2">{t.planning.whyThisPlan}</h3>
+                  <p className="text-sm font-normal text-blue-800 whitespace-pre-wrap">{plan.reasoning}</p>
                 </div>
               )}
             </div>
@@ -645,32 +680,35 @@ const PlanDetail = () => {
           {activeTab === 'budget' && (
             <div className="space-y-6">
               {plan.budget?.total && (
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
-                  <p className="text-sm text-gray-600 mb-1">{t.planning.detail.totalBudget}</p>
-                  <p className="text-4xl font-bold text-gray-900">{formatCurrency(plan.budget.total)}</p>
+                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-5 border border-green-200">
+                  <p className="text-xs font-normal text-gray-600 mb-2">{t.planning.detail.totalBudget}</p>
+                  <p className="text-3xl font-medium text-gray-900">{formatCurrency(plan.budget.total)}</p>
                 </div>
               )}
 
               {plan.budget?.allocation && plan.budget.allocation.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.budget.allocation}</h3>
+                  <div className="flex items-center gap-3 relative mb-4">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                    <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.budget.allocation}</h3>
+                  </div>
                   <div className="space-y-4">
                     {plan.budget.allocation.map((item, index) => (
                       <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-gray-900">{item.channel}</h4>
+                          <h4 className="font-medium text-gray-900">{item.channel}</h4>
                           <div className="text-right">
-                            <p className="text-lg font-bold text-gray-900">{formatCurrency(item.amount)}</p>
-                            <p className="text-sm text-gray-500">{item.percentage}%</p>
+                            <p className="text-base font-medium text-gray-900">{formatCurrency(item.amount)}</p>
+                            <p className="text-xs font-normal text-gray-500">{item.percentage}%</p>
                           </div>
                         </div>
                         {item.expectedReturn && (
-                          <div className="text-sm text-gray-600 mb-2">
+                          <div className="text-sm font-normal text-gray-600 mb-2">
                             {t.planning.budget.expectedReturn}: {formatCurrency(item.expectedReturn)}
                           </div>
                         )}
                         {item.rationale && (
-                          <p className="text-sm text-gray-600">{item.rationale}</p>
+                          <p className="text-sm font-normal text-gray-600">{item.rationale}</p>
                         )}
                       </div>
                     ))}
@@ -683,18 +721,19 @@ const PlanDetail = () => {
           {/* Actions Tab */}
           {activeTab === 'actions' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">{t.planning.actions.title}</h3>
+              <div className="flex items-center gap-3 relative mb-4">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.actions.title}</h3>
               </div>
 
               {plan.actionItems && plan.actionItems.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {plan.actionItems.map((action) => (
-                    <div key={action._id} className="bg-white rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                    <div key={action._id} className="card card-hover p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <h4 className="font-semibold text-gray-900">{action.title}</h4>
+                            <h4 className="font-medium text-gray-900">{action.title}</h4>
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityBadge(action.priority)}`}>
                               {t.planning.priority[action.priority] || action.priority}
                             </span>
@@ -702,16 +741,16 @@ const PlanDetail = () => {
                               {t.planning.actions[action.status] || action.status}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">{action.description}</p>
+                          <p className="text-sm font-normal text-gray-600 mb-2">{action.description}</p>
                           {action.estimatedImpact && (
                             <div className="mb-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
-                              <p className="text-sm font-medium text-green-800">
-                                <span className="font-semibold">{t.planning.actions.estimatedImpact}:</span> {action.estimatedImpact}
+                              <p className="text-sm font-normal text-green-800">
+                                <span className="font-medium">{t.planning.actions.estimatedImpact}:</span> {action.estimatedImpact}
                               </p>
                             </div>
                           )}
                           {action.deadline && (
-                            <p className="text-sm text-gray-500 flex items-center gap-1">
+                            <p className="text-xs font-normal text-gray-500 flex items-center gap-1">
                               <FiCalendar className="w-4 h-4" />
                               {new Date(action.deadline).toLocaleDateString()}
                             </p>
@@ -723,7 +762,7 @@ const PlanDetail = () => {
                               {action.status === 'pending' && (
                                 <button
                                   onClick={() => handleUpdateActionItem(action._id, { status: 'in_progress' })}
-                                  className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                                  className="px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                                 >
                                   {t.planning.actions.markInProgress}
                                 </button>
@@ -731,7 +770,7 @@ const PlanDetail = () => {
                               {action.status === 'in_progress' && (
                                 <button
                                   onClick={() => handleUpdateActionItem(action._id, { status: 'completed' })}
-                                  className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                                  className="px-3 py-1.5 text-sm font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                                 >
                                   {t.planning.actions.markComplete}
                                 </button>
@@ -744,7 +783,7 @@ const PlanDetail = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-sm font-normal text-gray-500">
                   No action items available
                 </div>
               )}
@@ -754,38 +793,41 @@ const PlanDetail = () => {
           {/* Milestones Tab */}
           {activeTab === 'milestones' && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.planning.milestones.title}</h3>
+              <div className="flex items-center gap-3 relative mb-4">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-200 rounded-full"></div>
+                <h3 className="text-base font-medium text-gray-900 pl-4">{t.planning.milestones.title}</h3>
+              </div>
 
               {plan.milestones && plan.milestones.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {plan.milestones.map((milestone) => (
-                    <div key={milestone._id} className="bg-white rounded-lg p-4 border border-gray-200">
+                    <div key={milestone._id} className="card p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h4 className="font-semibold text-gray-900">{milestone.name}</h4>
+                          <div className="flex items-center gap-2 mb-3">
+                            <h4 className="font-medium text-gray-900">{milestone.name}</h4>
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getMilestoneStatusBadge(milestone.status)}`}>
                               {t.planning.milestones[milestone.status] || milestone.status}
                             </span>
                           </div>
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <p className="text-gray-600">{t.planning.milestones.targetDate}:</p>
+                              <p className="font-normal text-gray-600">{t.planning.milestones.targetDate}:</p>
                               <p className="font-medium text-gray-900">
                                 {new Date(milestone.targetDate).toLocaleDateString()}
                               </p>
                             </div>
                             <div>
-                              <p className="text-gray-600">{t.planning.milestones.metric}:</p>
+                              <p className="font-normal text-gray-600">{t.planning.milestones.metric}:</p>
                               <p className="font-medium text-gray-900">{milestone.metric}</p>
                             </div>
                             <div>
-                              <p className="text-gray-600">{t.planning.milestones.targetValue}:</p>
+                              <p className="font-normal text-gray-600">{t.planning.milestones.targetValue}:</p>
                               <p className="font-medium text-gray-900">{formatCurrency(milestone.targetValue)}</p>
                             </div>
                             {milestone.actualValue !== undefined && (
                               <div>
-                                <p className="text-gray-600">{t.planning.milestones.actualValue}:</p>
+                                <p className="font-normal text-gray-600">{t.planning.milestones.actualValue}:</p>
                                 <p className="font-medium text-gray-900">{formatCurrency(milestone.actualValue)}</p>
                               </div>
                             )}
@@ -796,7 +838,7 @@ const PlanDetail = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-sm font-normal text-gray-500">
                   No milestones available
                 </div>
               )}
@@ -807,76 +849,76 @@ const PlanDetail = () => {
 
       {/* Record Results Modal */}
       {showResultsModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-sm px-4">
+          <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
-              <h3 className="text-xl font-semibold text-gray-900">
+            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+              <h3 className="text-xl font-medium text-gray-900">
                 {t.planning.results.record}
               </h3>
               <button
                 onClick={handleCloseResultsModal}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="rounded-full border border-gray-200 p-2 text-gray-500 hover:bg-gray-100 transition-colors"
               >
-                <FiX className="w-6 h-6" />
+                <FiX className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-6">
+            <div className="flex-1 overflow-y-auto px-6 py-5">
               {recordSuccess ? (
                 <div className="text-center py-8">
                   <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                     <FiCheckCircle className="w-8 h-8 text-green-600" />
                   </div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h4 className="text-base font-medium text-gray-900 mb-2">
                     {t.planning.results.recordSuccess}
                   </h4>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-sm font-normal text-gray-600">
                     {t.planning.results.aiWillLearn}
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleRecordResults} className="space-y-4">
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm font-normal text-gray-600 mb-4">
                     {t.planning.results.description}
                   </p>
 
                   {/* Show baseline for comparison */}
                   {plan.baseline && (
-                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200 mb-6">
-                      <p className="text-sm text-blue-700 mb-2 font-medium">
-                        {t.planning.results.baseline}:
+                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 mb-6">
+                      <p className="text-xs font-medium uppercase tracking-wide text-blue-700 mb-3">
+                        {t.planning.results.baseline}
                       </p>
                       <div className="grid grid-cols-2 gap-3 text-sm">
                         {plan.baseline.revenue !== undefined && (
                           <div>
-                            <span className="text-blue-600">Revenue:</span>{' '}
-                            <span className="font-semibold text-blue-900">
+                            <span className="font-normal text-blue-600">Revenue:</span>{' '}
+                            <span className="font-medium text-blue-900">
                               {formatCurrency(plan.baseline.revenue)}
                             </span>
                           </div>
                         )}
                         {plan.baseline.customers !== undefined && (
                           <div>
-                            <span className="text-blue-600">Customers:</span>{' '}
-                            <span className="font-semibold text-blue-900">
+                            <span className="font-normal text-blue-600">Customers:</span>{' '}
+                            <span className="font-medium text-blue-900">
                               {plan.baseline.customers}
                             </span>
                           </div>
                         )}
                         {plan.baseline.adSpend !== undefined && (
                           <div>
-                            <span className="text-blue-600">Ad Spend:</span>{' '}
-                            <span className="font-semibold text-blue-900">
+                            <span className="font-normal text-blue-600">Ad Spend:</span>{' '}
+                            <span className="font-medium text-blue-900">
                               {formatCurrency(plan.baseline.adSpend)}
                             </span>
                           </div>
                         )}
                         {plan.baseline.roas !== undefined && (
                           <div>
-                            <span className="text-blue-600">ROAS:</span>{' '}
-                            <span className="font-semibold text-blue-900">
+                            <span className="font-normal text-blue-600">ROAS:</span>{' '}
+                            <span className="font-medium text-blue-900">
                               {plan.baseline.roas.toFixed(2)}x
                             </span>
                           </div>
@@ -896,7 +938,7 @@ const PlanDetail = () => {
                         step="0.01"
                         value={resultsData.revenue}
                         onChange={(e) => setResultsData({ ...resultsData, revenue: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                         placeholder="0.00"
                       />
                     </div>
@@ -910,7 +952,7 @@ const PlanDetail = () => {
                         step="1"
                         value={resultsData.customers}
                         onChange={(e) => setResultsData({ ...resultsData, customers: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                         placeholder="0"
                       />
                     </div>
@@ -924,7 +966,7 @@ const PlanDetail = () => {
                         step="0.01"
                         value={resultsData.adSpend}
                         onChange={(e) => setResultsData({ ...resultsData, adSpend: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                         placeholder="0.00"
                       />
                     </div>
@@ -938,7 +980,7 @@ const PlanDetail = () => {
                         step="0.01"
                         value={resultsData.roas}
                         onChange={(e) => setResultsData({ ...resultsData, roas: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                         placeholder="0.00"
                       />
                     </div>
@@ -952,42 +994,47 @@ const PlanDetail = () => {
                     <textarea
                       value={resultsData.notes}
                       onChange={(e) => setResultsData({ ...resultsData, notes: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                       placeholder={t.planning.results.notesPlaceholder}
                       rows="4"
                     />
                   </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-3 pt-4">
-                    <button
-                      type="button"
-                      onClick={handleCloseResultsModal}
-                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
-                    >
-                      {t.common.cancel}
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={recordingResults}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-                    >
-                      {recordingResults ? (
-                        <>
-                          <LoadingSpinner size="sm" />
-                          {t.common.saving}
-                        </>
-                      ) : (
-                        <>
-                          <FiCheckCircle className="w-4 h-4" />
-                          {t.planning.results.submit}
-                        </>
-                      )}
-                    </button>
-                  </div>
                 </form>
               )}
             </div>
+
+            {/* Modal Footer */}
+            {!recordSuccess && (
+              <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={handleCloseResultsModal}
+                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+                  >
+                    {t.common.cancel}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRecordResults}
+                    disabled={recordingResults}
+                    className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  >
+                    {recordingResults ? (
+                      <>
+                        <LoadingSpinner size="sm" />
+                        {t.common.saving}
+                      </>
+                    ) : (
+                      <>
+                        <FiCheckCircle className="w-4 h-4" />
+                        {t.planning.results.submit}
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

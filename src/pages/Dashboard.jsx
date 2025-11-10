@@ -7,6 +7,7 @@ import {
   FiZap
 } from 'react-icons/fi';
 import { useData } from '../hooks/useData';
+import { useChat } from '../hooks/useChat';
 import QuickActionButton from '../components/common/QuickActionButton';
 import CategoryCard from '../components/common/CategoryCard';
 import SectionHeader from '../components/common/SectionHeader';
@@ -19,6 +20,7 @@ import dataService from '../services/dataService';
 const Dashboard = () => {
   const { kpis, fetchKPIs, isLoading, dateRange } = useData();
   const { t, translate } = useLanguage();
+  const { openChat, sendMessage } = useChat();
   const [dashboardMetrics, setDashboardMetrics] = useState(null);
   const [metricsLoading, setMetricsLoading] = useState(true);
 
@@ -199,6 +201,28 @@ const Dashboard = () => {
     ]
   );
 
+  // Quick Action handlers
+  const handleQuickAction = (actionType) => {
+    let message = '';
+
+    switch (actionType) {
+      case 'performanceSummary':
+        message = translate('dashboard.quickActions.performanceSummary');
+        break;
+      case 'salesAnalysis':
+        message = translate('dashboard.quickActions.salesAnalysis');
+        break;
+      default:
+        message = actionType;
+    }
+
+    // Open chat and send the message
+    openChat();
+    setTimeout(() => {
+      sendMessage(message);
+    }, 300); // Small delay to ensure chat is open
+  };
+
   if ((isLoading && !kpis) || (metricsLoading && !dashboardMetrics)) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -216,10 +240,14 @@ const Dashboard = () => {
           borderColor="border-primary-500"
         />
         <div className="flex flex-wrap gap-3">
-          <QuickActionButton label={translate('dashboard.quickActions.cashClosure')} />
-          <QuickActionButton label={translate('dashboard.quickActions.lowInventory')} />
-          <QuickActionButton label={translate('dashboard.quickActions.performanceSummary')} />
-          <QuickActionButton label={translate('dashboard.quickActions.salesAnalysis')} />
+          <QuickActionButton
+            label={translate('dashboard.quickActions.performanceSummary')}
+            onClick={() => handleQuickAction('performanceSummary')}
+          />
+          <QuickActionButton
+            label={translate('dashboard.quickActions.salesAnalysis')}
+            onClick={() => handleQuickAction('salesAnalysis')}
+          />
         </div>
       </div>
 
