@@ -31,7 +31,9 @@
     "vite": "^5.0.7"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode localhost",
+    "dev:local": "vite --mode localhost",
+    "dev:prod": "vite --mode production",
     "build": "npm run build:prod",
     "build:local": "vite build --mode localhost",
     "build:prod": "vite build --mode production",
