@@ -222,7 +222,6 @@ class DataService {
       if (startDate) params.startDate = startDate;
       if (endDate) params.endDate = endDate;
 
-      // Ensure both dates are present for backend validation
       if (!params.startDate || !params.endDate) {
         const { startDate: defaultStart, endDate: defaultEnd } = getDateRangeParams();
         params.startDate = params.startDate || defaultStart;
@@ -241,7 +240,6 @@ class DataService {
    */
   async updateIntegrationConnection(integrationType, connected) {
     try {
-      // Use DELETE to disconnect, PUT to connect
       if (connected) {
         const response = await api.put(`/auth/integrations/${integrationType}`, {
           connected,
@@ -296,12 +294,10 @@ class DataService {
         accountId,
       };
 
-      // Add optional fields if provided
       if (accountName) {
         payload.accountName = accountName;
       }
 
-      // Always include accessTokenExpiresAt (can be null)
       payload.accessTokenExpiresAt = accessTokenExpiresAt;
 
       const response = await api.put(API_ENDPOINTS.META_ADS_CONNECT_MANUAL, payload);
@@ -318,11 +314,9 @@ class DataService {
     try {
       const response = await api.get(API_ENDPOINTS.META_ADS_OAUTH_INIT);
 
-      // Backend returns the OAuth authorization URL nested in data
       const authUrl = response?.data?.authUrl || response?.authUrl;
 
       if (authUrl) {
-        // Open OAuth page in a popup window
         const width = 600;
         const height = 700;
         const left = window.screen.width / 2 - width / 2;
@@ -338,7 +332,6 @@ class DataService {
           throw new Error('Popup blocked. Please allow popups for this site.');
         }
 
-        // Return a promise that resolves when the popup closes
         return new Promise((resolve, reject) => {
           const checkPopup = setInterval(() => {
             if (popup.closed) {
@@ -347,7 +340,6 @@ class DataService {
             }
           }, 500);
 
-          // Listen for messages from the OAuth callback page
           const messageHandler = (event) => {
             // Verify the message origin for security
             if (event.origin !== window.location.origin) return;
