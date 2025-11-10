@@ -24,12 +24,37 @@ const BarChart = ({
     { dataKey: 'value', fill: CHART_COLORS.primary, name: 'Value' }
   ];
 
+  // Custom tick component for long labels
+  const CustomYAxisTick = ({ x, y, payload }) => {
+    const maxLength = 40;
+    let text = payload.value || '';
+
+    if (text.length > maxLength) {
+      text = text.substring(0, maxLength) + '...';
+    }
+
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={0}
+          y={0}
+          dy={4}
+          textAnchor="end"
+          fill="#6b7280"
+          fontSize="11px"
+        >
+          {text}
+        </text>
+      </g>
+    );
+  };
+
   return (
     <ResponsiveContainer width="100%" height={height}>
       <RechartsBarChart
         data={data}
         layout={layout}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        margin={{ top: 5, right: 30, left: 200, bottom: 5 }}
       >
         {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />}
         {layout === 'horizontal' ? (
@@ -40,7 +65,13 @@ const BarChart = ({
         ) : (
           <>
             <XAxis type="number" stroke="#6b7280" style={{ fontSize: '12px' }} />
-            <YAxis dataKey={xAxisKey} type="category" stroke="#6b7280" style={{ fontSize: '12px' }} />
+            <YAxis
+              dataKey={xAxisKey}
+              type="category"
+              stroke="#6b7280"
+              width={180}
+              tick={<CustomYAxisTick />}
+            />
           </>
         )}
         <Tooltip
@@ -49,6 +80,11 @@ const BarChart = ({
             border: '1px solid #e5e7eb',
             borderRadius: '8px',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            fontSize: '13px',
+          }}
+          labelStyle={{
+            fontWeight: '500',
+            marginBottom: '4px',
           }}
         />
         {showLegend && <Legend />}

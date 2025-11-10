@@ -34,7 +34,7 @@ const CrossAnalysisDashboard = () => {
 
   // Prepare chart data for top campaigns
   const topCampaignsData = campaignPerformance?.campaigns?.slice(0, 10).map(campaign => ({
-    name: campaign.campaignName?.substring(0, 30) + (campaign.campaignName?.length > 30 ? '...' : ''),
+    name: campaign.campaignName || 'Unknown',
     spend: campaign.totalSpend || 0,
     revenue: campaign.totalRevenue || 0,
     clicks: campaign.totalClicks || 0,
