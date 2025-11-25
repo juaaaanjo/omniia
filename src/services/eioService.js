@@ -1,5 +1,6 @@
 import api from './api';
-import { API_ENDPOINTS } from '../utils/constants';
+import { API_ENDPOINTS, FEATURE_FLAGS } from '../utils/constants';
+import { MOCK_DATA } from '../utils/mockData';
 
 const replaceId = (endpoint, id) => endpoint.replace(':id', id);
 
@@ -30,6 +31,15 @@ const extractPagination = (payload) => {
 
 class EioService {
   async getAlerts(params = {}) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return {
+        alerts: MOCK_DATA.alerts,
+        pagination: null,
+        raw: { alerts: MOCK_DATA.alerts },
+      };
+    }
+
     const response = await api.get(API_ENDPOINTS.EIO_ALERTS, { params });
     const data = unwrap(response);
     return {
@@ -40,6 +50,11 @@ class EioService {
   }
 
   async getPendingAlerts(limit = 5) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.pendingAlerts;
+    }
+
     const response = await api.get(API_ENDPOINTS.EIO_ALERTS_PENDING, {
       params: limit ? { limit } : undefined,
     });
@@ -48,16 +63,31 @@ class EioService {
   }
 
   async getAlertsSummary() {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.alertsSummary;
+    }
+
     const response = await api.get(API_ENDPOINTS.EIO_ALERTS_SUMMARY);
     return unwrap(response);
   }
 
   async getAlertsByCategory() {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.alertsByCategory;
+    }
+
     const response = await api.get(API_ENDPOINTS.EIO_ALERTS_BY_CATEGORY);
     return unwrap(response);
   }
 
   async getAlertById(alertId) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.alerts.find(a => a._id === alertId) || MOCK_DATA.alerts[0];
+    }
+
     const response = await api.get(replaceId(API_ENDPOINTS.EIO_ALERT_BY_ID, alertId));
     return unwrap(response);
   }
@@ -105,6 +135,11 @@ class EioService {
   }
 
   async getDailyInsights(params = {}) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.dailyInsights;
+    }
+
     const response = await api.get(API_ENDPOINTS.EIO_INSIGHTS_DAILY, {
       params: Object.keys(params || {}).length ? params : undefined,
     });

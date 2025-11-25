@@ -5,6 +5,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { FiMail, FiLock, FiAlertCircle } from 'react-icons/fi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { validateForm } from '../../utils/validators';
+import { ROUTES } from '../../utils/constants';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -164,7 +165,7 @@ const LoginForm = () => {
         {/* Footer */}
         <p className="text-center text-sm text-gray-500">
           {t.auth.dontHaveAccount}{' '}
-          <Link to="/register" className="font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200 underline decoration-gray-300 hover:decoration-primary-600 underline-offset-2">
+          <Link to={ROUTES.REGISTER_SETUPIQ} className="font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200 underline decoration-gray-300 hover:decoration-primary-600 underline-offset-2">
             {t.auth.signUp}
           </Link>
         </p>

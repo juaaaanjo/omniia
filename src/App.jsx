@@ -14,6 +14,7 @@ import ChatInterface from './components/chat/ChatInterface';
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
+import SetupIQRegister from './pages/SetupIQRegister';
 import Dashboard from './pages/Dashboard';
 import Marketing from './pages/Marketing';
 import Finance from './pages/Finance';
@@ -69,6 +70,7 @@ function App() {
                       {/* Public routes */}
                       <Route path={ROUTES.LOGIN} element={<Login />} />
                       <Route path={ROUTES.REGISTER} element={<Register />} />
+                      <Route path={ROUTES.REGISTER_SETUPIQ} element={<SetupIQRegister />} />
                       <Route path={ROUTES.OAUTH_CALLBACK} element={<OAuthCallback />} />
 
                       {/* Protected routes */}

@@ -100,7 +100,7 @@ const ChatInterface = ({ area = 'analytics' }) => {
       {/* Content - hidden when minimized */}
       {!isMinimized && (
         <>
-          {/* Suggested questions */}
+          {/* Suggested questions / SetupIQ intro */}
           {messages.length === 0 && (
             <div className="p-5 border-b border-gray-100 bg-gray-50/50">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">

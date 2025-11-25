@@ -8,9 +8,15 @@ const DEFAULT_SOCKET_URL = import.meta.env.PROD
 export const API_BASE_URL = import.meta.env.VITE_API_URL || DEFAULT_API_URL;
 export const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || DEFAULT_SOCKET_URL;
 
+// Feature Flags
+export const FEATURE_FLAGS = {
+  USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA === 'true',
+};
+
 export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
+  REGISTER_SETUPIQ: '/register/setupiq',
   DASHBOARD: '/',
   MARKETING: '/marketing',
   FINANCE: '/finance',
@@ -50,6 +56,12 @@ export const API_ENDPOINTS = {
   // Chat
   CHAT_ASK: '/chat/ask',
   CHAT_HISTORY: '/chat/history',
+  SMART_REGISTER: '/smart-register',
+  SMART_REGISTER_START: '/smart-register/start',
+  SMART_REGISTER_SESSION: '/smart-register/:sessionId',
+  SMART_REGISTER_ANSWER: '/smart-register/:sessionId/answer',
+  SMART_REGISTER_FINISH: '/smart-register/:sessionId/finish',
+  SMART_REGISTER_FORM: '/smart-register/form',
 
   // Sync
   SYNC_STATUS: '/data/sync/status',

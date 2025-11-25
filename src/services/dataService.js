@@ -1,12 +1,18 @@
 import api from './api';
-import { API_ENDPOINTS } from '../utils/constants';
+import { API_ENDPOINTS, FEATURE_FLAGS } from '../utils/constants';
 import { getDateRangeParams } from '../utils/dateHelpers';
+import { MOCK_DATA } from '../utils/mockData';
 
 class DataService {
   /**
    * Get dashboard KPIs
    */
   async getKPIs(dateRange = 'last_30_days') {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.kpis;
+    }
+
     try {
       const { endDate } = getDateRangeParams(dateRange);
       const adjustedEndDate = new Date(endDate);
@@ -42,6 +48,11 @@ class DataService {
    * Get marketing data
    */
   async getMarketingData(dateRange = 'last_30_days', filters = {}) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.marketing;
+    }
+
     try {
       const { endDate } = getDateRangeParams(dateRange);
       const adjustedEndDate = new Date(endDate);
@@ -68,6 +79,11 @@ class DataService {
    * Get finance data
    */
   async getFinanceData(dateRange = 'last_30_days', filters = {}) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.finance;
+    }
+
     try {
       const { endDate } = getDateRangeParams(dateRange);
       const adjustedEndDate = new Date(endDate);
@@ -93,6 +109,11 @@ class DataService {
    * Get cross-analysis data
    */
   async getCrossAnalysisData(dateRange = 'last_30_days', filters = {}) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.crossAnalysis;
+    }
+
     try {
       const now = new Date();
       now.setHours(23, 59, 59, 999);
@@ -120,6 +141,11 @@ class DataService {
    * Get sync status
    */
   async getSyncStatus() {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.syncStatus;
+    }
+
     try {
       const response = await api.get(API_ENDPOINTS.SYNC_STATUS);
       if (response?.data?.status) {
@@ -453,6 +479,11 @@ class DataService {
    * Get Meta Ads campaigns
    */
   async getMetaAdsCampaigns(accountId = null) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.campaigns;
+    }
+
     try {
       const params = accountId ? { accountId } : {};
       const response = await api.get(API_ENDPOINTS.META_ADS_CAMPAIGNS, { params });
@@ -530,6 +561,11 @@ class DataService {
    * Get all guardrails
    */
   async getGuardrails(params = {}) {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.guardrails;
+    }
+
     try {
       const response = await api.get(API_ENDPOINTS.GUARDRAILS, { params });
       return response;
@@ -695,6 +731,11 @@ class DataService {
    * Get forecast accuracy statistics dashboard (LEARNS feature)
    */
   async getForecastAccuracyStats() {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.forecastAccuracyStats;
+    }
+
     try {
       const response = await api.get(API_ENDPOINTS.FORECASTING_ACCURACY_STATS);
       return response.data || response;
@@ -756,6 +797,11 @@ class DataService {
    * @param {string} dateRange - Date range preset
    */
   async getAllMetrics(dateRange = 'last_30_days') {
+    // Return mock data if feature flag is enabled
+    if (FEATURE_FLAGS.USE_MOCK_DATA) {
+      return MOCK_DATA.dashboardMetrics;
+    }
+
     try {
       const { startDate, endDate } = getDateRangeParams(dateRange);
       const response = await api.get(API_ENDPOINTS.ALL_METRICS, {

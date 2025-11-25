@@ -5,6 +5,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { FiMail, FiLock, FiAlertCircle, FiUser, FiBriefcase, FiGlobe } from 'react-icons/fi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { validateForm } from '../../utils/validators';
+import { ROUTES } from '../../utils/constants';
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -244,6 +245,17 @@ const RegisterForm = () => {
             {t.auth.signIn}
           </Link>
         </p>
+
+        <div className="text-center text-sm text-gray-500 space-y-1">
+          <p className="font-semibold text-gray-900">{t.auth.setupiqAltTitle}</p>
+          <p>{t.auth.setupiqAltDescription}</p>
+          <Link
+            to={ROUTES.REGISTER_SETUPIQ}
+            className="inline-flex items-center justify-center px-4 py-2 mt-1 text-xs font-semibold text-white bg-gray-900 rounded-full hover:bg-gray-800 transition-colors"
+          >
+            {t.auth.setupiqAltCta}
+          </Link>
+        </div>
       </div>
     </div>
   );
