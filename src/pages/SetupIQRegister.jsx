@@ -53,7 +53,7 @@ const SetupIQRegister = () => {
                 <span className="text-2xl leading-[0]">⌖</span>
               </div>
               <div className="text-lg font-semibold tracking-tight">
-                NERDEE <span className="font-normal text-gray-200">×</span> Mi Empresa
+                NERDEE <span className={`font-normal ${isLight ? 'text-gray-500' : 'text-gray-200'}`}>×</span> Mi Empresa
               </div>
             </div>
 
@@ -62,17 +62,22 @@ const SetupIQRegister = () => {
                 const isCurrent = step.status === 'current';
                 const isDone = step.status === 'done';
                 const isUpcoming = step.status === 'upcoming';
+                const baseCircleBg = isLight ? '#f5f7fb' : '#0b0c10';
                 const circleStyle = {
                   borderColor: step.color,
                   color: step.color,
-                  backgroundColor: isDone ? `${step.color}22` : isCurrent ? `${step.color}12` : '#0b0c10',
+                  backgroundColor: isDone
+                    ? `${step.color}12`
+                    : isCurrent
+                      ? `${step.color}10`
+                      : baseCircleBg,
                   boxShadow: isDone || isCurrent ? `0 0 14px ${step.color}55` : '0 0 0 transparent',
-                  opacity: isUpcoming ? 0.7 : 1,
+                  opacity: isUpcoming ? (isLight ? 0.8 : 0.7) : 1,
                 };
                 const lineStyle = {
-                  backgroundColor: step.color,
-                  boxShadow: `0 0 10px ${step.color}55`,
-                  opacity: isUpcoming ? 0.45 : 0.9,
+                  backgroundColor: isUpcoming ? (isLight ? '#e5e7eb' : '#1f2027') : step.color,
+                  boxShadow: isUpcoming ? '0 0 0 transparent' : `0 0 10px ${step.color}55`,
+                  opacity: isUpcoming ? (isLight ? 0.5 : 0.45) : 0.9,
                 };
 
                 return (
