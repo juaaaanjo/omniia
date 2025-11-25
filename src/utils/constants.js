@@ -8,9 +8,9 @@ const DEFAULT_SOCKET_URL = import.meta.env.PROD
 export const API_BASE_URL = import.meta.env.VITE_API_URL || DEFAULT_API_URL;
 export const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || DEFAULT_SOCKET_URL;
 
-// Feature Flags
+// Feature Flags (force real data; override env to avoid accidental mocks)
 export const FEATURE_FLAGS = {
-  USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA === 'true',
+  USE_MOCK_DATA: false,
 };
 
 export const ROUTES = {

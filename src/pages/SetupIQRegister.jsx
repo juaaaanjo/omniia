@@ -8,6 +8,8 @@ const SetupIQRegister = () => {
   const { t } = useLanguage();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [theme, setTheme] = useState('dark');
+  const isLight = theme === 'light';
 
   const stepPalette = useMemo(
     () => [
@@ -30,22 +32,25 @@ const SetupIQRegister = () => {
     [currentStep, stepPalette]
   );
 
+  const toggleTheme = () => setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+
   return (
-    <div className="min-h-screen bg-[#05060a] text-white relative overflow-hidden">
-      {/* Ambient lights */}
-      <div className="absolute inset-0 opacity-35 bg-[radial-gradient(circle_at_top_left,#1c9cf0,transparent_35%),radial-gradient(circle_at_bottom_right,#7b4bff,transparent_35%)]" />
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -left-16 top-1/4 w-48 h-48 bg-white/5 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute right-10 top-10 w-40 h-40 bg-emerald-400/10 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute right-24 bottom-8 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-float-slow" />
-      </div>
+    <div
+      className={`min-h-screen ${
+        isLight ? 'bg-white text-gray-900' : 'bg-black text-white'
+      } relative overflow-hidden transition-colors`}
+    >
 
       <div className="relative max-w-7xl mx-auto px-6 py-14 space-y-6">
         {/* Top nav */}
-        <div className="flex items-center justify-between bg-[#121317]/80 border border-white/10 rounded-2xl px-4 py-3 shadow-lg shadow-black/30 backdrop-blur animate-fade-up">
+        <div
+          className={`flex items-center justify-between rounded-2xl px-4 py-3 shadow-lg shadow-black/30 backdrop-blur animate-fade-up ${
+            isLight ? 'bg-white/90 border border-gray-200' : 'bg-[#121317]/80'
+          }`}
+        >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-lime-500 shadow-lg shadow-green-500/40 flex items-center justify-center text-gray-900 font-bold text-lg">
-              <span className="text-2xl leading-none">⌖</span>
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-lime-500 shadow-lg shadow-green-500/40 grid place-items-center text-gray-900 font-bold text-lg">
+              <span className="text-2xl leading-[0]">⌖</span>
             </div>
             <div className="text-lg font-semibold tracking-tight">
               NERDEE <span className="font-normal text-gray-200">×</span> Mi Empresa
@@ -90,15 +95,39 @@ const SetupIQRegister = () => {
                 </div>
               );
             })}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className={`ml-4 w-12 h-6 rounded-full border flex items-center transition-all duration-200 ${
+                isLight ? 'bg-amber-100 border-amber-200' : 'bg-[#1b1c22] border-[#2a2c35]'
+              }`}
+              aria-label="Toggle color mode"
+            >
+              <span
+                className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-all duration-200 grid place-items-center text-xs ${
+                  isLight ? 'translate-x-[26px] text-amber-500' : 'translate-x-[2px] text-blue-200'
+                }`}
+              >
+                {isLight ? '☀️' : '🌙'}
+              </span>
+            </button>
           </div>
 
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-[32px] shadow-2xl shadow-black/30 backdrop-blur-xl overflow-hidden animate-fade-up">
+        <div
+          className={`rounded-[32px] shadow-2xl shadow-black/30 backdrop-blur-xl overflow-hidden animate-fade-up ${
+            isLight ? 'bg-white' : 'bg-[#0a0a0a]'
+          }`}
+        >
           <div className="p-6 lg:p-8">
             <div className="max-w-7xl mx-auto">
-              <div className="relative bg-white text-gray-900 rounded-2xl shadow-2xl shadow-gray-900/20 border border-white/10 overflow-hidden">
-                <SetupIQRegisterForm currentStep={currentStep} onStepChange={setCurrentStep} />
+              <div
+                className={`relative rounded-2xl shadow-2xl shadow-black/40 overflow-hidden ${
+                  isLight ? 'bg-white text-gray-900' : 'bg-[#0f0f0f] text-white'
+                }`}
+              >
+                <SetupIQRegisterForm currentStep={currentStep} onStepChange={setCurrentStep} theme={theme} />
               </div>
             </div>
           </div>
