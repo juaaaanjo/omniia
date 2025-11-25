@@ -250,13 +250,13 @@ const Reports = () => {
   }
 
   return (
-    <div className="space-y-section">
+    <div className="space-y-6">
       {/* Email Status Warning */}
       {emailStatus && !emailStatus.configured && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+        <div className="rounded-2xl border border-red-100 bg-red-50/80 p-4 flex items-start gap-3 shadow-[0_12px_30px_rgba(244,63,94,0.12)]">
           <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-medium text-red-900 mb-1">{t.reports.emailNotConfigured}</h3>
+            <h3 className="font-semibold text-red-900 mb-1">{t.reports.emailNotConfigured}</h3>
             <p className="text-sm text-red-700">{t.reports.emailNotConfiguredDesc}</p>
           </div>
         </div>
@@ -264,22 +264,22 @@ const Reports = () => {
 
       {/* Dummy Mode Warning */}
       {emailStatus && emailStatus.dummy && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start gap-3">
-          <FiAlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+        <div className="rounded-2xl border border-amber-100 bg-amber-50/90 p-4 flex items-start gap-3 shadow-[0_12px_30px_rgba(251,191,36,0.15)]">
+          <FiAlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-medium text-yellow-900 mb-1">{t.reports.dummyMode}</h3>
-            <p className="text-sm text-yellow-700">{t.reports.dummyModeDesc}</p>
+            <h3 className="font-semibold text-amber-900 mb-1">{t.reports.dummyMode}</h3>
+            <p className="text-sm text-amber-700">{t.reports.dummyModeDesc}</p>
           </div>
         </div>
       )}
 
       {/* Email Status Success */}
       {emailStatus && emailStatus.configured && !emailStatus.dummy && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
-          <FiCheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/90 p-4 flex items-start gap-3 shadow-[0_12px_30px_rgba(16,185,129,0.14)]">
+          <FiCheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-medium text-green-900 mb-1">{t.reports.emailConfigured}</h3>
-            <p className="text-sm text-green-700">{emailStatus.message}</p>
+            <h3 className="font-semibold text-emerald-900 mb-1">{t.reports.emailConfigured}</h3>
+            <p className="text-sm text-emerald-700">{emailStatus.message}</p>
           </div>
         </div>
       )}
@@ -287,18 +287,18 @@ const Reports = () => {
       {/* Message Display */}
       {message && (
         <div
-          className={`border rounded-lg p-4 flex items-start gap-3 ${
+          className={`rounded-2xl p-4 flex items-start gap-3 shadow-[0_12px_30px_rgba(15,23,42,0.08)] ${
             message.type === 'success'
-              ? 'bg-green-50 border-green-200'
-              : 'bg-red-50 border-red-200'
+              ? 'bg-emerald-50 border border-emerald-100'
+              : 'bg-red-50 border border-red-100'
           }`}
         >
           {message.type === 'success' ? (
-            <FiCheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <FiCheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
           ) : (
             <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           )}
-          <p className={message.type === 'success' ? 'text-green-700' : 'text-red-700'}>
+          <p className={message.type === 'success' ? 'text-emerald-700' : 'text-red-700'}>
             {message.text}
           </p>
         </div>
@@ -307,16 +307,16 @@ const Reports = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Custom Report Form */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="card p-6">
-            <h2 className="text-base font-medium text-gray-900 mb-4 flex items-center gap-2">
-              <FiSend className="w-5 h-5" />
+          <div className="rounded-3xl bg-white border border-gray-200 shadow-[0_24px_50px_rgba(15,23,42,0.08)] p-6">
+            <h2 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <FiSend className="w-5 h-5 text-indigo-500" />
               {t.reports.customReport.title}
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               {/* Recipients */}
               <div>
-                <label className="block text-sm font-normal text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   {t.reports.customReport.recipients}
                 </label>
                 <input
@@ -324,8 +324,8 @@ const Reports = () => {
                   value={recipients}
                   onChange={(e) => setRecipients(e.target.value)}
                   placeholder={t.reports.customReport.recipientsPlaceholder}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
-                    errors.recipients ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-4 py-3 bg-white border rounded-2xl text-sm font-medium focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] ${
+                    errors.recipients ? 'border-red-400' : 'border-gray-200'
                   }`}
                 />
                 {errors.recipients && (
@@ -336,8 +336,8 @@ const Reports = () => {
 
               {/* Date Range */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-normal text-gray-700 mb-2">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
                     {t.reports.customReport.startDate}
                   </label>
                   <input
@@ -345,13 +345,13 @@ const Reports = () => {
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     max={new Date().toISOString().split('T')[0]}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
-                      errors.dates ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 bg-white border rounded-2xl text-sm font-medium focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] ${
+                      errors.dates ? 'border-red-400' : 'border-gray-200'
                     }`}
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-normal text-gray-700 mb-2">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
                     {t.reports.customReport.endDate}
                   </label>
                   <input
@@ -359,8 +359,8 @@ const Reports = () => {
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                     max={new Date().toISOString().split('T')[0]}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
-                      errors.dates ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 bg-white border rounded-2xl text-sm font-medium focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] ${
+                      errors.dates ? 'border-red-400' : 'border-gray-200'
                     }`}
                   />
                 </div>
@@ -373,13 +373,13 @@ const Reports = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setDateRange('week')}
-                  className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
                 >
                   {t.reports.customReport.lastWeek}
                 </button>
                 <button
                   onClick={() => setDateRange('month')}
-                  className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
                 >
                   {t.reports.customReport.lastMonth}
                 </button>
@@ -387,29 +387,29 @@ const Reports = () => {
 
               {/* Report Sections */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-normal text-gray-700">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-sm font-semibold text-gray-700">
                     {t.reports.customReport.sections}
                   </label>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 text-xs font-semibold">
                     <button
                       type="button"
                       onClick={selectAllSections}
-                      className="text-xs text-primary-600 hover:text-primary-700"
+                      className="text-indigo-600 hover:text-indigo-700"
                     >
                       {t.reports.customReport.selectAll}
                     </button>
-                    <span className="text-xs text-gray-400">|</span>
+                    <span className="text-gray-300">|</span>
                     <button
                       type="button"
                       onClick={deselectAllSections}
-                      className="text-xs text-primary-600 hover:text-primary-700"
+                      className="text-indigo-600 hover:text-indigo-700"
                     >
                       {t.reports.customReport.deselectAll}
                     </button>
                   </div>
                 </div>
-                <div className="space-y-2 border border-gray-200 rounded-lg p-3 bg-gray-50">
+                <div className="space-y-2 border border-gray-200 rounded-2xl p-4 bg-gray-50/70">
                   {REPORT_SECTION_OPTIONS.map((section) => (
                     <div key={section.value} className="flex items-start gap-3">
                       <input
@@ -417,10 +417,10 @@ const Reports = () => {
                         id={`section-${section.value}`}
                         checked={sections.includes(section.value)}
                         onChange={() => toggleSection(section.value)}
-                        className="mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                        className="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                       />
                       <label htmlFor={`section-${section.value}`} className="flex-1 cursor-pointer">
-                        <div className="text-sm font-medium text-gray-900">{section.label}</div>
+                        <div className="text-sm font-semibold text-gray-900">{section.label}</div>
                         <div className="text-xs text-gray-500">{section.description}</div>
                       </label>
                     </div>
@@ -430,11 +430,11 @@ const Reports = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3 pt-4">
+              <div className="flex flex-wrap gap-3 pt-4">
                 <button
                   onClick={handleSendCustomReport}
                   disabled={sending || !emailStatus?.configured}
-                  className="flex items-center gap-2 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#6b7bff] to-[#7f64ff] text-white rounded-full hover:brightness-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_12px_28px_rgba(107,123,255,0.35)]"
                 >
                   {sending ? (
                     <>
@@ -451,7 +451,7 @@ const Reports = () => {
 
                 <button
                   onClick={handlePreviewReport}
-                  className="flex items-center gap-2 px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 text-gray-800 rounded-full hover:border-gray-300 transition-colors shadow-[0_10px_20px_rgba(15,23,42,0.06)]"
                 >
                   <FiEye className="w-4 h-4" />
                   {t.reports.customReport.preview}
@@ -464,9 +464,9 @@ const Reports = () => {
         {/* Quick Actions Sidebar */}
         <div className="space-y-6">
           {/* Quick Actions */}
-          <div className="card p-6">
-            <h2 className="text-base font-medium text-gray-900 mb-4 flex items-center gap-2">
-              <FiUsers className="w-5 h-5" />
+          <div className="rounded-3xl bg-white border border-gray-200 shadow-[0_20px_45px_rgba(15,23,42,0.08)] p-6">
+            <h2 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <FiUsers className="w-5 h-5 text-indigo-500" />
               {t.reports.quickActions.title}
             </h2>
 
@@ -474,7 +474,7 @@ const Reports = () => {
               <button
                 onClick={handleSendWeeklyReport}
                 disabled={sendingWeekly || !emailStatus?.configured}
-                className="w-full flex items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-white rounded-2xl hover:brightness-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_12px_26px_rgba(99,102,241,0.35)]"
               >
                 {sendingWeekly ? (
                   <>
@@ -492,7 +492,7 @@ const Reports = () => {
               <button
                 onClick={handleSendMonthlyReport}
                 disabled={sendingMonthly || !emailStatus?.configured}
-                className="w-full flex items-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-[#8b5cf6] to-[#6366f1] text-white rounded-2xl hover:brightness-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_12px_26px_rgba(139,92,246,0.32)]"
               >
                 {sendingMonthly ? (
                   <>
@@ -514,9 +514,9 @@ const Reports = () => {
           </div>
 
           {/* Test Email */}
-          <div className="card p-6">
-            <h2 className="text-base font-medium text-gray-900 mb-4 flex items-center gap-2">
-              <FiMail className="w-5 h-5" />
+          <div className="rounded-3xl bg-white border border-gray-200 shadow-[0_20px_45px_rgba(15,23,42,0.08)] p-6">
+            <h2 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <FiMail className="w-5 h-5 text-indigo-500" />
               {t.reports.testEmail.title}
             </h2>
 
@@ -527,7 +527,7 @@ const Reports = () => {
             <button
               onClick={handleTestEmail}
               disabled={testingEmail || !emailStatus?.configured}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-200 text-gray-800 rounded-2xl hover:border-gray-300 transition-colors shadow-[0_10px_20px_rgba(15,23,42,0.06)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {testingEmail ? (
                 <>
@@ -544,15 +544,15 @@ const Reports = () => {
           </div>
 
           {/* Email Status Card */}
-          <div className="card p-6">
-            <h2 className="text-base font-medium text-gray-900 mb-4">
+          <div className="rounded-3xl bg-white border border-gray-200 shadow-[0_20px_45px_rgba(15,23,42,0.08)] p-6">
+            <h2 className="text-base font-semibold text-gray-900 mb-4">
               {t.reports.status.title}
             </h2>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">{t.reports.status.configured}</span>
-                <span className={`font-medium ${emailStatus?.configured ? 'text-green-600' : 'text-red-600'}`}>
+                <span className={`font-semibold ${emailStatus?.configured ? 'text-emerald-600' : 'text-red-600'}`}>
                   {emailStatus?.configured ? t.reports.status.yes : t.reports.status.no}
                 </span>
               </div>
@@ -560,7 +560,7 @@ const Reports = () => {
               {emailStatus?.configured && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">{t.reports.status.dummyMode}</span>
-                  <span className={`font-medium ${emailStatus.dummy ? 'text-yellow-600' : 'text-green-600'}`}>
+                  <span className={`font-semibold ${emailStatus.dummy ? 'text-amber-600' : 'text-emerald-600'}`}>
                     {emailStatus.dummy ? t.reports.status.yes : t.reports.status.no}
                   </span>
                 </div>
@@ -568,7 +568,7 @@ const Reports = () => {
 
               <button
                 onClick={checkEmailStatus}
-                className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 text-sm bg-white border border-gray-200 text-gray-800 rounded-2xl hover:border-gray-300 transition-colors shadow-[0_10px_20px_rgba(15,23,42,0.06)]"
               >
                 <FiRefreshCw className="w-4 h-4" />
                 {t.reports.status.refresh}
