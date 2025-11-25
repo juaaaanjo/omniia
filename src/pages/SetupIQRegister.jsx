@@ -42,7 +42,7 @@ const SetupIQRegister = () => {
       } relative overflow-x-hidden transition-colors`}
     >
 
-      <div className="sticky top-0 z-50 px-6 pt-4">
+      <div className="sticky top-0 z-50 px-6 pt-2">
         <div className="max-w-screen-2xl mx-auto">
           <div
             className={`flex items-center justify-between rounded-2xl px-5 py-4 md:py-5 shadow-lg shadow-black/30 backdrop-blur animate-fade-up ${
@@ -122,7 +122,7 @@ const SetupIQRegister = () => {
         </div>
       </div>
 
-      <div className="relative max-w-screen-2xl mx-auto px-6 pb-14 pt-4 space-y-6">
+      <div className="relative max-w-screen-2xl mx-auto px-6 pb-14 pt-2 space-y-6">
         <div
           className={`rounded-[32px] shadow-2xl shadow-black/30 backdrop-blur-xl overflow-hidden animate-fade-up ${
             isLight ? 'bg-white' : 'bg-[#0a0a0a]'
