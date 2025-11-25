@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../hooks/useLanguage';
-import { FiMail, FiLock, FiAlertCircle } from 'react-icons/fi';
+import { FiMail, FiLock, FiAlertCircle, FiTarget } from 'react-icons/fi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { validateForm } from '../../utils/validators';
 import { ROUTES } from '../../utils/constants';
@@ -80,8 +80,8 @@ const LoginForm = () => {
         {/* Header / brand */}
         <div className="flex items-center justify-between bg-white/80 border border-gray-200 rounded-2xl px-4 py-3 shadow-lg shadow-black/5 backdrop-blur">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-lime-500 shadow-md shadow-green-400/30 grid place-items-center text-gray-900 font-bold text-lg">
-              <span className="text-2xl leading-[0]">⌖</span>
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-lime-500 shadow-md shadow-green-400/30 grid place-items-center text-gray-900">
+              <FiTarget className="w-6 h-6" />
             </div>
             <div className="leading-tight">
               <div className="text-xl font-semibold">NERDEE <span className="font-normal text-gray-500">×</span> Mi Empresa</div>

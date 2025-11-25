@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useMemo } from 'react';
+import { FiTarget } from 'react-icons/fi';
 import SetupIQRegisterForm from '../components/auth/SetupIQRegisterForm';
 import { useLanguage } from '../hooks/useLanguage';
 import { ROUTES } from '../utils/constants';
@@ -50,7 +51,7 @@ const SetupIQRegister = () => {
           >
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-lime-500 shadow-lg shadow-green-500/40 grid place-items-center text-gray-900 font-bold text-lg">
-                <span className="text-2xl leading-[0]">⌖</span>
+                <FiTarget className="w-6 h-6" />
               </div>
               <div className="text-lg font-semibold tracking-tight">
                 NERDEE <span className={`font-normal ${isLight ? 'text-gray-500' : 'text-gray-200'}`}>×</span> Mi Empresa
