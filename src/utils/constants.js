@@ -17,11 +17,14 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   REGISTER_SETUPIQ: '/register/setupiq',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/',
   MARKETING: '/marketing',
   FINANCE: '/finance',
   ANALYTICS: '/analytics',
   INTEGRATIONS: '/integrations',
+  EXCEL_TRANSACTIONS: '/excel-transactions',
   FORECASTING: '/forecasting',
   PLANNING: '/planning',
   PLAN_DETAIL: '/planning/:planId',
@@ -36,6 +39,8 @@ export const API_ENDPOINTS = {
   LOGOUT: '/auth/logout',
   ME: '/auth/me',
   PROFILE: '/auth/profile',
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  RESET_PASSWORD: '/auth/reset-password',
 
   // Dashboard
   KPIS: '/dashboard/kpis',
@@ -123,6 +128,18 @@ export const API_ENDPOINTS = {
   EIO_ALERT_REPORT: '/eio/alerts/report',
   EIO_INSIGHTS_DAILY: '/eio/insights/daily',
   EIO_CHECK: '/eio/check',
+
+  // Excel Transactions
+  EXCEL_TRANSACTIONS_UPLOAD: '/excel-transactions/upload',
+  EXCEL_TRANSACTIONS_UPLOADS: '/excel-transactions/uploads',
+  EXCEL_TRANSACTIONS_UPLOAD_DETAILS: '/excel-transactions/uploads/:uploadId',
+  EXCEL_TRANSACTIONS_DELETE_UPLOAD: '/excel-transactions/uploads/:uploadId',
+  EXCEL_TRANSACTIONS_ANALYTICS_REVENUE: '/excel-transactions/analytics/revenue',
+  EXCEL_TRANSACTIONS_ANALYTICS_DAILY_REVENUE: '/excel-transactions/analytics/daily-revenue',
+  EXCEL_TRANSACTIONS_ANALYTICS_PAYMENT_METHODS: '/excel-transactions/analytics/payment-methods',
+  EXCEL_TRANSACTIONS_ANALYTICS_TOP_CUSTOMERS: '/excel-transactions/analytics/top-customers',
+  EXCEL_TRANSACTIONS_ANALYTICS_REVENUE_BY_LOCATION: '/excel-transactions/analytics/revenue-by-location',
+  EXCEL_TRANSACTIONS_ANALYTICS_TAXES: '/excel-transactions/analytics/taxes',
 };
 
 export const SUGGESTED_QUESTIONS = {
