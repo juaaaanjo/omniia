@@ -11,16 +11,19 @@ import { useChat } from '../hooks/useChat';
 import QuickActionButton from '../components/common/QuickActionButton';
 import CategoryCard from '../components/common/CategoryCard';
 import SectionHeader from '../components/common/SectionHeader';
+import DataSourceSelector from '../components/common/DataSourceSelector';
 import EioOverviewCard from '../components/eio/EioOverviewCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
 import { useLanguage } from '../hooks/useLanguage';
+import { useDataSource } from '../hooks/useDataSource';
 import dataService from '../services/dataService';
 
 const Dashboard = () => {
   const { kpis, fetchKPIs, isLoading, dateRange } = useData();
   const { t, translate } = useLanguage();
   const { openChat, sendMessage } = useChat();
+  const { selectedDataSource, changeDataSource } = useDataSource();
   const [dashboardMetrics, setDashboardMetrics] = useState(null);
   const [metricsLoading, setMetricsLoading] = useState(true);
 
@@ -233,6 +236,14 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-section">
+      {/* Data Source Selector */}
+      <div className="flex justify-end">
+        <DataSourceSelector
+          value={selectedDataSource}
+          onChange={changeDataSource}
+        />
+      </div>
+
       {/* Quick Actions */}
       <div>
         <SectionHeader
