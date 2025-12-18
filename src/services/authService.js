@@ -116,6 +116,55 @@ class AuthService {
   }
 
   /**
+   * Request password reset email
+   * @param {string} email - User's email address (will be trimmed and lowercased)
+   * @returns {Promise} Response with success message
+   */
+  async forgotPassword(email) {
+    try {
+      // Trim and lowercase email as per requirements
+      const cleanEmail = email.trim().toLowerCase();
+
+      const response = await api.post(API_ENDPOINTS.FORGOT_PASSWORD, {
+        email: cleanEmail,
+      });
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Reset password with token from email
+   * @param {string} token - Reset token from URL query params
+   * @param {string} password - New password (minimum 8 characters)
+   * @returns {Promise} Response with user and JWT token
+   */
+  async resetPassword(token, password) {
+    try {
+      const response = await api.post(API_ENDPOINTS.RESET_PASSWORD, {
+        token,
+        password,
+      });
+
+      // Extract token and user from response
+      const authToken = response.data?.token || response.token;
+      const user = response.data?.user || response.user;
+
+      // Store token and user (auto-login after password reset)
+      if (authToken) {
+        localStorage.setItem('token', authToken);
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Check if user is authenticated
    */
   isAuthenticated() {
