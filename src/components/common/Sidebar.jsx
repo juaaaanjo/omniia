@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiTrendingUp, FiClock, FiMail, FiDollarSign, FiSettings, FiTarget } from 'react-icons/fi';
+import { FiHome, FiTrendingUp, FiClock, FiMail, FiDollarSign, FiSettings, FiTarget, FiFileText } from 'react-icons/fi';
 import { ROUTES } from '../../utils/constants';
+import { useDataSource } from '../../hooks/useDataSource';
 import clsx from 'clsx';
 
 // Brain Icon Component
@@ -21,7 +22,9 @@ const BrainIcon = ({ className }) => (
 );
 
 const Sidebar = () => {
-  const navItems = [
+  const { isDataSourceEnabled } = useDataSource();
+
+  const allNavItems = [
     {
       to: ROUTES.DASHBOARD,
       icon: FiHome,
@@ -43,6 +46,11 @@ const Sidebar = () => {
       icon: FiDollarSign,
     },
     {
+      to: ROUTES.EXCEL_TRANSACTIONS,
+      icon: FiFileText,
+      requiresDataSource: 'excelTransactions',
+    },
+    {
       to: ROUTES.INTEGRATIONS,
       icon: FiSettings,
     },
@@ -55,6 +63,14 @@ const Sidebar = () => {
       icon: FiTarget,
     },
   ];
+
+  // Filter nav items based on enabled data sources
+  const navItems = allNavItems.filter(item => {
+    if (item.requiresDataSource) {
+      return isDataSourceEnabled(item.requiresDataSource);
+    }
+    return true;
+  });
 
   return (
     <aside className="fixed left-6 top-1/2 -translate-y-1/2 z-40">
