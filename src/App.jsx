@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
+import { ExcelTransactionsProvider } from './context/ExcelTransactionsContext';
+import { DataSourceProvider } from './context/DataSourceContext';
 import { EioProvider } from './context/EioContext';
 import { ChatProvider } from './context/ChatContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
@@ -15,11 +17,14 @@ import ChatInterface from './components/chat/ChatInterface';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import SetupIQRegister from './pages/SetupIQRegister';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Marketing from './pages/Marketing';
 import Finance from './pages/Finance';
 import Analytics from './pages/Analytics';
 import Integrations from './pages/Integrations';
+import ExcelTransactions from './pages/ExcelTransactions';
 import Forecasting from './pages/Forecasting';
 import Planning from './pages/Planning';
 import PlanDetail from './pages/PlanDetail';
@@ -64,13 +69,17 @@ function App() {
           <LanguageProvider>
             <Router>
               <DataProvider>
-                <EioProvider>
-                  <ChatProvider>
+                <ExcelTransactionsProvider>
+                  <DataSourceProvider>
+                    <EioProvider>
+                      <ChatProvider>
                     <Routes>
                       {/* Public routes */}
                       <Route path={ROUTES.LOGIN} element={<Login />} />
                       <Route path={ROUTES.REGISTER} element={<Register />} />
                       <Route path={ROUTES.REGISTER_SETUPIQ} element={<SetupIQRegister />} />
+                      <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
+                      <Route path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
                       <Route path={ROUTES.OAUTH_CALLBACK} element={<OAuthCallback />} />
 
                       {/* Protected routes */}
@@ -125,6 +134,16 @@ function App() {
                         }
                       />
                       <Route
+                        path={ROUTES.EXCEL_TRANSACTIONS}
+                        element={
+                          <ProtectedRoute>
+                            <Layout>
+                              <ExcelTransactions />
+                            </Layout>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
                         path={ROUTES.FORECASTING}
                         element={
                           <ProtectedRoute>
@@ -168,8 +187,10 @@ function App() {
                       {/* 404 route */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
-                  </ChatProvider>
-                </EioProvider>
+                      </ChatProvider>
+                    </EioProvider>
+                  </DataSourceProvider>
+                </ExcelTransactionsProvider>
               </DataProvider>
             </Router>
           </LanguageProvider>
