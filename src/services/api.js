@@ -50,6 +50,17 @@ api.interceptors.response.use(
         // This prevents redirect loops and allows proper React state cleanup
       }
 
+      if (status === 403 && data.dataSource) {
+        // Data source access denied
+        return Promise.reject({
+          status,
+          message: data.message || `Access denied: ${data.dataSource} is not enabled for your account`,
+          dataSource: data.dataSource,
+          isDataSourceAccessError: true,
+          data: data,
+        });
+      }
+
       return Promise.reject({
         status,
         message: data.message || 'An error occurred',
