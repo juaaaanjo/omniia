@@ -170,12 +170,12 @@ const LoginForm = () => {
 
                 {/* Forgot password */}
                 <div className="flex justify-end -mt-2">
-                  <a
-                    href="#"
+                  <Link
+                    to={ROUTES.FORGOT_PASSWORD}
                     className="text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors duration-200"
                   >
                     {t.auth.forgotPassword}
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Submit button */}
