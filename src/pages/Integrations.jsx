@@ -1,13 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
 import IntegrationCard from '../components/integrations/IntegrationCard';
 import MetaAdsManualTokenModal from '../components/integrations/MetaAdsManualTokenModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { FiTrendingUp, FiActivity } from 'react-icons/fi';
+import { FiTrendingUp, FiActivity, FiFileText } from 'react-icons/fi';
 import dataService from '../services/dataService';
+import { useExcelTransactions } from '../hooks/useExcelTransactions';
+import { useDataSource } from '../hooks/useDataSource';
+import { ROUTES } from '../utils/constants';
 
 const Integrations = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const { uploads } = useExcelTransactions();
+  const { isDataSourceEnabled, loading: dataSourceLoading } = useDataSource();
   const [syncStatus, setSyncStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -149,9 +156,11 @@ const Integrations = () => {
     }
   }, [loadSyncStatus, setIntegrationLoading]);
 
-  const integrations = [
+  // Build integrations array with only enabled data sources
+  const allIntegrations = [
     {
       id: 'transactions',
+      dataSource: 'transactions',
       name: t.integrations.ommeoTransactions,
       description: t.integrations.ommeoTransactionsDesc,
       icon: FiActivity,
@@ -165,6 +174,7 @@ const Integrations = () => {
     },
     {
       id: 'metaAds',
+      dataSource: 'metaAds',
       name: t.integrations.metaAds,
       description: t.integrations.metaAdsDesc,
       icon: FiTrendingUp,
@@ -176,9 +186,28 @@ const Integrations = () => {
       onDisconnect: () => handleDisconnect('meta-ads'),
       loading: !!actionLoading.metaAds,
     },
+    {
+      id: 'excelTransactions',
+      dataSource: 'excelTransactions',
+      name: 'Excel Transactions',
+      description: 'Upload and analyze transaction data from Excel files (.xlsx, .xls, .ods)',
+      icon: FiFileText,
+      connected: uploads && uploads.length > 0,
+      lastSync: uploads && uploads.length > 0 ? uploads[0]?.uploadedAt : null,
+      status: uploads && uploads.length > 0 ? 'connected' : 'disconnected',
+      onConnect: () => navigate(ROUTES.EXCEL_TRANSACTIONS),
+      onSync: () => navigate(ROUTES.EXCEL_TRANSACTIONS),
+      onSettings: () => navigate(ROUTES.EXCEL_TRANSACTIONS),
+      loading: false,
+    },
   ];
 
-  if (loading) {
+  // Filter integrations based on user's enabled data sources
+  const integrations = allIntegrations.filter(integration =>
+    isDataSourceEnabled(integration.dataSource)
+  );
+
+  if (loading || dataSourceLoading) {
     return (
       <div className="flex items-center justify-center h-96">
         <LoadingSpinner size="lg" message="Loading integrations..." />
@@ -231,19 +260,23 @@ const Integrations = () => {
         <div className="card p-6">
           <h3 className="text-base font-medium text-gray-900 mb-4">Sync Status Summary</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {['transactions', 'metaAds'].map((key) => {
-              const value = syncStatus[key];
-              if (!value) return null;
-              const label =
-                key === 'transactions'
-                  ? t.integrations.ommeoTransactions
-                  : t.integrations.metaAds;
+            {integrations.map((integration) => {
+              let connected = false;
+
+              if (integration.id === 'transactions') {
+                connected = syncStatus.transactions?.connected || false;
+              } else if (integration.id === 'metaAds') {
+                connected = syncStatus.metaAds?.connected || false;
+              } else if (integration.id === 'excelTransactions') {
+                connected = uploads && uploads.length > 0;
+              }
+
               return (
-                <div key={key} className="text-center">
+                <div key={integration.id} className="text-center">
                   <div className="text-2xl font-medium text-gray-900">
-                    {value.connected ? '✓' : '○'}
+                    {connected ? '✓' : '○'}
                   </div>
-                  <div className="text-sm font-normal text-gray-600">{label}</div>
+                  <div className="text-sm font-normal text-gray-600">{integration.name}</div>
                 </div>
               );
             })}
