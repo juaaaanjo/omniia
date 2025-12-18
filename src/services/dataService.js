@@ -161,6 +161,19 @@ class DataService {
   }
 
   /**
+   * Get user's available data sources
+   * @returns {Promise} Object with enabledDataSources array and availableSources map
+   */
+  async getAvailableDataSources() {
+    try {
+      const response = await api.get('/auth/data-sources');
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Trigger sync for all data sources
    */
   async syncAllData() {
@@ -871,6 +884,189 @@ class DataService {
       const response = await api.get(API_ENDPOINTS.SAC_METRICS, {
         params: { startDate, endDate }
       });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // ===========================
+  // Excel Transactions Methods
+  // ===========================
+
+  /**
+   * Upload Excel file with transaction data
+   * @param {File} file - Excel file to upload (.xlsx, .xls, .ods)
+   * @returns {Promise} Upload result with import summary
+   */
+  async uploadExcelTransactions(file) {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await api.post(API_ENDPOINTS.EXCEL_TRANSACTIONS_UPLOAD, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 600000 // 10 minutes for large Excel files (processing can take time)
+      });
+
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get all Excel transaction uploads (history)
+   * @returns {Promise} List of all uploads with summaries
+   */
+  async getExcelTransactionUploads() {
+    try {
+      const response = await api.get(API_ENDPOINTS.EXCEL_TRANSACTIONS_UPLOADS);
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get details for a specific upload
+   * @param {string} uploadId - Upload ID
+   * @returns {Promise} Detailed statistics for the upload
+   */
+  async getExcelTransactionUploadDetails(uploadId) {
+    try {
+      const endpoint = API_ENDPOINTS.EXCEL_TRANSACTIONS_UPLOAD_DETAILS.replace(':uploadId', uploadId);
+      const response = await api.get(endpoint);
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a specific upload
+   * @param {string} uploadId - Upload ID
+   * @returns {Promise} Deletion confirmation
+   */
+  async deleteExcelTransactionUpload(uploadId) {
+    try {
+      const endpoint = API_ENDPOINTS.EXCEL_TRANSACTIONS_DELETE_UPLOAD.replace(':uploadId', uploadId);
+      const response = await api.delete(endpoint);
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get revenue analytics summary
+   * @param {string} startDate - Start date (YYYY-MM-DD)
+   * @param {string} endDate - End date (YYYY-MM-DD)
+   * @returns {Promise} Revenue summary
+   */
+  async getExcelTransactionRevenue(startDate = null, endDate = null) {
+    try {
+      const params = {};
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+
+      const response = await api.get(API_ENDPOINTS.EXCEL_TRANSACTIONS_ANALYTICS_REVENUE, { params });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get daily revenue breakdown
+   * @param {string} startDate - Start date (YYYY-MM-DD)
+   * @param {string} endDate - End date (YYYY-MM-DD)
+   * @returns {Promise} Day-by-day revenue breakdown
+   */
+  async getExcelTransactionDailyRevenue(startDate = null, endDate = null) {
+    try {
+      const params = {};
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+
+      const response = await api.get(API_ENDPOINTS.EXCEL_TRANSACTIONS_ANALYTICS_DAILY_REVENUE, { params });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get payment methods analytics (Cash vs Card)
+   * @param {string} startDate - Start date (YYYY-MM-DD)
+   * @param {string} endDate - End date (YYYY-MM-DD)
+   * @returns {Promise} Payment methods split
+   */
+  async getExcelTransactionPaymentMethods(startDate = null, endDate = null) {
+    try {
+      const params = {};
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+
+      const response = await api.get(API_ENDPOINTS.EXCEL_TRANSACTIONS_ANALYTICS_PAYMENT_METHODS, { params });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get top customers by revenue
+   * @param {string} startDate - Start date (YYYY-MM-DD)
+   * @param {string} endDate - End date (YYYY-MM-DD)
+   * @param {number} limit - Number of top customers to return (default: 10)
+   * @returns {Promise} Top customers list
+   */
+  async getExcelTransactionTopCustomers(startDate = null, endDate = null, limit = 10) {
+    try {
+      const params = { limit };
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+
+      const response = await api.get(API_ENDPOINTS.EXCEL_TRANSACTIONS_ANALYTICS_TOP_CUSTOMERS, { params });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get revenue by location (sede/branch)
+   * @param {string} startDate - Start date (YYYY-MM-DD)
+   * @param {string} endDate - End date (YYYY-MM-DD)
+   * @returns {Promise} Revenue breakdown by location
+   */
+  async getExcelTransactionRevenueByLocation(startDate = null, endDate = null) {
+    try {
+      const params = {};
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+
+      const response = await api.get(API_ENDPOINTS.EXCEL_TRANSACTIONS_ANALYTICS_REVENUE_BY_LOCATION, { params });
+      return response.data || response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get tax summary (IVA, ICO)
+   * @param {string} startDate - Start date (YYYY-MM-DD)
+   * @param {string} endDate - End date (YYYY-MM-DD)
+   * @returns {Promise} Tax summary
+   */
+  async getExcelTransactionTaxes(startDate = null, endDate = null) {
+    try {
+      const params = {};
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+
+      const response = await api.get(API_ENDPOINTS.EXCEL_TRANSACTIONS_ANALYTICS_TAXES, { params });
       return response.data || response;
     } catch (error) {
       throw error;
